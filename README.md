@@ -315,16 +315,10 @@ Memory : 3rd party memory allocators support : jemalloc, intelTBB, tcMalloc, Loc
 
 Event broadcasting : Will broadcast events to subscribers possibly with ZeroMQ , also sample feed handlers might be added
 
-Visualizer : Might add a visualizer with either OpenGL or Vulkan
+Visualizer : Might add a visualizer with either OpenGL or Vulkan , will subscribe to OME to receive events
 
 Order matching : Adding other order types ( market orders, stop loss order) , order update and market data request support, TIF support
 
 Exchange connectivity : Support ITCH ( London Stock Exchange & NASDAQ ) and/or FIX engines , interested in using Libtrade : https://github.com/libtrading/libtrading
-
-Compiler support : Experimental Clang support for compiler_portability layer
-
-OS Support : Solaris11
-
-Database support : Save events into a database
 
 ===========================================================================
