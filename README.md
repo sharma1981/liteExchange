@@ -303,37 +303,28 @@ MSVC120 C++11 Limitations : Curly brace initialisation at MILs and noexcept is n
 
 **12. Todo List :**
 
-Benchmarking & Microbenchmarking : Will add probes for SystemTap for Linux, might add performance test cases using existing GoogleTest project
+GPU Offloading with CUDA : Will add experimental support for offloading order matching to GPU
+
+Probes : Will add probes for SystemTap for Linux, might add ETW support for Windows as well
 
 Concurrency : MPMC and MPSC lockfree container implementations , currently only SPSC bounded queue is lock free.
 
 Memory : 3rd party memory allocators support : jemalloc, intelTBB, tcMalloc, Lockless. Currently the engine is using a set of CPU cache aligned allocators in "source/memory".
 
+**Possible considerations for future :**
 
-**Other considerations for future :**
+Event broadcasting : Will broadcast events to subscribers possibly with ZeroMQ , also sample feed handlers might be added
+
+Visualizer : Might add a visualizer with either OpenGL or Vulkan
 
 Order matching : Adding other order types ( market orders, stop loss order) , order update and market data request support, TIF support
 
 Exchange connectivity : Support ITCH ( London Stock Exchange & NASDAQ ) and/or FIX engines , interested in using Libtrade : https://github.com/libtrading/libtrading
 
-Compiler support : Use of CMake, upgrading supported compiler versions and enabling use of C++14/C++17, experimental Clang and IntelC++Compiler
-
-Concurrency : Experiment order book processing on GPU with CUDA
+Compiler support : Experimental Clang support for compiler_portability layer
 
 OS Support : Solaris11
 
-New feature : Event broadcasting and sample feed handlers
-
-New feature : Visualisation of transactions with OpenGL/Vulkan. See links below : 
-
-http://obt.hottolink.com/
-
-http://parasec.net/transmission/order-book-visualisation/
-
-Valve is sponsoring LunarG which is working on Vulkan drivers and SDK which is likely to be available this year :
-
-http://lunarg.com/vulkan/
-
-New feature : Save events in a database
+Database support : Save events into a database
 
 ===========================================================================
