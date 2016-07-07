@@ -1,5 +1,5 @@
 #/bin/bash
-SAVE_ORIGINAL_FILE=0
+SED_ARGUMENT="-i" # -i.orig in order to save original files
 
 IS_COMMAND_VALID_RESULT=0
 function is_command_valid()
@@ -15,12 +15,12 @@ function is_command_valid()
     IS_COMMAND_VALID_RESULT=1
 }
 
-function install_dos2unix_if_necessary()
+function check_dos2unix()
 {
     is_command_valid "dos2unix"
     if [ $IS_COMMAND_VALID_RESULT -eq 0 ]; then
         echo  "dos2unix is not available"
-        sudo yum install dos2unix
+        exit -1
     else
         echo  "dos2unix is available"
     fi
@@ -33,23 +33,17 @@ function convert_end_of_lines()
 
 function convert_tabs_to_spaces()
 {
-    if [ $SAVE_ORIGINAL_FILE -eq 1 ]; then
-        find . -name \*.cpp -o -name \*.hpp -o -name \*.h | xargs sed -i $'s/\t/    /g'
-    else
-        find . -name \*.cpp -o -name \*.hpp -o -name \*.h | xargs sed -i.orig $'s/\t/    /g'
-    fi  
+    find . -name \*.cpp -o -name \*.hpp -o -name \*.h | xargs sed ${SED_ARGUMENT} $'s/\t/    /g'
 }
 
 function remove_trailing_whitespace()
 {
-    if [ $SAVE_ORIGINAL_FILE -eq 1 ]; then
-        find . -name \*.cpp -o -name \*.hpp -o -name \*.h | xargs sed -i '' -e's/[ \t]*$//'
-    else
-        find . -name \*.cpp -o -name \*.hpp -o -name \*.h | xargs sed -i.orig '' -e's/[ \t]*$//'
-    fi  
+	find . -name \*.cpp -o -name \*.hpp -o -name \*.h | xargs sed  ${SED_ARGUMENT} '' -e's/[ \t]*$//'
 }
 
-install_dos2unix_if_necessary
+check_dos2unix
+echo "Formatting started\n"
 convert_end_of_lines
 convert_tabs_to_spaces
 remove_trailing_whitespace
+echo "Formatting completed\n"
