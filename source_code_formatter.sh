@@ -38,7 +38,7 @@ function convert_tabs_to_spaces()
 
 function remove_trailing_whitespace()
 {
-	find . -name \*.cpp -o -name \*.hpp -o -name \*.h | xargs sed  ${SED_ARGUMENT} '' -e's/[ \t]*$//'
+    find . -name \*.cpp -o -name \*.hpp -o -name \*.h | xargs sed  ${SED_ARGUMENT} '' -e's/[ \t]*$//'
 }
 
 check_dos2unix
