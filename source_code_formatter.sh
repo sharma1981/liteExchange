@@ -28,24 +28,24 @@ function install_dos2unix_if_necessary()
 
 function convert_end_of_lines()
 {
-    find . -name \*.cpp -o -name \*.c -o -name \*.h | xargs dos2unix
+    find . -name \*.cpp -o -name \*.hpp -o -name \*.h | xargs dos2unix
 }
 
 function convert_tabs_to_spaces()
 {
     if [ $SAVE_ORIGINAL_FILE -eq 1 ]; then
-        find . -name \*.cpp -o -name \*.c -o -name \*.h | xargs sed -i $'s/\t/    /g'
+        find . -name \*.cpp -o -name \*.hpp -o -name \*.h | xargs sed -i $'s/\t/    /g'
     else
-        find . -name \*.cpp -o -name \*.c -o -name \*.h | xargs sed -i.orig $'s/\t/    /g'
+        find . -name \*.cpp -o -name \*.hpp -o -name \*.h | xargs sed -i.orig $'s/\t/    /g'
     fi  
 }
 
 function remove_trailing_whitespace()
 {
     if [ $SAVE_ORIGINAL_FILE -eq 1 ]; then
-        find . -name \*.cpp -o -name \*.c -o -name \*.h | xargs sed -i '' -e's/[ \t]*$//'
+        find . -name \*.cpp -o -name \*.hpp -o -name \*.h | xargs sed -i '' -e's/[ \t]*$//'
     else
-        find . -name \*.cpp -o -name \*.c -o -name \*.h | xargs sed -i.orig '' -e's/[ \t]*$//'
+        find . -name \*.cpp -o -name \*.hpp -o -name \*.h | xargs sed -i.orig '' -e's/[ \t]*$//'
     fi  
 }
 
