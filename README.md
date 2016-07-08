@@ -282,6 +282,8 @@ Source code indentations and new line usage :
 	Needs to be set in VS2013 : https://msdn.microsoft.com/en-gb/library/ms165330(v=vs.90).aspx
 	New lines : Unix CR only ( \n ) , VisualStudio can handle it even though Windows is \r\n
 	
+source_code_formatter.sh : It is a Bash script that scans all cpp,h,hpp files in project directory and converts Windows end of lines to Linux, converts tabs to 4 spaces and removes trailing whitespace. It requires dos2unix.
+	
 Inclusions : Using forward slash as it works for both Linux and Windows :
 
 		#include <concurrent/thread.h>
