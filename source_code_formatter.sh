@@ -1,4 +1,21 @@
 #/bin/bash
+#
+#   What it does :
+#
+#   1. Uses dos2unix to convert Windows EOLs to Linux/Unix EOLs
+#   2. Converts TABS to 4 spaces
+#   3. Removes trailing whitespaces
+#
+#   Other considerations :
+#
+#   1. File filters : Currently acts on cpp , h and hpp files , modify FIND_FILE_FILTER to change it
+#   2. Keeping original files before conversion : set SED_ARGUMENT to "-i.orig"
+#
+#   Dependencies :
+#
+#       dos2unix
+#       sed
+#
 SED_ARGUMENT='-i' # Replace with -i.orig in order to save original files
 FIND_SEARCH_DIRECTORY='.'
 FIND_FILE_FILTER='-name \*.cpp -o -name \*.hpp -o -name \*.h;'
