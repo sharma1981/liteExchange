@@ -22,7 +22,7 @@ TEST(OrderMatcher, OrderBook)
     double buyer2Price = 100;
     double buyer2Quantity = 1;
 
-    
+
     order_matcher::Order orderSell(clientOrderID, symbol, "test_client", "test_server", sellSide, orderType, supplierPrice, supplierQuantity);
     order_matcher::Order orderBuy1(clientOrderID, symbol, "test_client", "test_server", buySide, orderType, buyer1Price, buyer1Quantity);
     order_matcher::Order orderBuy2(clientOrderID, symbol, "test_client", "test_server", buySide, orderType, buyer2Price, buyer2Quantity);

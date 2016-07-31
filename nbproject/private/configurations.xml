@@ -1,674 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configurationDescriptor version="95">
+<configurationDescriptor version="97">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <df root="." name="0">
       <df name="bin">
         <df name="intermediate">
           <df name="ome.tlog">
-          </df>
-        </df>
-        <df name="old_quickfix_logs">
-          <df name="quickfix_log_10_11_2015_21_10_25">
-          </df>
-          <df name="quickfix_log_11_11_2015_00_19_25">
-            <df name="TEST_CLIENT">
-            </df>
-          </df>
-          <df name="quickfix_log_11_11_2015_00_20_45">
-            <df name="TEST_CLIENT">
-            </df>
-          </df>
-          <df name="quickfix_log_11_11_2015_00_26_21">
-            <df name="TEST_CLIENT">
-            </df>
-          </df>
-          <df name="quickfix_log_11_11_2015_00_28_13">
-            <df name="TEST_CLIENT">
-            </df>
-          </df>
-          <df name="quickfix_log_11_11_2015_00_36_45">
-            <df name="TEST_CLIENT">
-            </df>
-          </df>
-          <df name="quickfix_log_11_11_2015_00_37_08">
-            <df name="TEST_CLIENT">
-            </df>
-          </df>
-          <df name="quickfix_log_11_11_2015_00_49_34">
-            <df name="TEST_CLIENT">
-            </df>
-          </df>
-          <df name="quickfix_log_11_11_2015_01_00_00">
-            <df name="TEST_CLIENT">
-            </df>
-          </df>
-          <df name="quickfix_log_11_11_2015_01_06_47">
-            <df name="TEST_CLIENT">
-            </df>
-          </df>
-          <df name="quickfix_log_11_11_2015_01_19_31">
-            <df name="TEST_CLIENT">
-            </df>
-          </df>
-          <df name="quickfix_log_12_11_2015_00_01_22">
-            <df name="TEST_CLIENT">
-            </df>
-          </df>
-          <df name="quickfix_log_12_11_2015_23_54_41">
-            <df name="TEST_CLIENT">
-            </df>
-          </df>
-          <df name="quickfix_log_13_11_2015_23_47_32">
-            <df name="TEST_CLIENT">
-            </df>
-          </df>
-          <df name="quickfix_log_14_11_2015_19_40_37">
-            <df name="TEST_CLIENT">
-            </df>
-          </df>
-          <df name="quickfix_log_14_11_2015_19_46_49">
-            <df name="TEST_CLIENT">
-            </df>
-          </df>
-          <df name="quickfix_log_14_11_2015_19_49_53">
-            <df name="TEST_CLIENT">
-            </df>
-          </df>
-          <df name="quickfix_log_14_11_2015_19_54_25">
-            <df name="TEST_CLIENT">
-            </df>
-          </df>
-          <df name="quickfix_log_14_11_2015_20_09_35">
-            <df name="TEST_CLIENT">
-            </df>
-          </df>
-          <df name="quickfix_log_14_11_2015_20_16_53">
-            <df name="TEST_CLIENT">
-            </df>
-          </df>
-          <df name="quickfix_log_14_11_2015_20_20_21">
-            <df name="TEST_CLIENT">
-            </df>
-          </df>
-          <df name="quickfix_log_14_11_2015_20_23_00">
-            <df name="TEST_CLIENT">
-            </df>
-          </df>
-          <df name="quickfix_log_14_11_2015_21_56_10">
-            <df name="TEST_CLIENT">
-            </df>
-          </df>
-          <df name="quickfix_log_14_11_2015_23_24_52">
-            <df name="TEST_CLIENT">
-            </df>
-          </df>
-          <df name="quickfix_log_14_11_2015_23_26_44">
-            <df name="TEST_CLIENT">
-            </df>
-          </df>
-          <df name="quickfix_log_14_11_2015_23_29_48">
-            <df name="TEST_CLIENT">
-            </df>
-          </df>
-          <df name="quickfix_log_14_11_2015_23_39_27">
-            <df name="TEST_CLIENT">
-            </df>
-          </df>
-          <df name="quickfix_log_14_11_2015_23_44_17">
-            <df name="TEST_CLIENT">
-            </df>
-          </df>
-          <df name="quickfix_log_14_11_2015_23_48_08">
-          </df>
-          <df name="quickfix_log_14_11_2015_23_48_28">
-          </df>
-          <df name="quickfix_log_14_11_2015_23_50_48">
-            <df name="TEST_CLIENT">
-            </df>
-          </df>
-          <df name="quickfix_log_14_11_2015_23_54_37">
-            <df name="TEST_CLIENT">
-            </df>
-          </df>
-          <df name="quickfix_log_15_11_2015_00_00_19">
-            <df name="TEST_CLIENT1">
-            </df>
-            <df name="TEST_CLIENT2">
-            </df>
-            <df name="TEST_CLIENT3">
-            </df>
-            <df name="TEST_CLIENT4">
-            </df>
-            <df name="TEST_CLIENT5">
-            </df>
-            <df name="TEST_CLIENT6">
-            </df>
-            <df name="TEST_CLIENT7">
-            </df>
-            <df name="TEST_CLIENT8">
-            </df>
-          </df>
-          <df name="quickfix_log_15_11_2015_00_11_19">
-            <df name="TEST_CLIENT1">
-            </df>
-            <df name="TEST_CLIENT2">
-            </df>
-            <df name="TEST_CLIENT3">
-            </df>
-            <df name="TEST_CLIENT4">
-            </df>
-            <df name="TEST_CLIENT5">
-            </df>
-            <df name="TEST_CLIENT6">
-            </df>
-            <df name="TEST_CLIENT7">
-            </df>
-            <df name="TEST_CLIENT8">
-            </df>
-          </df>
-          <df name="quickfix_log_15_11_2015_00_13_03">
-            <df name="TEST_CLIENT1">
-            </df>
-            <df name="TEST_CLIENT2">
-            </df>
-            <df name="TEST_CLIENT3">
-            </df>
-            <df name="TEST_CLIENT4">
-            </df>
-            <df name="TEST_CLIENT5">
-            </df>
-            <df name="TEST_CLIENT6">
-            </df>
-            <df name="TEST_CLIENT7">
-            </df>
-            <df name="TEST_CLIENT8">
-            </df>
-          </df>
-          <df name="quickfix_log_15_11_2015_00_23_01">
-            <df name="TEST_CLIENT1">
-            </df>
-            <df name="TEST_CLIENT2">
-            </df>
-            <df name="TEST_CLIENT3">
-            </df>
-            <df name="TEST_CLIENT4">
-            </df>
-            <df name="TEST_CLIENT5">
-            </df>
-            <df name="TEST_CLIENT6">
-            </df>
-            <df name="TEST_CLIENT7">
-            </df>
-            <df name="TEST_CLIENT8">
-            </df>
-          </df>
-          <df name="quickfix_log_15_11_2015_00_51_44">
-            <df name="TEST_CLIENT1">
-            </df>
-            <df name="TEST_CLIENT2">
-            </df>
-            <df name="TEST_CLIENT3">
-            </df>
-            <df name="TEST_CLIENT4">
-            </df>
-            <df name="TEST_CLIENT5">
-            </df>
-            <df name="TEST_CLIENT6">
-            </df>
-            <df name="TEST_CLIENT7">
-            </df>
-            <df name="TEST_CLIENT8">
-            </df>
-          </df>
-          <df name="quickfix_log_15_11_2015_02_06_01">
-            <df name="TEST_CLIENT1">
-            </df>
-            <df name="TEST_CLIENT2">
-            </df>
-            <df name="TEST_CLIENT3">
-            </df>
-            <df name="TEST_CLIENT4">
-            </df>
-            <df name="TEST_CLIENT5">
-            </df>
-            <df name="TEST_CLIENT6">
-            </df>
-            <df name="TEST_CLIENT7">
-            </df>
-            <df name="TEST_CLIENT8">
-            </df>
-          </df>
-          <df name="quickfix_log_15_11_2015_02_15_31">
-            <df name="TEST_CLIENT1">
-            </df>
-            <df name="TEST_CLIENT2">
-            </df>
-            <df name="TEST_CLIENT3">
-            </df>
-            <df name="TEST_CLIENT4">
-            </df>
-            <df name="TEST_CLIENT5">
-            </df>
-            <df name="TEST_CLIENT6">
-            </df>
-            <df name="TEST_CLIENT7">
-            </df>
-            <df name="TEST_CLIENT8">
-            </df>
-          </df>
-          <df name="quickfix_log_15_11_2015_02_24_44">
-            <df name="TEST_CLIENT1">
-            </df>
-            <df name="TEST_CLIENT2">
-            </df>
-            <df name="TEST_CLIENT3">
-            </df>
-            <df name="TEST_CLIENT4">
-            </df>
-            <df name="TEST_CLIENT5">
-            </df>
-            <df name="TEST_CLIENT6">
-            </df>
-            <df name="TEST_CLIENT7">
-            </df>
-            <df name="TEST_CLIENT8">
-            </df>
-          </df>
-          <df name="quickfix_log_15_11_2015_02_29_06">
-            <df name="TEST_CLIENT1">
-            </df>
-            <df name="TEST_CLIENT2">
-            </df>
-            <df name="TEST_CLIENT3">
-            </df>
-            <df name="TEST_CLIENT4">
-            </df>
-            <df name="TEST_CLIENT5">
-            </df>
-            <df name="TEST_CLIENT6">
-            </df>
-            <df name="TEST_CLIENT7">
-            </df>
-            <df name="TEST_CLIENT8">
-            </df>
-          </df>
-          <df name="quickfix_log_15_11_2015_02_31_30">
-            <df name="TEST_CLIENT1">
-            </df>
-            <df name="TEST_CLIENT2">
-            </df>
-            <df name="TEST_CLIENT3">
-            </df>
-            <df name="TEST_CLIENT4">
-            </df>
-            <df name="TEST_CLIENT5">
-            </df>
-            <df name="TEST_CLIENT6">
-            </df>
-            <df name="TEST_CLIENT7">
-            </df>
-            <df name="TEST_CLIENT8">
-            </df>
-          </df>
-          <df name="quickfix_log_15_11_2015_02_32_10">
-            <df name="TEST_CLIENT1">
-            </df>
-            <df name="TEST_CLIENT2">
-            </df>
-            <df name="TEST_CLIENT3">
-            </df>
-            <df name="TEST_CLIENT4">
-            </df>
-            <df name="TEST_CLIENT5">
-            </df>
-            <df name="TEST_CLIENT6">
-            </df>
-            <df name="TEST_CLIENT7">
-            </df>
-            <df name="TEST_CLIENT8">
-            </df>
-          </df>
-          <df name="quickfix_log_15_11_2015_02_36_14">
-            <df name="TEST_CLIENT1">
-            </df>
-            <df name="TEST_CLIENT2">
-            </df>
-            <df name="TEST_CLIENT3">
-            </df>
-            <df name="TEST_CLIENT4">
-            </df>
-            <df name="TEST_CLIENT5">
-            </df>
-            <df name="TEST_CLIENT6">
-            </df>
-            <df name="TEST_CLIENT7">
-            </df>
-            <df name="TEST_CLIENT8">
-            </df>
-          </df>
-          <df name="quickfix_log_15_11_2015_02_40_12">
-            <df name="TEST_CLIENT1">
-            </df>
-            <df name="TEST_CLIENT2">
-            </df>
-            <df name="TEST_CLIENT3">
-            </df>
-            <df name="TEST_CLIENT4">
-            </df>
-            <df name="TEST_CLIENT5">
-            </df>
-            <df name="TEST_CLIENT6">
-            </df>
-            <df name="TEST_CLIENT7">
-            </df>
-            <df name="TEST_CLIENT8">
-            </df>
-          </df>
-          <df name="quickfix_log_15_11_2015_02_43_39">
-            <df name="TEST_CLIENT1">
-            </df>
-            <df name="TEST_CLIENT2">
-            </df>
-            <df name="TEST_CLIENT3">
-            </df>
-            <df name="TEST_CLIENT4">
-            </df>
-            <df name="TEST_CLIENT5">
-            </df>
-            <df name="TEST_CLIENT6">
-            </df>
-            <df name="TEST_CLIENT7">
-            </df>
-            <df name="TEST_CLIENT8">
-            </df>
-          </df>
-          <df name="quickfix_log_15_11_2015_02_44_33">
-            <df name="TEST_CLIENT1">
-            </df>
-            <df name="TEST_CLIENT2">
-            </df>
-            <df name="TEST_CLIENT3">
-            </df>
-            <df name="TEST_CLIENT4">
-            </df>
-            <df name="TEST_CLIENT5">
-            </df>
-            <df name="TEST_CLIENT6">
-            </df>
-            <df name="TEST_CLIENT7">
-            </df>
-            <df name="TEST_CLIENT8">
-            </df>
-          </df>
-          <df name="quickfix_log_15_11_2015_02_51_50">
-            <df name="TEST_CLIENT1">
-            </df>
-            <df name="TEST_CLIENT2">
-            </df>
-            <df name="TEST_CLIENT3">
-            </df>
-            <df name="TEST_CLIENT4">
-            </df>
-            <df name="TEST_CLIENT5">
-            </df>
-            <df name="TEST_CLIENT6">
-            </df>
-            <df name="TEST_CLIENT7">
-            </df>
-            <df name="TEST_CLIENT8">
-            </df>
-          </df>
-          <df name="quickfix_log_15_11_2015_02_53_50">
-            <df name="TEST_CLIENT1">
-            </df>
-            <df name="TEST_CLIENT2">
-            </df>
-            <df name="TEST_CLIENT3">
-            </df>
-            <df name="TEST_CLIENT4">
-            </df>
-            <df name="TEST_CLIENT5">
-            </df>
-            <df name="TEST_CLIENT6">
-            </df>
-            <df name="TEST_CLIENT7">
-            </df>
-            <df name="TEST_CLIENT8">
-            </df>
-          </df>
-          <df name="quickfix_log_15_11_2015_02_56_22">
-            <df name="TEST_CLIENT1">
-            </df>
-            <df name="TEST_CLIENT2">
-            </df>
-            <df name="TEST_CLIENT3">
-            </df>
-            <df name="TEST_CLIENT4">
-            </df>
-            <df name="TEST_CLIENT5">
-            </df>
-            <df name="TEST_CLIENT6">
-            </df>
-            <df name="TEST_CLIENT7">
-            </df>
-            <df name="TEST_CLIENT8">
-            </df>
-          </df>
-          <df name="quickfix_log_15_11_2015_02_56_27">
-            <df name="TEST_CLIENT1">
-            </df>
-            <df name="TEST_CLIENT2">
-            </df>
-            <df name="TEST_CLIENT3">
-            </df>
-            <df name="TEST_CLIENT4">
-            </df>
-            <df name="TEST_CLIENT5">
-            </df>
-            <df name="TEST_CLIENT6">
-            </df>
-            <df name="TEST_CLIENT7">
-            </df>
-            <df name="TEST_CLIENT8">
-            </df>
-          </df>
-          <df name="quickfix_log_15_11_2015_03_06_11">
-            <df name="TEST_CLIENT1">
-            </df>
-            <df name="TEST_CLIENT2">
-            </df>
-            <df name="TEST_CLIENT3">
-            </df>
-            <df name="TEST_CLIENT4">
-            </df>
-            <df name="TEST_CLIENT5">
-            </df>
-            <df name="TEST_CLIENT6">
-            </df>
-            <df name="TEST_CLIENT7">
-            </df>
-            <df name="TEST_CLIENT8">
-            </df>
-          </df>
-          <df name="quickfix_log_15_11_2015_03_18_57">
-            <df name="TEST_CLIENT1">
-            </df>
-            <df name="TEST_CLIENT2">
-            </df>
-            <df name="TEST_CLIENT3">
-            </df>
-            <df name="TEST_CLIENT4">
-            </df>
-            <df name="TEST_CLIENT5">
-            </df>
-            <df name="TEST_CLIENT6">
-            </df>
-            <df name="TEST_CLIENT7">
-            </df>
-            <df name="TEST_CLIENT8">
-            </df>
-          </df>
-          <df name="quickfix_log_15_11_2015_03_28_04">
-            <df name="TEST_CLIENT1">
-            </df>
-            <df name="TEST_CLIENT2">
-            </df>
-            <df name="TEST_CLIENT3">
-            </df>
-            <df name="TEST_CLIENT4">
-            </df>
-            <df name="TEST_CLIENT5">
-            </df>
-            <df name="TEST_CLIENT6">
-            </df>
-            <df name="TEST_CLIENT7">
-            </df>
-            <df name="TEST_CLIENT8">
-            </df>
-          </df>
-          <df name="quickfix_log_15_11_2015_03_28_38">
-            <df name="TEST_CLIENT1">
-            </df>
-            <df name="TEST_CLIENT2">
-            </df>
-            <df name="TEST_CLIENT3">
-            </df>
-            <df name="TEST_CLIENT4">
-            </df>
-            <df name="TEST_CLIENT5">
-            </df>
-            <df name="TEST_CLIENT6">
-            </df>
-            <df name="TEST_CLIENT7">
-            </df>
-            <df name="TEST_CLIENT8">
-            </df>
-          </df>
-          <df name="quickfix_log_15_11_2015_03_30_31">
-            <df name="TEST_CLIENT1">
-            </df>
-            <df name="TEST_CLIENT2">
-            </df>
-            <df name="TEST_CLIENT3">
-            </df>
-            <df name="TEST_CLIENT4">
-            </df>
-            <df name="TEST_CLIENT5">
-            </df>
-            <df name="TEST_CLIENT6">
-            </df>
-            <df name="TEST_CLIENT7">
-            </df>
-            <df name="TEST_CLIENT8">
-            </df>
-          </df>
-          <df name="quickfix_log_15_11_2015_11_49_59">
-            <df name="TEST_CLIENT1">
-            </df>
-            <df name="TEST_CLIENT2">
-            </df>
-            <df name="TEST_CLIENT3">
-            </df>
-            <df name="TEST_CLIENT4">
-            </df>
-            <df name="TEST_CLIENT5">
-            </df>
-            <df name="TEST_CLIENT6">
-            </df>
-            <df name="TEST_CLIENT7">
-            </df>
-            <df name="TEST_CLIENT8">
-            </df>
-          </df>
-          <df name="quickfix_log_15_11_2015_12_02_29">
-            <df name="TEST_CLIENT1">
-            </df>
-            <df name="TEST_CLIENT2">
-            </df>
-            <df name="TEST_CLIENT3">
-            </df>
-            <df name="TEST_CLIENT4">
-            </df>
-            <df name="TEST_CLIENT5">
-            </df>
-            <df name="TEST_CLIENT6">
-            </df>
-            <df name="TEST_CLIENT7">
-            </df>
-            <df name="TEST_CLIENT8">
-            </df>
-          </df>
-          <df name="quickfix_log_15_11_2015_12_30_48">
-            <df name="TEST_CLIENT1">
-            </df>
-            <df name="TEST_CLIENT2">
-            </df>
-            <df name="TEST_CLIENT3">
-            </df>
-            <df name="TEST_CLIENT4">
-            </df>
-            <df name="TEST_CLIENT5">
-            </df>
-            <df name="TEST_CLIENT6">
-            </df>
-            <df name="TEST_CLIENT7">
-            </df>
-            <df name="TEST_CLIENT8">
-            </df>
-          </df>
-          <df name="quickfix_log_15_11_2015_12_34_23">
-            <df name="TEST_CLIENT1">
-            </df>
-            <df name="TEST_CLIENT2">
-            </df>
-            <df name="TEST_CLIENT3">
-            </df>
-            <df name="TEST_CLIENT4">
-            </df>
-            <df name="TEST_CLIENT5">
-            </df>
-            <df name="TEST_CLIENT6">
-            </df>
-            <df name="TEST_CLIENT7">
-            </df>
-            <df name="TEST_CLIENT8">
-            </df>
-          </df>
-          <df name="quickfix_log_15_11_2015_12_54_32">
-            <df name="TEST_CLIENT1">
-            </df>
-            <df name="TEST_CLIENT2">
-            </df>
-            <df name="TEST_CLIENT3">
-            </df>
-            <df name="TEST_CLIENT4">
-            </df>
-            <df name="TEST_CLIENT5">
-            </df>
-            <df name="TEST_CLIENT6">
-            </df>
-            <df name="TEST_CLIENT7">
-            </df>
-            <df name="TEST_CLIENT8">
-            </df>
-          </df>
-          <df name="quickfix_log_15_11_2015_15_01_21">
-            <df name="TEST_CLIENT1">
-            </df>
-            <df name="TEST_CLIENT2">
-            </df>
-            <df name="TEST_CLIENT3">
-            </df>
-            <df name="TEST_CLIENT4">
-            </df>
-            <df name="TEST_CLIENT5">
-            </df>
-            <df name="TEST_CLIENT6">
-            </df>
-            <df name="TEST_CLIENT7">
-            </df>
-            <df name="TEST_CLIENT8">
-            </df>
           </df>
         </df>
         <df name="quickfix_log">
@@ -695,7 +31,7 @@
         </df>
         <df name="windows">
           <df name="ipch">
-            <df name="ome-a3a965f2">
+            <df name="ome-9bd57895">
             </df>
           </df>
         </df>
@@ -4215,33 +3551,68 @@
           </df>
           <df name="lib">
           </df>
+          <df name="linux_runtime">
+          </df>
         </df>
       </df>
       <df name="source">
+        <df name="compiler_portability">
+          <in>alignas.h</in>
+          <in>branch_predictor_hint.h</in>
+          <in>cpp_version_check.h</in>
+          <in>cpu_architecture.h</in>
+          <in>fastcall.h</in>
+          <in>force_inline.h</in>
+          <in>ignored_warnings.h</in>
+          <in>no_inline.h</in>
+          <in>noexcept.h</in>
+          <in>os_version_check.h</in>
+          <in>preprocessor.h</in>
+          <in>thread_local.h</in>
+          <in>unused.h</in>
+        </df>
         <df name="concurrent">
+          <df name="profiling">
+            <in>lock_profiler.cpp</in>
+            <in>lock_profiler.h</in>
+            <in>thread_profiler.cpp</in>
+            <in>thread_profiler.h</in>
+          </df>
+          <in>actor.h</in>
+          <in>base_lock.h</in>
+          <in>lock.hpp</in>
           <in>queue_mpmc.hpp</in>
+          <in>queue_mpsc.hpp</in>
           <in>ring_buffer_mpmc.hpp</in>
           <in>ring_buffer_spsc_lockfree.hpp</in>
-          <in>runnable.h</in>
           <in>task.h</in>
           <in>thread.cpp</in>
           <in>thread.h</in>
           <in>thread_pool.cpp</in>
           <in>thread_pool.h</in>
+          <in>thread_pool_arguments.h</in>
+          <in>thread_priority.h</in>
         </df>
         <df name="memory">
-          <in>alignas.h</in>
+          <df name="debugging">
+            <in>hardware_breakpoint.h</in>
+            <in>hook_gnu_libc.h</in>
+            <in>hook_ms_crt.h</in>
+          </df>
           <in>aligned.hpp</in>
-          <in>aligned_container_policy.h</in>
+          <in>aligned_allocator.hpp</in>
+          <in>aligned_container_policy.hpp</in>
           <in>aligned_memory.cpp</in>
           <in>aligned_memory.h</in>
           <in>cache_line.h</in>
+          <in>memory_utilities.h</in>
         </df>
         <df name="order_matcher">
           <in>central_order_book.cpp</in>
           <in>central_order_book.h</in>
           <in>central_order_book_observer.h</in>
           <in>central_order_book_visitor.h</in>
+          <in>incoming_message.h</in>
           <in>order.cpp</in>
           <in>order.h</in>
           <in>order_book.cpp</in>
@@ -4252,221 +3623,71 @@
         <df name="server">
           <in>server.cpp</in>
           <in>server.h</in>
+          <in>server_configuration.h</in>
+          <in>server_constants.h</in>
+          <in>server_error.h</in>
+          <in>server_incoming_message_dispatcher.h</in>
           <in>server_outgoing_message_processor.h</in>
         </df>
         <df name="utility">
+          <df name="design_patterns">
+            <in>factory.hpp</in>
+            <in>observer.hpp</in>
+            <in>singleton_dclp.hpp</in>
+            <in>singleton_static.hpp</in>
+            <in>visitor.hpp</in>
+          </df>
+          <df name="logger">
+            <in>base_logger_sink.hpp</in>
+            <in>console_sink.hpp</in>
+            <in>file_sink.hpp</in>
+            <in>log_entry.hpp</in>
+            <in>log_levels.h</in>
+            <in>logger.cpp</in>
+            <in>logger.h</in>
+            <in>logger_sink_factory.hpp</in>
+            <in>logger_sinks.hpp</in>
+          </df>
+          <in>callstack.h</in>
           <in>config_file.cpp</in>
           <in>config_file.h</in>
-          <in>logger.cpp</in>
-          <in>logger.h</in>
-          <in>observer.hpp</in>
+          <in>console_utility.h</in>
+          <in>datetime_utility.h</in>
+          <in>file_utility.h</in>
+          <in>microbenchmark.hpp</in>
+          <in>os_utility.h</in>
           <in>pretty_exception.h</in>
           <in>single_instance.cpp</in>
           <in>single_instance.h</in>
           <in>stopwatch.cpp</in>
           <in>stopwatch.h</in>
-          <in>utility.h</in>
-          <in>visitor.hpp</in>
+          <in>string_utility.h</in>
+          <in>trace.h</in>
         </df>
         <in>precompiled_header.h</in>
         <in>server_main.cpp</in>
       </df>
+      <df name="test_benchmark">
+        <df name=".vs">
+          <df name="ome_micro_benchmark">
+            <df name="v14">
+            </df>
+          </df>
+        </df>
+        <in>microbenchmarks.cpp</in>
+        <in>order_book_benchmark.cpp</in>
+        <in>order_book_benchmark.h</in>
+      </df>
       <df name="test_functional">
         <df name="client_executable_source">
-          <df name="old_quickfix_logs">
-          </df>
           <in>client.cpp</in>
           <in>client_application.cpp</in>
           <in>client_application.h</in>
           <in>client_request.cpp</in>
           <in>client_request.h</in>
         </df>
-        <df name="intermediate_client">
-          <df name="client.tlog">
-          </df>
-        </df>
-        <df name="old_quickfix_logs">
-          <df name="quickfix_log_10_11_2015_14_03_53">
-          </df>
-          <df name="quickfix_log_10_11_2015_14_07_29">
-          </df>
-          <df name="quickfix_log_10_11_2015_14_08_28">
-          </df>
-          <df name="quickfix_log_10_11_2015_21_26_47">
-          </df>
-          <df name="quickfix_log_11_11_2015_00_20_04">
-          </df>
-          <df name="quickfix_log_11_11_2015_00_23_31">
-          </df>
-          <df name="quickfix_log_11_11_2015_00_24_36">
-          </df>
-          <df name="quickfix_log_11_11_2015_00_25_41">
-          </df>
-          <df name="quickfix_log_11_11_2015_00_28_16">
-          </df>
-          <df name="quickfix_log_11_11_2015_00_28_25">
-          </df>
-          <df name="quickfix_log_11_11_2015_00_29_24">
-          </df>
-          <df name="quickfix_log_11_11_2015_00_36_54">
-          </df>
-          <df name="quickfix_log_11_11_2015_00_38_43">
-          </df>
-          <df name="quickfix_log_11_11_2015_00_52_40">
-          </df>
-          <df name="quickfix_log_11_11_2015_01_03_58">
-          </df>
-          <df name="quickfix_log_11_11_2015_01_07_05">
-          </df>
-          <df name="quickfix_log_11_11_2015_01_19_39">
-          </df>
-          <df name="quickfix_log_12_11_2015_00_01_29">
-          </df>
-          <df name="quickfix_log_12_11_2015_23_54_47">
-          </df>
-          <df name="quickfix_log_13_11_2015_23_47_40">
-          </df>
-          <df name="quickfix_log_13_11_2015_23_47_52">
-          </df>
-          <df name="quickfix_log_14_11_2015_19_40_50">
-          </df>
-          <df name="quickfix_log_14_11_2015_19_46_52">
-          </df>
-          <df name="quickfix_log_14_11_2015_19_50_09">
-          </df>
-          <df name="quickfix_log_14_11_2015_19_54_29">
-          </df>
-          <df name="quickfix_log_14_11_2015_20_09_38">
-          </df>
-          <df name="quickfix_log_14_11_2015_20_16_57">
-          </df>
-          <df name="quickfix_log_14_11_2015_20_18_46">
-          </df>
-          <df name="quickfix_log_14_11_2015_20_20_25">
-          </df>
-          <df name="quickfix_log_14_11_2015_20_20_33">
-          </df>
-          <df name="quickfix_log_14_11_2015_20_23_05">
-          </df>
-          <df name="quickfix_log_14_11_2015_23_24_57">
-          </df>
-          <df name="quickfix_log_14_11_2015_23_26_50">
-          </df>
-          <df name="quickfix_log_14_11_2015_23_29_53">
-          </df>
-          <df name="quickfix_log_14_11_2015_23_39_21">
-          </df>
-          <df name="quickfix_log_14_11_2015_23_41_05">
-          </df>
-          <df name="quickfix_log_14_11_2015_23_42_05">
-          </df>
-          <df name="quickfix_log_14_11_2015_23_50_53">
-          </df>
-          <df name="quickfix_log_14_11_2015_23_54_45">
-          </df>
-          <df name="quickfix_log_15_11_2015_00_00_13">
-          </df>
-          <df name="quickfix_log_15_11_2015_00_11_10">
-          </df>
-          <df name="quickfix_log_15_11_2015_00_22_55">
-          </df>
-          <df name="quickfix_log_15_11_2015_02_04_16">
-          </df>
-          <df name="quickfix_log_15_11_2015_02_04_53">
-          </df>
-          <df name="quickfix_log_15_11_2015_02_05_46">
-          </df>
-          <df name="quickfix_log_15_11_2015_02_06_19">
-          </df>
-          <df name="quickfix_log_15_11_2015_02_07_05">
-          </df>
-          <df name="quickfix_log_15_11_2015_02_15_36">
-          </df>
-          <df name="quickfix_log_15_11_2015_02_24_40">
-          </df>
-          <df name="quickfix_log_15_11_2015_02_29_18">
-          </df>
-          <df name="quickfix_log_15_11_2015_02_31_34">
-          </df>
-          <df name="quickfix_log_15_11_2015_02_32_16">
-          </df>
-          <df name="quickfix_log_15_11_2015_02_32_31">
-          </df>
-          <df name="quickfix_log_15_11_2015_02_36_18">
-          </df>
-          <df name="quickfix_log_15_11_2015_02_36_45">
-          </df>
-          <df name="quickfix_log_15_11_2015_02_44_39">
-          </df>
-          <df name="quickfix_log_15_11_2015_02_44_49">
-          </df>
-          <df name="quickfix_log_15_11_2015_02_45_17">
-          </df>
-          <df name="quickfix_log_15_11_2015_02_46_13">
-          </df>
-          <df name="quickfix_log_15_11_2015_02_46_56">
-          </df>
-          <df name="quickfix_log_15_11_2015_02_52_00">
-          </df>
-          <df name="quickfix_log_15_11_2015_02_53_58">
-          </df>
-          <df name="quickfix_log_15_11_2015_02_56_31">
-          </df>
-          <df name="quickfix_log_15_11_2015_02_57_42">
-          </df>
-          <df name="quickfix_log_15_11_2015_02_58_24">
-          </df>
-          <df name="quickfix_log_15_11_2015_03_06_48">
-          </df>
-          <df name="quickfix_log_15_11_2015_03_06_58">
-          </df>
-          <df name="quickfix_log_15_11_2015_03_09_27">
-          </df>
-          <df name="quickfix_log_15_11_2015_03_10_00">
-          </df>
-          <df name="quickfix_log_15_11_2015_03_19_08">
-          </df>
-          <df name="quickfix_log_15_11_2015_03_19_56">
-          </df>
-          <df name="quickfix_log_15_11_2015_03_23_05">
-          </df>
-          <df name="quickfix_log_15_11_2015_03_26_18">
-          </df>
-          <df name="quickfix_log_15_11_2015_03_26_46">
-          </df>
-          <df name="quickfix_log_15_11_2015_03_27_40">
-          </df>
-          <df name="quickfix_log_15_11_2015_03_28_47">
-          </df>
-          <df name="quickfix_log_15_11_2015_03_29_04">
-          </df>
-          <df name="quickfix_log_15_11_2015_03_29_30">
-          </df>
-          <df name="quickfix_log_15_11_2015_03_30_35">
-          </df>
-          <df name="quickfix_log_15_11_2015_11_50_07">
-          </df>
-          <df name="quickfix_log_15_11_2015_11_50_21">
-          </df>
-          <df name="quickfix_log_15_11_2015_12_02_39">
-          </df>
-          <df name="quickfix_log_15_11_2015_12_34_31">
-          </df>
-          <df name="quickfix_log_15_11_2015_12_34_42">
-          </df>
-          <df name="quickfix_log_15_11_2015_12_35_03">
-          </df>
-          <df name="quickfix_log_15_11_2015_12_42_48">
-          </df>
-        </df>
-        <df name="quickfix_log">
-        </df>
       </df>
       <df name="test_unit">
-        <df name="Debug">
-          <df name="ome_unit_test.tlog">
-          </df>
-        </df>
         <df name="google_test_windows">
           <df name="Debug">
             <df name="google_t.BE460948.tlog">
@@ -4477,6 +3698,544 @@
         <in>test_concurrent.h</in>
         <in>test_order_matcher.h</in>
         <in>test_utility.h</in>
+      </df>
+    </df>
+    <df root="." name="1">
+      <df name="bin">
+        <df name="intermediate">
+          <df name="ome.tlog">
+          </df>
+        </df>
+        <df name="quickfix_log">
+          <df name="TEST_CLIENT1">
+          </df>
+          <df name="TEST_CLIENT2">
+          </df>
+          <df name="TEST_CLIENT3">
+          </df>
+          <df name="TEST_CLIENT4">
+          </df>
+          <df name="TEST_CLIENT5">
+          </df>
+          <df name="TEST_CLIENT6">
+          </df>
+          <df name="TEST_CLIENT7">
+          </df>
+          <df name="TEST_CLIENT8">
+          </df>
+        </df>
+      </df>
+      <df name="build">
+        <df name="linux">
+        </df>
+        <df name="windows">
+          <df name="ipch">
+            <df name="ome-9bd57895">
+            </df>
+          </df>
+        </df>
+      </df>
+      <df name="dependencies">
+        <df name="boost">
+          <df name="align">
+            <df name="detail">
+            </df>
+          </df>
+          <df name="archive">
+            <df name="detail">
+            </df>
+            <df name="impl">
+            </df>
+            <df name="iterators">
+            </df>
+          </df>
+          <df name="bind">
+          </df>
+          <df name="concept">
+            <df name="detail">
+            </df>
+          </df>
+          <df name="config">
+            <df name="abi">
+            </df>
+            <df name="compiler">
+            </df>
+            <df name="no_tr1">
+            </df>
+            <df name="platform">
+            </df>
+            <df name="stdlib">
+            </df>
+          </df>
+          <df name="container">
+            <df name="detail">
+            </df>
+          </df>
+          <df name="core">
+          </df>
+          <df name="date_time">
+            <df name="gregorian">
+            </df>
+            <df name="posix_time">
+            </df>
+          </df>
+          <df name="detail">
+          </df>
+          <df name="exception">
+            <df name="detail">
+            </df>
+          </df>
+          <df name="flyweight">
+            <df name="detail">
+            </df>
+          </df>
+          <df name="format">
+            <df name="detail">
+            </df>
+          </df>
+          <df name="function">
+            <df name="detail">
+            </df>
+          </df>
+          <df name="functional">
+            <df name="hash">
+              <df name="detail">
+              </df>
+            </df>
+          </df>
+          <df name="integer">
+          </df>
+          <df name="interprocess">
+            <df name="allocators">
+              <df name="detail">
+              </df>
+            </df>
+            <df name="containers">
+            </df>
+            <df name="detail">
+            </df>
+            <df name="indexes">
+            </df>
+            <df name="mem_algo">
+              <df name="detail">
+              </df>
+            </df>
+            <df name="smart_ptr">
+            </df>
+            <df name="streams">
+            </df>
+            <df name="sync">
+              <df name="detail">
+              </df>
+              <df name="spin">
+              </df>
+              <df name="windows">
+              </df>
+            </df>
+          </df>
+          <df name="intrusive">
+            <df name="detail">
+            </df>
+          </df>
+          <df name="io">
+          </df>
+          <df name="iterator">
+            <df name="detail">
+            </df>
+          </df>
+          <df name="lexical_cast">
+            <df name="detail">
+            </df>
+          </df>
+          <df name="math">
+            <df name="policies">
+            </df>
+            <df name="special_functions">
+              <df name="detail">
+              </df>
+            </df>
+            <df name="tools">
+            </df>
+          </df>
+          <df name="move">
+            <df name="detail">
+            </df>
+          </df>
+          <df name="mpl">
+            <df name="aux_">
+              <df name="config">
+              </df>
+              <df name="preprocessed">
+                <df name="bcc">
+                </df>
+                <df name="bcc551">
+                </df>
+                <df name="bcc_pre590">
+                </df>
+                <df name="dmc">
+                </df>
+                <df name="gcc">
+                </df>
+                <df name="msvc60">
+                </df>
+                <df name="msvc70">
+                </df>
+                <df name="mwcw">
+                </df>
+                <df name="no_ctps">
+                </df>
+                <df name="no_ttp">
+                </df>
+                <df name="plain">
+                </df>
+              </df>
+              <df name="preprocessor">
+              </df>
+            </df>
+            <df name="limits">
+            </df>
+            <df name="list">
+              <df name="aux_">
+                <df name="preprocessed">
+                  <df name="plain">
+                  </df>
+                </df>
+              </df>
+            </df>
+            <df name="set">
+              <df name="aux_">
+              </df>
+            </df>
+            <df name="vector">
+              <df name="aux_">
+                <df name="preprocessed">
+                  <df name="no_ctps">
+                  </df>
+                  <df name="plain">
+                  </df>
+                  <df name="typeof_based">
+                  </df>
+                </df>
+              </df>
+            </df>
+          </df>
+          <df name="multi_index">
+            <df name="detail">
+            </df>
+          </df>
+          <df name="numeric">
+            <df name="conversion">
+              <df name="detail">
+                <df name="preprocessed">
+                </df>
+              </df>
+            </df>
+          </df>
+          <df name="optional">
+          </df>
+          <df name="parameter">
+            <df name="aux_">
+            </df>
+          </df>
+          <df name="predef">
+            <df name="architecture">
+              <df name="x86">
+              </df>
+            </df>
+            <df name="compiler">
+            </df>
+            <df name="detail">
+            </df>
+            <df name="language">
+            </df>
+            <df name="library">
+              <df name="c">
+              </df>
+              <df name="std">
+              </df>
+            </df>
+            <df name="os">
+              <df name="bsd">
+              </df>
+            </df>
+            <df name="other">
+            </df>
+            <df name="platform">
+            </df>
+          </df>
+          <df name="preprocessor">
+            <df name="arithmetic">
+              <df name="detail">
+              </df>
+            </df>
+            <df name="array">
+            </df>
+            <df name="comparison">
+            </df>
+            <df name="config">
+            </df>
+            <df name="control">
+              <df name="detail">
+                <df name="dmc">
+                </df>
+                <df name="edg">
+                </df>
+                <df name="msvc">
+                </df>
+              </df>
+            </df>
+            <df name="debug">
+            </df>
+            <df name="detail">
+              <df name="dmc">
+              </df>
+            </df>
+            <df name="facilities">
+              <df name="detail">
+              </df>
+            </df>
+            <df name="iteration">
+              <df name="detail">
+                <df name="bounds">
+                </df>
+                <df name="iter">
+                </df>
+              </df>
+            </df>
+            <df name="list">
+              <df name="detail">
+                <df name="dmc">
+                </df>
+                <df name="edg">
+                </df>
+              </df>
+            </df>
+            <df name="logical">
+            </df>
+            <df name="punctuation">
+              <df name="detail">
+              </df>
+            </df>
+            <df name="repetition">
+              <df name="detail">
+                <df name="dmc">
+                </df>
+                <df name="edg">
+                </df>
+                <df name="msvc">
+                </df>
+              </df>
+            </df>
+            <df name="seq">
+              <df name="detail">
+              </df>
+            </df>
+            <df name="slot">
+              <df name="detail">
+              </df>
+            </df>
+            <df name="tuple">
+              <df name="detail">
+              </df>
+            </df>
+            <df name="variadic">
+            </df>
+          </df>
+          <df name="range">
+            <df name="algorithm">
+            </df>
+            <df name="detail">
+            </df>
+          </df>
+          <df name="serialization">
+            <df name="detail">
+            </df>
+          </df>
+          <df name="smart_ptr">
+            <df name="detail">
+            </df>
+          </df>
+          <df name="spirit">
+            <df name="home">
+              <df name="classic">
+                <df name="core">
+                  <df name="composite">
+                    <df name="impl">
+                    </df>
+                  </df>
+                  <df name="impl">
+                  </df>
+                  <df name="non_terminal">
+                    <df name="impl">
+                    </df>
+                  </df>
+                  <df name="primitives">
+                    <df name="impl">
+                    </df>
+                  </df>
+                  <df name="scanner">
+                    <df name="impl">
+                    </df>
+                  </df>
+                </df>
+                <df name="debug">
+                </df>
+                <df name="meta">
+                </df>
+                <df name="utility">
+                  <df name="impl">
+                    <df name="chset">
+                    </df>
+                  </df>
+                </df>
+              </df>
+            </df>
+            <df name="include">
+            </df>
+          </df>
+          <df name="test">
+            <df name="detail">
+            </df>
+            <df name="impl">
+            </df>
+            <df name="output">
+            </df>
+            <df name="tools">
+              <df name="detail">
+              </df>
+              <df name="old">
+              </df>
+            </df>
+            <df name="tree">
+            </df>
+            <df name="utils">
+              <df name="basic_cstring">
+              </df>
+              <df name="iterator">
+              </df>
+              <df name="runtime">
+                <df name="cla">
+                  <df name="detail">
+                  </df>
+                  <df name="iface">
+                  </df>
+                </df>
+                <df name="env">
+                </df>
+              </df>
+            </df>
+          </df>
+          <df name="tuple">
+            <df name="detail">
+            </df>
+          </df>
+          <df name="type_index">
+            <df name="detail">
+            </df>
+          </df>
+          <df name="type_traits">
+            <df name="detail">
+            </df>
+          </df>
+          <df name="typeof">
+            <df name="dmc">
+            </df>
+            <df name="msvc">
+            </df>
+          </df>
+          <df name="unordered">
+            <df name="detail">
+            </df>
+          </df>
+          <df name="utility">
+            <df name="detail">
+            </df>
+          </df>
+          <df name="variant">
+            <df name="detail">
+            </df>
+          </df>
+        </df>
+        <df name="gtest-1.7.0">
+          <df name="include">
+            <df name="gtest">
+              <df name="internal">
+              </df>
+            </df>
+          </df>
+          <df name="src">
+          </df>
+        </df>
+        <df name="quickfix">
+          <df name="include">
+            <df name="quickfix">
+              <df name="fix40">
+              </df>
+              <df name="fix41">
+              </df>
+              <df name="fix42">
+              </df>
+              <df name="fix43">
+              </df>
+              <df name="fix44">
+              </df>
+              <df name="fix50">
+              </df>
+              <df name="fix50sp1">
+              </df>
+              <df name="fix50sp2">
+              </df>
+              <df name="fixt11">
+              </df>
+            </df>
+          </df>
+          <df name="lib">
+          </df>
+          <df name="linux_runtime">
+          </df>
+        </df>
+      </df>
+      <df name="source">
+        <df name="compiler_portability">
+        </df>
+        <df name="concurrent">
+          <df name="profiling">
+          </df>
+        </df>
+        <df name="memory">
+          <df name="debugging">
+          </df>
+        </df>
+        <df name="order_matcher">
+        </df>
+        <df name="server">
+        </df>
+        <df name="utility">
+          <df name="design_patterns">
+          </df>
+          <df name="logger">
+          </df>
+        </df>
+      </df>
+      <df name="test_benchmark">
+        <df name=".vs">
+          <df name="ome_micro_benchmark">
+            <df name="v14">
+            </df>
+          </df>
+        </df>
+      </df>
+      <df name="test_functional">
+        <df name="client_executable_source">
+        </df>
+      </df>
+      <df name="test_unit">
+        <df name="google_test_windows">
+          <df name="Debug">
+            <df name="google_t.BE460948.tlog">
+            </df>
+          </df>
+        </df>
       </df>
     </df>
   </logicalFolder>
@@ -4505,11 +4264,9 @@
         <gdb_interceptlist>
           <gdbinterceptoptions gdb_all="false" gdb_unhandled="true" gdb_unexpected="true"/>
         </gdb_interceptlist>
-        <gdb_signals>
-        </gdb_signals>
         <gdb_options>
           <DebugOptions>
-            <option name="debug_dir" value="/projects/ome/bin"/>
+            <option name="debug_dir" value="../../bin/"/>
           </DebugOptions>
         </gdb_options>
         <gdb_buildfirst gdb_buildfirst_overriden="false" gdb_buildfirst_old="false"/>
@@ -4522,7 +4279,7 @@
           <runcommandpicklistitem>"${OUTPUT_PATH}"</runcommandpicklistitem>
         </runcommandpicklist>
         <runcommand>"${OUTPUT_PATH}"</runcommand>
-        <rundir>/projects/ome/bin</rundir>
+        <rundir>../../bin/</rundir>
         <buildfirst>false</buildfirst>
         <terminal-type>0</terminal-type>
         <remove-instrumentation>0</remove-instrumentation>

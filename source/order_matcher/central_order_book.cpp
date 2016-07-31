@@ -25,12 +25,12 @@ void CentralOrderBook::initialise(concurrent::ThreadPoolArguments& args)
     notify(boost::str(boost::format("Initialising thread pool, work queue size per thread %d")  %args.m_workQueueSizePerThread) );
 
     int queueID = -1;
-    
+
     // Thread names in args are also symbol names
     for (auto itr : args.m_threadNames)
     {
         auto symbol = itr;
-        
+
         OrderBook currentOrderBook(symbol);
         m_orderBookDictionary.insert( make_pair(symbol, currentOrderBook));
 
@@ -39,14 +39,14 @@ void CentralOrderBook::initialise(concurrent::ThreadPoolArguments& args)
 
     m_orderBookThreadPool.initialise(args);
 }
-    
+
 bool CentralOrderBook::doesOrderBookExist(const string& symbol) const
 {
     if (m_orderBookDictionary.find(symbol) == m_orderBookDictionary.end())
     {
         return false;
     }
-    
+
     return true;
 }
 
@@ -58,7 +58,7 @@ bool CentralOrderBook::addOrder(const Order& order)
     {
         // SEND REJECTED MESSAGE TO THE CLIENT
         rejectOrder(order, "Symbol not supported");
-        
+
         return false;
     }
 
@@ -132,7 +132,7 @@ void CentralOrderBook::cancelOrder(const Order& order, const std::string& origCl
     // MULTITHREADED MODE :SUBMIT CANCEL TASK TO THE THREADPOOL
     m_orderBookThreadPool.submitTask(cancelOrderTask, queueID);
 #else
-    // SINGLE THREADED MODE : CANCEL SYNCHRONOUSLY 
+    // SINGLE THREADED MODE : CANCEL SYNCHRONOUSLY
     taskCancelOrder(order, origClientOrderID);
 #endif
 }
@@ -151,14 +151,14 @@ void* CentralOrderBook::taskCancelOrder(const Order& order, const std::string& o
         m_outgoingMessages.enqueue(outgoingMessage);
         m_orderBookDictionary[symbol].erase(*orderBeingCanceled);
     }
-    
+
     else
     {
         // Reschedule in case the client`s cancel order reached before the actual add request to be canceled
         notify(boost::str(boost::format("Cancel order being rescheduled, client %s, client ID %d") % owner % origClientOrderID));
         cancelOrder(order, origClientOrderID);
     }
-        
+
     return nullptr;
 }
 

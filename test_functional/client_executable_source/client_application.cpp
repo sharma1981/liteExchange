@@ -59,7 +59,7 @@ void ClientApplication::consoleOutputThread()
 {
     while (m_applicationEnding.load() == false )
     {
-        { 
+        {
             // According to the standards guard object should be destroyed
             // in each iteration , however this is not what happened with GCC 4.8 on CentOS7
             // and caused a dead lock...
@@ -78,7 +78,7 @@ void ClientApplication::consoleOutputThread()
 
         }
         concurrent::Thread::sleep(50);
-        
+
     }
 }
 
@@ -210,7 +210,7 @@ void ClientApplication::executeRequests()
     for (auto& request : requests)
     {
         auto orderID = generateOrderID();
-        request->setOrderID(orderID);        
+        request->setOrderID(orderID);
 
         if (request->getType() == ClientRequestType::NEW_ORDER)
         {
@@ -269,34 +269,34 @@ void ClientApplication::toApp( FIX::Message& message, const FIX::SessionID& sess
         message.getHeader().getField( possDupFlag );
         if ( possDupFlag ) throw FIX::DoNotSend();
     }
-    catch ( FIX::FieldNotFound& ) 
+    catch ( FIX::FieldNotFound& )
     {
     }
 
     //threadSafeConsoleOut("FIX Engine message sent : " + message.toString());
 }
 
-void ClientApplication::onMessage( const FIX42::ExecutionReport& report, const FIX::SessionID& ) 
+void ClientApplication::onMessage( const FIX42::ExecutionReport& report, const FIX::SessionID& )
 {
     FIX::ClOrdID clOrdID;
     report.get(clOrdID);
 
     FIX::OrdStatus orderStatus;
     report.get(orderStatus);
-    
+
     string clientOrderID = clOrdID.getString();
     string status =  orderStatusToString(orderStatus);
 
     threadSafeConsoleOut(boost::str(boost::format("Execution report from server for client order ID : %s , status : %s ") % clientOrderID % status ));
 
     if ( orderStatus == FIX::OrdStatus_FILLED || orderStatus == FIX::OrdStatus_REJECTED)
-    { 
+    {
         markRequestAsSent(clientOrderID);
     }
 
     if (orderStatus == FIX::OrdStatus_CANCELED)
     {
-        // First we mark the order being canceled 
+        // First we mark the order being canceled
         markRequestAsSent(clientOrderID);
         // Then we have to mark the cancel request itself
         markCancelRequestAsSent(clientOrderID);

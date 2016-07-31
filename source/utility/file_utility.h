@@ -3,6 +3,8 @@
 
 #include <string>
 #include <fstream>
+#include <vector>
+#include <cstring>
 
 #ifdef __linux__
 #include <sys/stat.h>
@@ -14,6 +16,29 @@
 
 namespace utility
 {
+
+inline std::string getDirectoryNameFromPath(const std::string& fullPath)
+{
+    std::string directoryName;
+    std::vector<char> path( fullPath.begin(), fullPath.end());
+
+    char* pathPtr = &path[0];
+
+    // We are finding last occurence of // in Linux and \\ in Windows
+#ifdef __linux__
+    pathPtr = strrchr(pathPtr, '//');
+#elif _WIN32
+    pathPtr = strrchr(pathPtr, '\\');
+#endif
+
+    if(pathPtr)
+    {
+        pathPtr[0] = '\0';
+    }
+
+    directoryName = &path[0];
+    return directoryName;
+}
 
 inline bool doesFileExist(const std::string& fileName)
 {
@@ -81,10 +106,10 @@ inline bool createDirectory(const std::string& dirName)
         success = false;
     }
 #endif
-    
+
     return success;
 }
-    
+
 }// namespace
 
 #endif

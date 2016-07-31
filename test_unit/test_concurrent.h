@@ -7,8 +7,6 @@
 #include<concurrent/queue_mpsc.hpp>
 #include<concurrent/ring_buffer_mpmc.hpp>
 
-#include <utility/logger.h>
-
 #include <cstddef>
 #include <algorithm>
 #include <iostream>
@@ -23,7 +21,7 @@ class worker
         void* run(void* arg)
         {
             int* p_val = static_cast<int *>(arg);
-            ++(*p_val);           
+            ++(*p_val);
             return nullptr;
         }
 };
@@ -32,7 +30,7 @@ class fred : public concurrent::Actor
 {
     int foo = 0;
     public:
-    
+
         void *run() override
         {
             foo++;
@@ -137,9 +135,9 @@ TEST(Concurrent, QueueMPSC)
         threads.push_back(std::thread([&](){ mqueue.push(i); }));
         sum += i;
     }
-  
+
     std::thread readThread([&]()
-                    { 
+                    {
                         concurrent::QueueMPSC<int>::QueueMPSCNode* node = nullptr;
                         node = mqueue.flush();
                         while (node)
@@ -147,7 +145,7 @@ TEST(Concurrent, QueueMPSC)
                             testSum += node->m_data;
                             node = node->m_next;
                         }
-                         
+
                     });
 
     for (auto& elem : threads)
@@ -205,30 +203,25 @@ class ThreadPoolJob
 
 TEST(Concurrent, ThreadPool)
 {
-    utility::Logger::getInstance().initialise(1024);
-    utility::Logger::getInstance().setLogFile("oms_log.txt");
-    utility::Logger::getInstance().enableFileLogging(false);
-    utility::Logger::getInstance().enableConsoleOutput(false);
-
     vector<string> threadNames = { "a", "b", "c", "d" };
-    
+
     concurrent::ThreadPoolArguments args;
     args.m_hyperThreading = true;
     args.m_pinThreadsToCores = true;
     args.m_threadNames = threadNames;
     args.m_workQueueSizePerThread = 1024;
     concurrent::ThreadPool pool;
-    
+
     pool.initialise(args);
 
     int* workArray = new int[ threadNames.size() ];
     ThreadPoolJob job;
-    
+
     ThreadPoolJobArgs job_args;
     job_args.array = workArray;
 
     int expectedSum = 0;
-    
+
     for (size_t i = 0; i < threadNames.size(); i++)
     {
         job_args.index = i;

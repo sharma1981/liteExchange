@@ -1,27 +1,32 @@
 #include "thread.h"
+#include "thread_priority.h"
 #include <cstdlib>
 #include <cassert>
 #include <memory>
+#include <type_traits>
 
 #ifdef __linux__
 #include <signal.h>
 #include <unistd.h>
+#include <sched.h>
+#include <pthread.h>
+#include <sched.h>
 #endif
 
 using namespace std;
 
 namespace concurrent
 {
-    
-Thread::Thread(const string& name) : m_task(nullptr), m_name(name), m_started(false), m_joined(false), m_threadID(0)
+
+Thread::Thread(const string& name) : m_task{ nullptr }, m_name(name), m_started{ false }, m_joined{ false }, m_threadID{ 0 }, m_priority{ThreadPriority::NORMAL}
 {
 #ifdef _WIN32
     m_threadHandle = nullptr;
 #endif
 }
- 
+
 Thread::~Thread()
-{  
+{
     #if DEBUG
     if ( isAlive() == true )
     {
@@ -49,8 +54,8 @@ void Thread::setThreadName()
     if ( m_name.length() > 0)
     {
 #ifdef __linux__
-        assert( m_name.length() < 16 ); // Linux thread names can`t have a longer name
-        
+        assert( m_name.length() < MAX_THREAD_NAME_LENGTH ); // Linux thread names can`t have a longer name
+
         pthread_setname_np(m_threadID, m_name.c_str());
 #elif _WIN32
         // As documented on MSDN
@@ -66,7 +71,7 @@ void Thread::setThreadName()
             DWORD dwFlags; // Reserved for future use, must be zero.
         } THREADNAME_INFO;
         #pragma pack(pop)
-        
+
         THREADNAME_INFO info;
         info.dwType = 0x1000;
         info.szName = m_name.c_str();
@@ -87,14 +92,14 @@ void Thread::setThreadName()
 void Thread::start(size_t stackSize) throw(std::runtime_error)
 {
     bool success = true;
- #ifdef __linux__  
+ #ifdef __linux__
     pthread_attr_init(&m_threadAttr);
-  
+
     if(stackSize != 0)
     {
         pthread_attr_setstack(&m_threadAttr, NULL, stackSize);
     }
-    
+
     if( pthread_create(&m_threadID, NULL, internalThreadFunction, m_task.get()) != 0 )
     {
         success = false;
@@ -102,23 +107,23 @@ void Thread::start(size_t stackSize) throw(std::runtime_error)
 #elif _WIN32
     // Note 1
     // Why not using CreateThread From MSDN
-    // A thread in an executable that calls the C run-time library (CRT) should use the _beginthreadex and _endthreadex functions 
-    // for thread management rather than CreateThread and ExitThread; this requires the use of the multithreaded version of the CRT. 
+    // A thread in an executable that calls the C run-time library (CRT) should use the _beginthreadex and _endthreadex functions
+    // for thread management rather than CreateThread and ExitThread; this requires the use of the multithreaded version of the CRT.
     // If a thread created using CreateThread calls the CRT, the CRT may terminate the process in low-memory conditions
 
     // Note 2
-    // Why preferring _beginthread over _beginthreadex 
+    // Why preferring _beginthread over _beginthreadex
     // It is mainly I can specify a worker function with void* retval with pthreads
     // Therefore I can use same internal function in Windows and Linux
     // The disadvantage is that , you can`t Wait on _beginthread-created threads as CRT closes the handle
-    
+
     // Note 3
     // We need C style casting here as static_cast fails to do this function pointer conversion
     // In C standards, this typecast might lead to undefined behaviour :
     // http://stackoverflow.com/questions/559581/casting-a-function-pointer-to-another-type
     // Works fine for Windows
     m_threadHandle = (HANDLE) _beginthread((void(__cdecl *)(void *))(internalThreadFunction), stackSize, m_task.get());
-    
+
     m_threadID = GetThreadId(m_threadHandle);
 
     if ( m_threadID == 0)
@@ -136,26 +141,76 @@ void Thread::start(size_t stackSize) throw(std::runtime_error)
     setThreadName();
 }
 
-int Thread::bindThreadToCPUCore(int coreID)
+bool Thread::setPriority(ThreadPriority priority)
 {
-    assert(coreID>=0);
-    assert( m_started == true );
+    assert(m_started == true);
+    bool success{ false };
+    int index = static_cast<std::underlying_type<ThreadPriority>::type >(priority);
+    auto nativePriorityValue = NATIVE_THREAD_PRIORITIES[index].value;
+#ifdef __linux__
+    struct sched_param param;
+    param.__sched_priority = nativePriorityValue;
 
+    int policy = sched_getscheduler(getpid());
+
+    pthread_setschedparam(pthread_self(), policy, &param);
+#elif _WIN32
+    if (SetThreadPriority(m_threadHandle, nativePriorityValue) != 0)
+    {
+        success = true;
+    }
+#endif
+    m_priority = priority;
+    return success;
+}
+
+int Thread::getRealPriority()
+{
+    int ret{ -1 };
+#ifdef __linux__
+    struct sched_param param;
+    sched_getparam(getpid(), &param);
+    ret = param.__sched_priority;
+#elif _WIN32
+    ret = GetThreadPriority(m_threadHandle);
+#endif
+    return ret;
+}
+
+int Thread::pinToCPUCore(int coreID)
+{
+    assert( m_started == true );
+    int ret{ -1 };
+#ifdef __linux__
+    ret = Thread::pinToCPUCoreInternal(coreID, m_threadID);
+#elif _WIN32
+    ret = Thread::pinToCPUCoreInternal(coreID, m_threadHandle);
+#endif
+    return ret;
+}
+
+#ifdef __linux__
+int Thread::pinToCPUCoreInternal(int coreID, unsigned long threadID)
+#elif _WIN32
+int Thread::pinToCPUCoreInternal(int coreID, HANDLE handle)
+#endif
+{
+    assert(coreID >= 0);
 #ifdef __linux__
     cpu_set_t cpuset;
     CPU_ZERO(&cpuset);
     CPU_SET(coreID, &cpuset);
-    return pthread_setaffinity_np(m_threadID, sizeof(cpu_set_t), &cpuset);
+    return pthread_setaffinity_np(threadID, sizeof(cpu_set_t), &cpuset);
 #elif _WIN32
     unsigned long mask = 1 << (coreID);
 
-    if ( !SetThreadAffinityMask(m_threadHandle, mask) )
+    if (!SetThreadAffinityMask(handle, mask))
     {
         return -1;
     }
 
     return 0;
-#endif 
+#endif
 }
 
 bool Thread::isAlive() const
@@ -169,7 +224,7 @@ bool Thread::isAlive() const
 #ifdef __linux__
     // No signal is sent, but error checking is still performed so you can use that to check existence of tid :
     // On success, pthread_kill() returns 0
-    
+
     // Thing I have experimented is that this method in debug mode ( gcc -g ) will cause a segmentation fault
     // However works fine in release mode
 #if !DEBUG
@@ -184,9 +239,9 @@ bool Thread::isAlive() const
 
     if (exitCode == STILL_ACTIVE) // the thread handle is not signaled - the thread is still alive
     {
-        ret = true;   
+        ret = true;
     }
-#endif     
+#endif
     return ret;
 }
 
@@ -205,7 +260,7 @@ void Thread::join()
     {
         return;
     }
-   
+
 #ifdef __linux__
     pthread_join(m_threadID, NULL);
 #elif _WIN32
@@ -226,7 +281,7 @@ void Thread::join()
             }
         }
     }
-    
+
 #endif
     m_joined = true;
 }
@@ -237,6 +292,28 @@ void* Thread::internalThreadFunction(void* argument)
     Task* task = static_cast<Task *>(argument);
     task->execute();
     return nullptr;
+}
+
+int Thread::pinCallingThreadToCPUCore(int coreID)
+{
+    int ret{ -1 };
+#ifdef __linux__
+    ret = Thread::pinToCPUCoreInternal(coreID, pthread_self());
+#elif _WIN32
+    ret = Thread::pinToCPUCoreInternal(coreID, GetCurrentThread());
+#endif
+    return ret;
+}
+
+int Thread::getCurrentCoreID()
+{
+   int current_core_id{ -1 };
+#ifdef __linux__
+   current_core_id = ::sched_getcpu();
+#elif _WIN32
+   current_core_id = ::GetCurrentProcessorNumber();
+#endif
+    return current_core_id;
 }
 
 unsigned int Thread::getNumberOfCores()
@@ -269,10 +346,10 @@ bool Thread::isHyperThreading()
 {
     bool ret = true;
 #ifdef __linux__
-    // As POSIXs don`t give us a way, 
+    // As POSIXs don`t give us a way,
     // we can do this via CPUID instruction
     // https://en.wikipedia.org/wiki/CPUID
-    
+
     // Here is CPUID dumps for AMD processors :
     // http://users.atw.hu/instlatx64/
     uint32_t registers[4];
@@ -298,7 +375,7 @@ bool Thread::isHyperThreading()
     std::unique_ptr <SYSTEM_LOGICAL_PROCESSOR_INFORMATION, decltype(buffer_deleter)> buffer((PSYSTEM_LOGICAL_PROCESSOR_INFORMATION)malloc(bufferLen), buffer_deleter);
 
     GetLogicalProcessorInformation(buffer.get(), &bufferLen);
-    
+
     DWORD byteOffset = 0;
     ptr = buffer.get();
 
@@ -339,7 +416,7 @@ bool Thread::isHyperThreading()
     {
         ret = false;
     }
-#endif       
+#endif
     return ret;
 }
 

@@ -5,7 +5,7 @@ namespace utility
 {
 
 // Base template class for visitors
-template<typename T> 
+template<typename T>
 class Visitor
 {
     public:

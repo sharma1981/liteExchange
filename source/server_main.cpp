@@ -1,129 +1,116 @@
+#include <compiler_portability/ignored_warnings.h>
+// COMPILE TIME CHECKS
+#include <compiler_portability/cpp_version_check.h> // C++11 and later supported
+#include <compiler_portability/os_version_check.h>  // Linux and Windows supported
+
+// RUNTIME CHECKS
+#include <memory/cache_line.h>                      // To see if cache line we are running on
+                                                    // matches the compiled one
+#include <utility/os_utility.h>                     // To check whether we are root/admin or not
+
 #include <exception>
 #include <iostream>
-#include <cstdlib>
-#include <type_traits>
 
-#include <utility/config_file.h>
+#include <boost/format.hpp>
+
 #include <utility/single_instance.h>
-#include <utility/logger.h>
+#include <utility/logger/logger.h>
 #include <utility/file_utility.h>
+
 #include <server/server.h>
+#include <server/server_configuration.h>
+#include <server/server_error.h>
+#include <server/server_constants.h>
 
 using namespace std;
 
-enum class ProgramErrorType { 
-                            INVALID_CONFIG_FILE, 
-                            ALREADY_RUNNING,  
-                            RUNTIME_ERROR,
-                            INSUFFICIENT_MEMORY,
-                            UNKNOWN_PROBLEM
-                         };
-
-void onError(const string& message, ProgramErrorType errorType);
-
 int main ()
 {
-    ///////////////////////////////////////////
-    // Load configuration file
-    vector<string> symbols;
-    bool hyperThreading{true};
-    bool centralOrderPinThreadsToCores{false};
-    int centralOrderBookQueueSizePerThread{0};
-    int centralOrderBookThreadStackSize{0};
-    int singleInstanceTCPPortNumber{0};
+    // Initial checks
+    if (memory::getCacheLineSize() != CACHE_LINE_SIZE)
+    {
+        auto message = boost::str(boost::format("This executable compiled for cache line size %d ,\
+                                                 but you are running on a CPU with a cache line of %d")
+                                                 % CACHE_LINE_SIZE % memory::getCacheLineSize()
+                                                );
+        Server::onError(message, ServerError::NON_SUPPORTED_EXECUTION);
+    }
 
+    if (utility::amIAdmin() == false)
+    {
+        // Mainly needed for ability to set thread priorities
+        Server::onError("You can only run in root/administrator mode", ServerError::NON_SUPPORTED_EXECUTION);
+    }
+
+    // Set current working directory as current executable`s directory
+    utility::setCurrentWorkingDirectory( utility::getCurrentExecutableDirectory() );
+
+    // Load configuration file
+    ServerConfiguration serverConfiguration;
     try
     {
-        utility::ConfigFile configuration;
-        configuration.loadFromFile("ome.ini");
-
-        singleInstanceTCPPortNumber = configuration.getIntVaue("SINGLE_INSTANCE_TCP_PORT");
-        
-        utility::Logger::getInstance().initialise(configuration.getIntVaue("LOG_BUFFER_SIZE"));
-        utility::Logger::getInstance().setLogFile("oms_log.txt");
-        utility::Logger::getInstance().enableFileLogging(configuration.getBoolValue("FILE_LOGGING_ENABLED"));
-        utility::Logger::getInstance().enableConsoleOutput(configuration.getBoolValue("CONSOLE_OUTPUT_ENABLED"));
-
-        symbols = configuration.getArray("SYMBOL");
-        if (symbols.size() == 0) { throw std::runtime_error("No symbol found in the ini file"); }
-
-        centralOrderPinThreadsToCores = configuration.getBoolValue("CENTRAL_ORDER_BOOK_PIN_THREADS_TO_CORES");
-        hyperThreading = configuration.getBoolValue("HYPER_THREADING");
-        centralOrderBookQueueSizePerThread = configuration.getIntVaue("CENTRAL_ORDER_BOOK_WORK_QUEUE_SIZE_PER_THREAD");
-        centralOrderBookThreadStackSize = configuration.getIntVaue("CENTRAL_ORDER_BOOK_THREAD_STACK_SIZE");
+        serverConfiguration.load(server_constants::CONFIGURATION_FILE);
     }
-    catch (std::invalid_argument & e)
+    catch (const std::invalid_argument & e)
     {
-        onError(e.what(), ProgramErrorType::INVALID_CONFIG_FILE);
+        Server::onError(e.what(), ServerError::INVALID_CONFIG_FILE);
     }
-    catch (std::runtime_error & e)
+    catch (const std::runtime_error & e)
     {
-        onError(e.what(), ProgramErrorType::INVALID_CONFIG_FILE);
+        Server::onError(e.what(), ServerError::INVALID_CONFIG_FILE);
     }
-    
-     //////////////////////////////////////////
+    catch (const std::bad_alloc &)
+    {
+        Server::onError("Insufficient memory", ServerError::INSUFFICIENT_MEMORY);
+    }
+    catch (...)
+    {
+        Server::onError("Unknown exception occured", ServerError::UNKNOWN_PROBLEM);
+    }
+
     // Single instance protection
-    utility::SingleInstance singleton(singleInstanceTCPPortNumber);
-    
+    utility::SingleInstance singleton(serverConfiguration.getSingleInstancePortNumber());
+
     if ( !singleton() )
     {
-        onError("Ome process is running already.", ProgramErrorType::ALREADY_RUNNING);
+        Server::onError("Ome process is running already.", ServerError::ALREADY_RUNNING);
     }
 
-    //////////////////////////////////////////
     // Backup FIX engine logs if exists
-    utility::createDirectory("old_quickfix_logs");
-    utility::backupDirectory("quickfix_log", "quickfix_log_" + utility::getCurrentDateTime("%d_%m_%Y_%H_%M_%S"), "old_quickfix_logs");
-    //////////////////////////////////////////
+    utility::backupDirectory(server_constants::FIX_ENGINE_LOG_DIRECTORY, server_constants::FIX_ENGINE_LOG_DIRECTORY + string("_") + utility::getCurrentDateTime("%d_%m_%Y_%H_%M_%S"), server_constants::FIX_ENGINE_LOG_BACKUP_DIRECTORY);
+    utility::createDirectory(server_constants::FIX_ENGINE_LOG_DIRECTORY);
+
+    // Start and run the server
     try
     {
         // Start logger
         utility::Logger::getInstance().start();
         LOG_INFO("Main thread", "starting")
 
-        Server application( "quickfix_server.cfg",
-                          centralOrderPinThreadsToCores,
-                          centralOrderBookThreadStackSize,
-                          hyperThreading,
-                          centralOrderBookQueueSizePerThread,
-                          symbols
-                          );
+        Server application(server_constants::FIX_ENGINE_CONFIG_FILE, serverConfiguration);
 
         // Run the server
         application.run();
     }
-    catch (std::invalid_argument & e)
+    catch (const std::invalid_argument & e)
     {
-        onError(e.what(), ProgramErrorType::RUNTIME_ERROR);
+        Server::onError(e.what(), ServerError::RUNTIME_ERROR);
     }
-    catch (std::runtime_error & e)
+    catch (const std::runtime_error & e)
     {
-        onError(e.what(), ProgramErrorType::RUNTIME_ERROR);
+        Server::onError(e.what(), ServerError::RUNTIME_ERROR);
     }
-    catch (std::bad_alloc & )
+    catch (const std::bad_alloc & )
     {
-        onError("Insufficient memory", ProgramErrorType::INSUFFICIENT_MEMORY);
+        Server::onError("Insufficient memory", ServerError::INSUFFICIENT_MEMORY);
     }
     catch (...)
     {
-        onError("Unknown exception occured", ProgramErrorType::UNKNOWN_PROBLEM);
+        Server::onError("Unknown exception occured", ServerError::UNKNOWN_PROBLEM);
     }
     //////////////////////////////////////////
     // Application exit
     LOG_INFO("Main thread", "Ending")
     utility::Logger::getInstance().shutdown();
     return 0;
-}
-
-void onError(const string& message, ProgramErrorType errorType)
-{
-    std::cerr << message << std::endl;
-    auto exit_code = static_cast<std::underlying_type<ProgramErrorType>::type >(errorType);
-
-    if ( utility::Logger::getInstance().isAlive() )
-    {
-        LOG_ERROR("Main thread", "Ending")
-        utility::Logger::getInstance().shutdown();
-    }
-    std::exit(exit_code);
 }

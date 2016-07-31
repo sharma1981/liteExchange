@@ -9,7 +9,7 @@ namespace order_matcher
 
 OrderBook::OrderBook(const std::string& symbol) : m_symbol(symbol)
 {
-        
+
 }
 
 void OrderBook::accept(Visitor<Order>& v)
@@ -43,7 +43,7 @@ bool OrderBook::find(Order** order, const std::string& owner, const std::string&
     {
         for (auto i = m_bidOrders.begin(); i != m_bidOrders.end(); ++i)
         {
-            if (i->second.getClientID() == clientID && i->second.getOwner() == owner ) 
+            if (i->second.getClientID() == clientID && i->second.getOwner() == owner )
             {
                 *order = &(i->second);
                 return true;
@@ -73,7 +73,7 @@ void OrderBook::erase(const Order& order)
     if (order.getSide() == OrderSide::BUY)
     {
         for (auto i = m_bidOrders.begin(); i != m_bidOrders.end(); ++i)
-        { 
+        {
             if (i->second.getClientID() == id && i->second.getOwner() == owner)
             {
                 m_bidOrders.erase(i);

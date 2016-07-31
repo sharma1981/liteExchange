@@ -1,0 +1,13 @@
+#ifndef _SERVER_ERROR_H_
+#define _SERVER_ERROR_H_
+
+enum class ServerError {
+    INVALID_CONFIG_FILE,
+    ALREADY_RUNNING,
+    RUNTIME_ERROR,
+    INSUFFICIENT_MEMORY,
+    NON_SUPPORTED_EXECUTION,
+    UNKNOWN_PROBLEM
+};
+
+#endif

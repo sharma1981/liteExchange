@@ -14,21 +14,24 @@
 #include <string>
 #include <memory>
 #include <boost/noncopyable.hpp>
+
+#include "thread_priority.h"
 #include "task.h"
 
 namespace concurrent
 {
 
+#define MAX_THREAD_NAME_LENGTH 16
 #define THREAD_WAIT_TIMEOUT 5000
-    
+
 // Non copyable & Non movable
 class Thread : public boost::noncopyable
 {
     public :
-        
+
         explicit Thread(const std::string& name = "");
         virtual ~Thread();
-        
+
         void setTask(TaskPtr pTask)
         {
             assert(pTask);
@@ -36,13 +39,20 @@ class Thread : public boost::noncopyable
         }
 
         const std::string getThreadName()const {return m_name;}
-        
-        void start(std::size_t stackSize=0) throw(std::runtime_error); 
+
+        void start(std::size_t stackSize=0) throw(std::runtime_error);
         void join();
         bool isAlive() const;
-        int bindThreadToCPUCore(int coreId);
-        
+        int pinToCPUCore(int coreId);
+        bool setPriority(ThreadPriority priority);
+        ThreadPriority getSetPriority() const { return m_priority; }
+        int getRealPriority();
+
+        std::string getName() const { return m_name; }
+
         //STATIC UTILITY METHODS
+        static int pinCallingThreadToCPUCore(int coreID = 0);
+        static int getCurrentCoreID();
         static unsigned int getNumberOfCores();
         static unsigned long getCurrentThreadID();
         static bool isHyperThreading();
@@ -83,12 +93,15 @@ class Thread : public boost::noncopyable
         std::string m_name;
         bool m_started;
         bool m_joined;
+        ThreadPriority m_priority;
 
         unsigned long m_threadID;
     #ifdef __linux__
         pthread_attr_t m_threadAttr;
+        static int pinToCPUCoreInternal(int coreId, unsigned long threadID);
     #elif _WIN32
         HANDLE m_threadHandle;
+        static int pinToCPUCoreInternal(int coreID, HANDLE handle);
     #endif
 
         bool isJoiningOk() const;
@@ -97,7 +110,7 @@ class Thread : public boost::noncopyable
         void setThreadName();
 };
 
-using ThreadPtr = std::unique_ptr<Thread>; 
-    
+using ThreadPtr = std::unique_ptr<Thread>;
+
 }//namespace
 #endif

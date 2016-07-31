@@ -1,0 +1,25 @@
+#ifndef _SERVER_CONSTANTS_H_
+#define _SERVER_CONSTANTS_H_
+
+#include <cstddef>
+namespace server_constants
+{
+// Configuration file related
+static const char* CONFIGURATION_FILE = "ome.ini";
+static const char* CONFIGURATION_FILE_SINGLE_INSTANCE_TCP_PORT = "SINGLE_INSTANCE_TCP_PORT";
+static const char* CONFIGURATION_FILE_LOG_BUFFER_SIZE = "LOG_BUFFER_SIZE";
+static const char* CONFIGURATION_FILE_CENTRAL_ORDER_BOOK_PIN_THREADS_TO_CORES = "CENTRAL_ORDER_BOOK_PIN_THREADS_TO_CORES";
+static const char* CONFIGURATION_FILE_HYPER_THREADING = "HYPER_THREADING";
+static const char* CONFIGURATION_FILE_CENTRAL_ORDER_BOOK_WORK_QUEUE_SIZE_PER_THREAD = "CENTRAL_ORDER_BOOK_WORK_QUEUE_SIZE_PER_THREAD";
+static const char* CONFIGURATION_FILE_CENTRAL_ORDER_BOOK_THREAD_STACK_SIZE = "CENTRAL_ORDER_BOOK_THREAD_STACK_SIZE";
+static const char* CONFIGURATION_FILE_CENTRAL_ORDER_BOOK_THREAD_PRIORITY = "CENTRAL_ORDER_BOOK_THREAD_PRIORITY";
+static const char* CONFIGURATION_FILE_SYMBOL_ARAY = "SYMBOL";
+// Fix engine related
+static const char* FIX_ENGINE_CONFIG_FILE = "quickfix_server.cfg";
+static const char* FIX_ENGINE_LOG_DIRECTORY = "quickfix_log";
+static const char* FIX_ENGINE_LOG_BACKUP_DIRECTORY = "old_quickfix_logs";
+// Others
+static const std::size_t SERVER_THREAD_SLEEP_DURATION = 1000;
+}
+
+#endif

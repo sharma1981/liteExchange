@@ -4,7 +4,7 @@ using namespace std;
 
 #include <boost/format.hpp>
 #include "thread_pool.h"
-#include <utility/logger.h>
+#include <utility/logger/logger.h>
 
 namespace concurrent
 {
@@ -26,7 +26,7 @@ void ThreadPool::initialise(const ThreadPoolArguments& args)
         useProcessorsWithEvenIndex = true;
         numCores /= 2;
     }
-    
+
     auto numThreads = args.m_threadNames.size();
     size_t threadID{0};
     string threadName;
@@ -34,7 +34,7 @@ void ThreadPool::initialise(const ThreadPoolArguments& args)
     m_threadArguments.reserve(numThreads);
     m_threads.reserve(numThreads);
     m_threadQueues.reserve(numThreads);
-    
+
     for (size_t i{0}; i< numThreads; i++)
     {
         ThreadPoolQueuePtr queue(new ThreadPoolQueue(args.m_workQueueSizePerThread));
@@ -51,6 +51,7 @@ void ThreadPool::initialise(const ThreadPoolArguments& args)
 
         m_threads.back()->setTask(std::move(task));
         m_threads.back()->start( args.m_threadStackSize );
+        m_threads.back()->setPriority(args.m_threadPriority);
 
         //If we need to pin threads to specific cores
         if ( args.m_pinThreadsToCores == true )
@@ -65,7 +66,7 @@ void ThreadPool::initialise(const ThreadPoolArguments& args)
                 coreID *= 2;
             }
 
-            m_threads.back()->bindThreadToCPUCore(coreID);
+            m_threads.back()->pinToCPUCore(coreID);
         }
 
         threadID++;
@@ -79,7 +80,7 @@ void ThreadPool::submitTask(const Task& task, size_t queueID) throw(std::invalid
     {
         throw std::invalid_argument("Thread pool submit task , queue index is invalid");
     }
-    
+
     m_threadQueues[queueID]->push(task);
 }
 
@@ -99,7 +100,7 @@ void* ThreadPool::workerThreadFunction(void* argument)
     auto queueIndex = threadArgument->m_queueIndex;
 
     LOG_INFO("Thread pool", boost::str(boost::format("Thread(%d) %s starting") % queueIndex % pool->m_threads[queueIndex]->getThreadName()))
-    
+
     while( ! pool->m_isShuttingDown.load() )
     {
         Task queueTask;
@@ -117,5 +118,5 @@ void* ThreadPool::workerThreadFunction(void* argument)
     LOG_INFO("Thread pool", boost::str(boost::format("Thread(%d) %s exiting") % queueIndex % pool->m_threads[queueIndex]->getThreadName()))
     return nullptr;
 }
-    
+
 }//namespace

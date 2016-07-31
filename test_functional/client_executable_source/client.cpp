@@ -43,7 +43,7 @@ int main(int argc, char** argv)
         string targetServer = argv[2];
         string clientName = argv[3];
         string csvTestFile = argv[4];
-        
+
         string quickFixConfigFile = clientName + ".cfg";
         createQuickFixConfigFile(quickFixTemplateFile, targetServer, clientName, quickFixConfigFile);
 
@@ -56,7 +56,7 @@ int main(int argc, char** argv)
         // Run the application
         ClientApplication application(csvTestFile, quickFixConfigFile);
         application.run();
-        
+
         utility::deleteFile(quickFixConfigFile);
     }
     catch (std::invalid_argument & e)
@@ -98,7 +98,7 @@ void createQuickFixConfigFile(const string& templateFile, const string& server, 
     // Inject server and client name into it
     utility::replaceInString(templateFileData, "%CLIENT%", clientName);
     utility::replaceInString(templateFileData, "%SERVER%", server);
-    // Output 
+    // Output
     ofstream outFile;
     outFile.open (outputFileName);
     outFile << templateFileData;

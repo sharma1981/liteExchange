@@ -46,7 +46,7 @@ inline T toUppercase(const T& input)
     std::transform(ret.begin(), ret.end(), ret.begin(), ::toupper);
     return ret;
 }
-    
+
 }// namespace
 
 #endif

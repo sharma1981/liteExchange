@@ -8,6 +8,8 @@
 #include <utility>
 #include <boost/noncopyable.hpp>
 
+#include <concurrent/lock.hpp>
+
 namespace concurrent
 {
 
@@ -18,7 +20,8 @@ class RingBufferMPMC : public boost::noncopyable
 {
     public:
 
-        explicit RingBufferMPMC(std::size_t capacity) : m_capacity{capacity}, m_front{0}, m_rear{0}, m_count{0}
+        explicit RingBufferMPMC(std::size_t capacity)
+        : m_capacity{ capacity }, m_front{ 0 }, m_rear{ 0 }, m_count{ 0 }, m_lock("RingBufferMPMC")
         {
             assert(capacity > 0);
             std::unique_ptr <T, BufferDeleter> buffer(new T[m_capacity]);
@@ -31,13 +34,13 @@ class RingBufferMPMC : public boost::noncopyable
 
         std::size_t count()
         {
-            std::unique_lock<std::mutex> l(m_lock);
+            std::unique_lock<concurrent::Lock> l(m_lock);
             return m_count;
         }
 
         void push(T data)
         {
-            std::unique_lock<std::mutex> l(m_lock);
+            std::unique_lock<concurrent::Lock> l(m_lock);
 
             m_notFull.wait(l, [this](){return m_count != m_capacity; });
 
@@ -51,7 +54,7 @@ class RingBufferMPMC : public boost::noncopyable
 
         T pop()
         {
-            std::unique_lock<std::mutex> l(m_lock);
+            std::unique_lock<concurrent::Lock> l(m_lock);
 
             m_notEmpty.wait(l, [this](){return m_count != 0; });
 
@@ -73,18 +76,18 @@ class RingBufferMPMC : public boost::noncopyable
         int m_rear;
         std::size_t m_count;
 
-        std::mutex m_lock;
-        std::condition_variable m_notFull;
-        std::condition_variable m_notEmpty;
+        concurrent::Lock m_lock;
+        std::condition_variable_any m_notFull;
+        std::condition_variable_any m_notEmpty;
 
-        struct BufferDeleter 
+        struct BufferDeleter
         {
             void operator()(T* memory) { delete[] memory; }
         };
 
         std::unique_ptr<T, BufferDeleter> m_buffer;
 };
-  
+
 
 }//namespace
 

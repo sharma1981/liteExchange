@@ -32,7 +32,7 @@ class ClientRequest
         double getPrice() const { return m_price; }
         const std::string& getSenderID() const { return m_senderID; }
         const std::string& getTargetID() const { return m_targetID; }
-        
+
     private:
         ClientRequestType m_type;
         FIX::Side m_side;

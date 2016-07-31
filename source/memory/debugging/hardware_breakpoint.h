@@ -25,57 +25,57 @@ namespace debugging
 #ifdef _WIN32
 inline int insert_memory_breakpoint(void* address, int len, bool write = true)
 {
-	CONTEXT cxt;
-	HANDLE thisThread = GetCurrentThread();
+    CONTEXT cxt;
+    HANDLE thisThread = GetCurrentThread();
 
-	auto SetBits = [&](unsigned long& dw, int lowBit, int bits, int newValue)
-	{
-		int mask = (1 << bits) - 1; // e.g. 1 becomes 0001, 2 becomes 0011, 3 becomes 0111
-		dw = (dw & ~(mask << lowBit)) | (newValue << lowBit);
-	};
+    auto SetBits = [&](unsigned long& dw, int lowBit, int bits, int newValue)
+    {
+        int mask = (1 << bits) - 1; // e.g. 1 becomes 0001, 2 becomes 0011, 3 becomes 0111
+        dw = (dw & ~(mask << lowBit)) | (newValue << lowBit);
+    };
 
-	switch (len)
-	{
-		case 1: len = 0; break;
-		case 2: len = 1; break;
-		case 4: len = 3; break;
-		default: assert(false); // invalid length
-	}
+    switch (len)
+    {
+        case 1: len = 0; break;
+        case 2: len = 1; break;
+        case 4: len = 3; break;
+        default: assert(false); // invalid length
+    }
 
-	// The only registers we care about are the debug registers
-	cxt.ContextFlags = CONTEXT_DEBUG_REGISTERS;
+    // The only registers we care about are the debug registers
+    cxt.ContextFlags = CONTEXT_DEBUG_REGISTERS;
 
-	// Read the register values
-	if (!GetThreadContext(thisThread, &cxt))
-		assert(false);
+    // Read the register values
+    if (!GetThreadContext(thisThread, &cxt))
+        assert(false);
 
-	// Find an available hardware register
-	int breakpoint_register_index = -1;
-	for (breakpoint_register_index = 0; breakpoint_register_index < 4; ++breakpoint_register_index)
-	{
-		if ((cxt.Dr7 & (1 << (breakpoint_register_index * 2))) == 0)
-			break;
-	}
-	assert(m_index < 4); // All hardware breakpoint registers are already being used
+    // Find an available hardware register
+    int breakpoint_register_index = -1;
+    for (breakpoint_register_index = 0; breakpoint_register_index < 4; ++breakpoint_register_index)
+    {
+        if ((cxt.Dr7 & (1 << (breakpoint_register_index * 2))) == 0)
+            break;
+    }
+    assert(m_index < 4); // All hardware breakpoint registers are already being used
 
-	switch (breakpoint_register_index)
-	{
-		case 0: cxt.Dr0 = (DWORD)address; break;
-		case 1: cxt.Dr1 = (DWORD)address; break;
-		case 2: cxt.Dr2 = (DWORD)address; break;
-		case 3: cxt.Dr3 = (DWORD)address; break;
-		default: assert(false); // m_index has bogus value
-	}
+    switch (breakpoint_register_index)
+    {
+        case 0: cxt.Dr0 = (DWORD)address; break;
+        case 1: cxt.Dr1 = (DWORD)address; break;
+        case 2: cxt.Dr2 = (DWORD)address; break;
+        case 3: cxt.Dr3 = (DWORD)address; break;
+        default: assert(false); // m_index has bogus value
+    }
 
-	SetBits(cxt.Dr7, 16 + (breakpoint_register_index * 4), 2, write?3:1);
-	SetBits(cxt.Dr7, 18 + (breakpoint_register_index * 4), 2, len);
-	SetBits(cxt.Dr7, breakpoint_register_index * 2, 1, 1);
+    SetBits(cxt.Dr7, 16 + (breakpoint_register_index * 4), 2, write?3:1);
+    SetBits(cxt.Dr7, 18 + (breakpoint_register_index * 4), 2, len);
+    SetBits(cxt.Dr7, breakpoint_register_index * 2, 1, 1);
 
-	// Write out the new debug registers
-	if (!SetThreadContext(thisThread, &cxt))
-		assert(false);
+    // Write out the new debug registers
+    if (!SetThreadContext(thisThread, &cxt))
+        assert(false);
 
-	return breakpoint_register_index;
+    return breakpoint_register_index;
 }
 #elif __linux__
 

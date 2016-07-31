@@ -39,7 +39,7 @@ inline std::string getCurrentDateTime(const char* format = "%d-%m-%Y %H:%M:%S")
     return ret;
 #endif
 }
-    
+
 }// namespace
 
 #endif

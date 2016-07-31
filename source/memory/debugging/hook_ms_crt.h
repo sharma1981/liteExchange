@@ -12,10 +12,10 @@ namespace debugging
 // https://msdn.microsoft.com/en-us/library/cy8c7wz5.aspx
 #include <crtdbg.h>
 
-// In order to use you have to uncomment _CRTDBG_MAP_ALLOC line 
+// In order to use you have to uncomment _CRTDBG_MAP_ALLOC line
 // and also call hook_crt
 
-//#define _CRTDBG_MAP_ALLOC 
+//#define _CRTDBG_MAP_ALLOC
 
 inline void hook_crt()
 {

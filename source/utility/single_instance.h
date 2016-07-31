@@ -14,19 +14,19 @@ namespace utility
 class SingleInstance : public boost::noncopyable
 {
     public:
-    
+
         explicit SingleInstance(int singleInstancePort = 666);
         ~SingleInstance();
-     
+
         // Move ctor deletion
         SingleInstance(SingleInstance&& other) = delete;
         // Move assignment operator deletion
         SingleInstance& operator=(SingleInstance&& other) = delete;
-    
+
         bool operator()();
-    
+
     private:
-    
+
 #ifdef __linux__
         int m_socketFD = -1;
         int m_rc;

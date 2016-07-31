@@ -36,7 +36,7 @@ inline T align_to_target_cpu_architecture(T input)
 
     T alignment = getCPUArchitecture<T>();
     T aligned_number = input;
-  
+
     while(aligned_number % alignment != 0)
     {
       aligned_number += 1;

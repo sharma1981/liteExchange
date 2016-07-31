@@ -9,7 +9,7 @@ using namespace std;
 
 namespace utility
 {
-    
+
 SingleInstance::SingleInstance(int singleInstancePort)
 {
 #ifdef __linux__
@@ -19,7 +19,7 @@ SingleInstance::SingleInstance(int singleInstancePort)
 #elif _WIN32
     m_mutex = CreateMutex(NULL, FALSE, "VERY_UNIQUE"); //do early
     m_lastError = GetLastError(); //save for use later...
-#endif    
+#endif
 }
 
 SingleInstance::~SingleInstance()
@@ -32,10 +32,10 @@ SingleInstance::~SingleInstance()
 #elif _WIN32
     if (m_mutex)
     {
-        CloseHandle(m_mutex); 
-        m_mutex = NULL; 
+        CloseHandle(m_mutex);
+        m_mutex = NULL;
     }
-#endif  
+#endif
 }
 
 bool SingleInstance::operator()()
@@ -63,7 +63,7 @@ bool SingleInstance::operator()()
     return (m_socketFD != -1 && m_rc == 0);
 #elif _WIN32
     return (ERROR_ALREADY_EXISTS == m_lastError)?false:true;
-#endif  
+#endif
 }
 
 }//namespace

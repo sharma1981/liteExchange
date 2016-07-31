@@ -10,27 +10,32 @@
 #include <order_matcher/central_order_book.h>
 #include <order_matcher/central_order_book_observer.h>
 
-#include "server_outgoing_message_processor.h"
-#include "server_incoming_message_dispatcher.h"
+#include <server/server_configuration.h>
+#include <server/server_outgoing_message_processor.h>
+#include <server/server_incoming_message_dispatcher.h>
+#include <server/server_interface.h>
+#include <server/server_error.h>
 
 #include <quickfix/Application.h>
 #include <quickfix/MessageCracker.h>
 #include <quickfix/ThreadedSocketAcceptor.h>
 
-// FIX 4.2 specific 
+// FIX 4.2 specific
 #include <quickfix/fix42//NewOrderSingle.h>
 #include <quickfix/fix42/OrderCancelRequest.h>
 
 class Server : public boost::noncopyable, public FIX::Application, public FIX::MessageCracker
 {
     public:
-    
-        Server(const std::string& fixEngineConfigFile, bool pinThreadsToCores, int threadStackSize, bool hyperThreading, unsigned int queueSizePerThread, const std::vector<std::string>& symbols) throw(std::runtime_error);
+        Server(const std::string& fixEngineConfigFile, const ServerConfiguration& serverConfiguration) throw(std::runtime_error);
         ~Server();
         void run();
 
+        order_matcher::CentralOrderBook& getCentralOrderBook() { return m_centralOrderBook;  }
+        const std::string getAllOrderBookAsString();
+        static void onError(const std::string& message, ServerError error);
+
     private:
-        void displayUsage();
         // FIX Engine Application overloads
         void onCreate(const FIX::SessionID&) override;
         void toAdmin(FIX::Message&, const FIX::SessionID&) override;
@@ -45,6 +50,7 @@ class Server : public boost::noncopyable, public FIX::Application, public FIX::M
         void onMessage(const FIX42::OrderCancelRequest&, const FIX::SessionID&);
 
         std::string m_fixEngineConfigFile;
+        std::unique_ptr<ServerInterface> m_serverInterface;
         order_matcher::CentralOrderBook m_centralOrderBook;
         order_matcher::CentralOrderBookObserver m_centralOrderBookObserver;
         OutgoingMessageProcessor m_outgoingMessageProcessor;

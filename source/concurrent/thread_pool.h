@@ -1,42 +1,27 @@
 #ifndef _THREAD_POOL_H_
 #define _THREAD_POOL_H_
 
-#include <concurrent/task.h>
-#include <concurrent/thread.h>
-
 #include <cstddef>
 #include <exception>
 #include <atomic>
 #include <vector>
 #include <memory>
 #include <thread>
-#include <string>
 #include <vector>
 
-#include "ring_buffer_spsc_lockfree.hpp"
-
 #include <boost/noncopyable.hpp>
+
+#include <concurrent/task.h>
+#include <concurrent/thread.h>
+#include <concurrent/thread_pool_arguments.h>
+#include <concurrent/thread_priority.h>
+#include <concurrent/ring_buffer_spsc_lockfree.hpp>
 
 namespace concurrent
 {
 
 using ThreadPoolQueue = concurrent::RingBufferSPSCLockFree<concurrent::Task>;
 using ThreadPoolQueuePtr = std::unique_ptr<ThreadPoolQueue>;
-
-#define DEFAULT_WORK_QUEUE_SIZE 128
-
-struct ThreadPoolArguments
-{
-    bool m_pinThreadsToCores;
-    bool m_hyperThreading;
-    int m_workQueueSizePerThread;
-    int m_threadStackSize;
-    std::vector<std::string> m_threadNames;
-    
-    ThreadPoolArguments() 
-    : m_pinThreadsToCores{true}, m_hyperThreading{false}, m_workQueueSizePerThread{ DEFAULT_WORK_QUEUE_SIZE }, m_threadStackSize{0}
-    {}
-};
 
 class ThreadPool : public boost::noncopyable
 {
@@ -68,6 +53,6 @@ class ThreadPool : public boost::noncopyable
         std::atomic<bool> m_isShuttingDown;
         static void* workerThreadFunction(void* argument);
 };
-    
+
 }//namespace
 #endif

@@ -14,9 +14,11 @@ class ConfigFile
     public :
 
         void loadFromFile(const std::string& fileName) throw(std::runtime_error);
+        bool doesAttributeExist(const std::string& attribute);
+
         const std::string& getStringValue(const std::string& attribute) const throw(std::invalid_argument);
         bool getBoolValue(const std::string& attribute) const throw(std::invalid_argument);
-        int getIntVaue(const std::string& attribute) const throw(std::invalid_argument);
+        int getIntValue(const std::string& attribute) const throw(std::invalid_argument);
         std::vector<std::string> getArray(const std::string& attribute);
 
     private:

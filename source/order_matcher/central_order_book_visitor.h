@@ -6,11 +6,11 @@
 #include <iostream>
 
 #include "order.h"
-#include <utility/visitor.hpp>
+#include <utility/design_patterns/visitor.hpp>
 
 namespace order_matcher
 {
-    
+
 class CentralOrderBookVisitor : public utility::Visitor<Order>
 {
     public:
@@ -20,7 +20,7 @@ class CentralOrderBookVisitor : public utility::Visitor<Order>
         }
 
         std::string toString() const
-        { 
+        {
             return m_orders.str();
         }
 

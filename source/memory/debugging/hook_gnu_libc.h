@@ -29,12 +29,12 @@ inline void init_hook(void)
 
 static inline void *gnu_libc_malloc_hook(std::size_t size, const void *caller)
 {
-       
+
 }
 
 static inline void gnu_libc__free_hook(void*, const void * caller)
 {
-    
+
 }
 
 

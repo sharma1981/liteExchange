@@ -12,7 +12,7 @@ namespace concurrent
 {
 
 using ReturnType = boost::optional<boost::any>;
-    
+
 class Task : public memory::Aligned<>
 {
     public :
@@ -21,7 +21,7 @@ class Task : public memory::Aligned<>
         // Copy constructor
         Task(const Task& rhs) = default;
         // Assignment operator
-        Task& operator= (const Task &cSource) = default;
+        Task& operator= (const Task &rhs) = default;
         // Destructor
         ~Task() = default;
 
@@ -39,14 +39,14 @@ class Task : public memory::Aligned<>
         {
             return m_returnValue;
         }
-       
+
     private:
         std::function<void*()> m_callback;
         ReturnType m_returnValue;
 };
 
 using TaskPtr = std::unique_ptr<Task>;
-    
+
 }//namespace
 
 #endif

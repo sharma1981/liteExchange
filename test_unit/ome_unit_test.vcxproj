@@ -47,7 +47,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>../source;../dependencies/;../dependencies/gtest-1.7.0/include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions);UNIT_TEST</PreprocessorDefinitions>
       <BufferSecurityCheck>true</BufferSecurityCheck>
     </ClCompile>
     <Link>
@@ -79,7 +79,7 @@
     <ClCompile Include="..\source\order_matcher\order.cpp" />
     <ClCompile Include="..\source\order_matcher\order_book.cpp" />
     <ClCompile Include="..\source\utility\config_file.cpp" />
-    <ClCompile Include="..\source\utility\logger.cpp" />
+    <ClCompile Include="..\source\utility\logger\logger.cpp" />
     <ClCompile Include="..\source\utility\single_instance.cpp" />
     <ClCompile Include="..\source\utility\stopwatch.cpp" />
     <ClCompile Include="test.cpp" />
@@ -87,7 +87,6 @@
   <ItemGroup>
     <ClInclude Include="..\source\concurrent\thread.h" />
     <ClInclude Include="..\source\concurrent\thread_pool.h" />
-    <ClInclude Include="..\source\utility\utility.h" />
     <ClInclude Include="test_concurrent.h" />
     <ClInclude Include="test_order_matcher.h" />
     <ClInclude Include="test_utility.h" />

@@ -7,15 +7,15 @@
 namespace order_matcher
 {
 
-enum class OrderSide { BUY, SELL };
-enum class OrderType { LIMIT,  };
+enum class OrderSide { NON_SUPPORTED, BUY, SELL };
+enum class OrderType { NON_SUPPORTED, LIMIT  };
 
 using FlyweightStdString = boost::flyweights::flyweight<std::string>;
 
 class Order
-{    
+{
     public:
-        
+
         Order(){}
         Order(std::string clientOrderID, std::string symbol, std::string owner, std::string target, OrderSide side, OrderType type, double price, long quantity);
         void execute(double price, long quantity);
@@ -34,7 +34,7 @@ class Order
         const std::string& getOwner() const { return m_owner; }
         const std::string& getTarget() const { return m_target; }
         OrderSide getSide() const { return m_side; }
-        OrderType getOrderType() const { return m_orderType; } 
+        OrderType getOrderType() const { return m_orderType; }
         double getAverageExecutedPrice() const { return m_averageExecutedPrice; }
         double getLastExecutedPrice() const { return m_lastExecutedPrice; }
         long getLastExecutedQuantity() const { return m_lastExecutedQuantity; }

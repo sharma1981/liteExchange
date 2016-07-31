@@ -13,7 +13,7 @@ ClientRequest::ClientRequest(const string& csvRequest)
 
     boost::char_separator<char> seperator(",");
     boost::tokenizer<boost::char_separator<char>> tokenizer(csvRequest, seperator);
-    
+
     auto iter = tokenizer.begin();
     auto numTokens = std::distance(tokenizer.begin(), tokenizer.end());
 
@@ -29,7 +29,7 @@ ClientRequest::ClientRequest(const string& csvRequest)
     if (orderType.compare("NEW_ORDER") == 0)
     {
         m_type = ClientRequestType::NEW_ORDER;
-        
+
         if (numTokens != 6)
         {
             auto exceptionMessage = boost::str(boost::format("Invalid number of tokens for a new order in line : %s") % csvRequest);
@@ -50,7 +50,7 @@ ClientRequest::ClientRequest(const string& csvRequest)
     {
         THROW_PRETTY_INVALID_ARG_EXCEPTION(std::string("Invalid order type"))
     }
-        
+
     // SYMBOL COLUMN
     iter++;
     string temp( *iter);

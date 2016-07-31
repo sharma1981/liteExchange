@@ -1,5 +1,4 @@
 #include "aligned_memory.h"
-
 #include "cache_line.h"
 
 #ifdef __linux__
@@ -26,7 +25,7 @@ void* alignedMalloc(std::size_t size, std::size_t alignment) throw(std::bad_allo
     {
         throw std::bad_alloc();
     }
-    
+
     return ptr;
 }
 

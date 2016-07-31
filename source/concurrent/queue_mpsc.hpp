@@ -4,6 +4,8 @@
 #include <boost/noncopyable.hpp>
 #include <mutex>
 #include <condition_variable>
+
+#include <concurrent/lock.hpp>
 #include <memory/aligned_container_policy.hpp>
 
 namespace concurrent
@@ -22,7 +24,7 @@ class QueueMPSC : public boost::noncopyable, AlignedContainerPolicy<T>
             QueueMPSCNode() : m_next{nullptr}{}
         };
 
-        QueueMPSC()
+        QueueMPSC() : m_mutex("QueueMPSC")
         {
             // Create a new empty node so we avoid a lock for accessing head in enqueue
             QueueMPSCNode* dummy = new QueueMPSCNode;
@@ -30,7 +32,7 @@ class QueueMPSC : public boost::noncopyable, AlignedContainerPolicy<T>
             //Tail and head point to it
             m_head = m_tail = dummy;
         }
-        
+
         ~QueueMPSC()
         {
             while (m_head)
@@ -45,7 +47,7 @@ class QueueMPSC : public boost::noncopyable, AlignedContainerPolicy<T>
         {
             QueueMPSCNode* newNode = new QueueMPSCNode;
             newNode->m_data = data;
-            std::unique_lock<std::mutex> l(m_mutex);
+            std::unique_lock<concurrent::Lock> l(m_mutex);
             /////////////////////////////
             m_tail->m_next = newNode;
             m_tail = newNode;
@@ -57,7 +59,7 @@ class QueueMPSC : public boost::noncopyable, AlignedContainerPolicy<T>
         bool isEmpty()
         {
             bool retVal = true;
-            std::lock_guard<std::mutex> l(m_mutex);
+            std::lock_guard<concurrent::Lock> l(m_mutex);
             if ( m_head->m_next != nullptr )
             {
                 retVal = false;
@@ -74,7 +76,7 @@ class QueueMPSC : public boost::noncopyable, AlignedContainerPolicy<T>
                 return ret;
             }
 
-            std::unique_lock<std::mutex> l(m_mutex);
+            std::unique_lock<concurrent::Lock> l(m_mutex);
             m_noData.wait(l, [this](){return m_head->m_next != nullptr; });
             /////////////////////////////
             //JUST SWAP THE POINTERS
@@ -88,12 +90,11 @@ class QueueMPSC : public boost::noncopyable, AlignedContainerPolicy<T>
         }
 
     private:
+        concurrent::Lock m_mutex;
+        std::condition_variable_any m_noData;
 
         QueueMPSCNode* m_head;
         QueueMPSCNode* m_tail;
-
-        std::mutex m_mutex;
-        std::condition_variable m_noData;
 
         // Move ctor deletion
         QueueMPSC(QueueMPSC&& other) = delete;

@@ -41,7 +41,7 @@ class RingBufferSPSCLockFree : public boost::noncopyable
                 return true;
             }
 
-            return false;  
+            return false;
         }
 
         void push(T val)
@@ -52,7 +52,7 @@ class RingBufferSPSCLockFree : public boost::noncopyable
         bool tryPop(T* element)
         {
             auto currentHead = m_read.load();
-            
+
             if (currentHead == m_write.load(std::memory_order_acquire))
             {
                 return false;

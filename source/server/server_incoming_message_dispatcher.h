@@ -12,7 +12,12 @@
 #include <concurrent/thread.h>
 #include <concurrent/actor.h>
 #include <concurrent/queue_mpsc.hpp>
-#include <utility/logger.h>
+
+#include <concurrent/profiling/thread_profiler.h>
+
+#include <utility/logger/logger.h>
+
+#include <server/server_constants.h>
 
 using namespace concurrent;
 using namespace order_matcher;
@@ -40,9 +45,12 @@ class IncomingMessageDispatcher : public Actor
         {
             m_queue.push(message);
         }
-        
+
         void* run() override
         {
+            DECLARE_THREAD_PROFILER;
+            THREAD_PROFILER_START;
+
             LOG_INFO("Incoming message dispatcher", "Thread starting")
             // Let`s wait until central order book initialisation
             while (true)
@@ -54,7 +62,7 @@ class IncomingMessageDispatcher : public Actor
 
                 if (m_centralOrderBook == nullptr)
                 {
-                    concurrent::Thread::sleep(1000);
+                    concurrent::Thread::sleep(server_constants::SERVER_THREAD_SLEEP_DURATION);
                 }
                 else
                 {
@@ -68,7 +76,7 @@ class IncomingMessageDispatcher : public Actor
                 {
                     break;
                 }
-    
+
                 IncomingMessageQueueNode* messageLinkedList = nullptr;
 
                 if ((messageLinkedList = m_queue.flush()) != nullptr)
@@ -77,13 +85,13 @@ class IncomingMessageDispatcher : public Actor
                     while (messageLinkedList)
                     {
                         auto incomingMessage = messageLinkedList->m_data;
-        
+
                         switch (incomingMessage.getType())
                         {
                             case IncomingMessageType::NEW_ORDER:
                                 m_centralOrderBook->addOrder(incomingMessage.getOrder());
                             break;
-    
+
                             case IncomingMessageType::CANCEL_ORDER:
                                 m_centralOrderBook->cancelOrder(incomingMessage.getOrder(), incomingMessage.getOrigClientOrderID());
                             break;
@@ -94,7 +102,7 @@ class IncomingMessageDispatcher : public Actor
                         std::unique_ptr< IncomingMessageQueueNode > temp{ messageLinkedList };
                         messageLinkedList = messageLinkedList->m_next;
                     }
-                    
+
                 }
                 else
                 {
@@ -102,16 +110,17 @@ class IncomingMessageDispatcher : public Actor
                 }
             }
 
-            
+            THREAD_PROFILER_END;
+            THREAD_PROFILER_TRACE;
 
             LOG_INFO("Incoming message dispatcher", "Thread exiting")
             return nullptr;
         }
-        
+
     private :
         order_matcher::CentralOrderBook* m_centralOrderBook;
         concurrent::QueueMPSC<IncomingMessage> m_queue;
-        
+
 };
 
 #endif

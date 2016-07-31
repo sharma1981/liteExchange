@@ -13,8 +13,8 @@
 
 namespace memory
 {
-    
-template <typename T, std::size_t alignment = CACHE_LINE_SIZE> 
+
+template <typename T, std::size_t alignment = CACHE_LINE_SIZE>
 class AlignedAllocator
 {
     public:
@@ -30,9 +30,9 @@ class AlignedAllocator
         // Default constructor, copy constructor, rebinding constructor, and destructor.
         // Empty for stateless allocators.
         AlignedAllocator()
-        { 
+        {
             static_assert(is_power_of_two(alignment), "Template argument must be a power of two.");
-        } 
+        }
         AlignedAllocator(const AlignedAllocator&) { }
 
         template <typename U> AlignedAllocator(const AlignedAllocator<U>&) { }
@@ -52,25 +52,25 @@ class AlignedAllocator
         {
             // The following has been carefully written to be independent of
             // the definition of size_t and to avoid signed/unsigned warnings.
-            
+
             // Extra parantesis are needed for MSVC because Windows headers define min max
             // See http://stackoverflow.com/questions/1904635/warning-c4003-and-errors-c2589-and-c2059-on-x-stdnumeric-limitsintmax
             return (std::numeric_limits<int>::max)() / sizeof(value_type);
         }
 
         // The following must be the same for all allocators.
-        template <typename U> 
-        struct rebind 
+        template <typename U>
+        struct rebind
         {
             typedef AlignedAllocator<U> other;
         };
 
-        bool operator!=(const AlignedAllocator& other) const 
+        bool operator!=(const AlignedAllocator& other) const
         {
             return !(*this == other);
         }
 
-        void construct(T * const p, const T& t) const 
+        void construct(T * const p, const T& t) const
         {
             void * const pv = static_cast<void *>(p);
             new (pv)T(t);
@@ -97,7 +97,7 @@ class AlignedAllocator
             return true;
         }
 
-       
+
 
         // The following will be different for each allocator.
         T * allocate(const std::size_t n) const throw(std::runtime_error, std::length_error)
@@ -109,7 +109,7 @@ class AlignedAllocator
             // (the implementation can define malloc(0) to return NULL,
             // in which case the bad_alloc check below would fire).
             // All allocators can return NULL in this case.
-            if (n == 0) 
+            if (n == 0)
             {
                 return nullptr;
             }
@@ -117,15 +117,15 @@ class AlignedAllocator
             // All allocators should contain an integer overflow check.
             // The Standardization Committee recommends that std::length_error
             // be thrown in the case of integer overflow.
-            if (n > max_size()) 
+            if (n > max_size())
             {
-                throw std::length_error("AlignedAllocator<T>::allocate() – Integer overflow.");
+                THROW_PRETTY_LENGTH_EXCEPTION("AlignedAllocator<T>::allocate() – Integer overflow.")
             }
 
             void * const pv = alignedMalloc(n * sizeof(T), alignment);
 
             // Allocators should throw std::bad_alloc in the case of memory allocation failure.
-            if (pv == nullptr) 
+            if (pv == nullptr)
             {
                 throw std::bad_alloc();
             }
@@ -133,7 +133,7 @@ class AlignedAllocator
             return static_cast<T *>(pv);
         }
 
-        void deallocate(T * const p, const size_t n) const 
+        void deallocate(T * const p, const size_t n) const
         {
             alignedFree(p);
         }
@@ -143,7 +143,7 @@ class AlignedAllocator
             return allocate(n);
         }
 
-        // NOTE FOR MSVC : 
+        // NOTE FOR MSVC :
         // Allocators are not required to be assignable, so
         // all allocators should have a private unimplemented
         // assignment operator. Note that this will trigger the

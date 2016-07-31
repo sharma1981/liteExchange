@@ -34,10 +34,12 @@
 #include <ctime>
 #include <cassert>
 #include <cstddef>
+#include <cstdint>
 #include <cctype>
 #include <cstdarg>
 #include <cstring>
 #include <cstdio>
+#include <cstdlib>
 // STD STL
 #include <algorithm>
 #include <vector>
@@ -51,12 +53,17 @@
 #include <boost/flyweight.hpp>
 // LINUX
 #ifdef __linux__
+#include <string.h>
+#include <sched.h>
+#include <pthread.h>
 #include <syscall.h>
 #include <unistd.h>
 #include <signal.h>
 #include <sys/ptrace.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <sys/time.h>
+#include <sys/resource.h>
 #include <linux/user.h>
 #include <malloc.h>
 #include <pthread.h>

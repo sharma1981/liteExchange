@@ -88,6 +88,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\source\concurrent\profiling\lock_profiler.cpp" />
+    <ClCompile Include="..\..\source\concurrent\profiling\thread_profiler.cpp" />
     <ClCompile Include="..\..\source\concurrent\thread.cpp" />
     <ClCompile Include="..\..\source\concurrent\thread_pool.cpp" />
     <ClCompile Include="..\..\source\memory\aligned_memory.cpp" />
@@ -97,22 +99,28 @@
     <ClCompile Include="..\..\source\server\server.cpp" />
     <ClCompile Include="..\..\source\server_main.cpp" />
     <ClCompile Include="..\..\source\utility\config_file.cpp" />
-    <ClCompile Include="..\..\source\utility\logger.cpp" />
+    <ClCompile Include="..\..\source\utility\logger\logger.cpp" />
     <ClCompile Include="..\..\source\utility\single_instance.cpp" />
     <ClCompile Include="..\..\source\utility\stopwatch.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\source\compiler_portability\alignas.h" />
     <ClInclude Include="..\..\source\compiler_portability\branch_predictor_hint.h" />
+    <ClInclude Include="..\..\source\compiler_portability\cpp_version_check.h" />
     <ClInclude Include="..\..\source\compiler_portability\cpu_architecture.h" />
     <ClInclude Include="..\..\source\compiler_portability\fastcall.h" />
     <ClInclude Include="..\..\source\compiler_portability\force_inline.h" />
     <ClInclude Include="..\..\source\compiler_portability\ignored_warnings.h" />
     <ClInclude Include="..\..\source\compiler_portability\noexcept.h" />
     <ClInclude Include="..\..\source\compiler_portability\no_inline.h" />
+    <ClInclude Include="..\..\source\compiler_portability\os_version_check.h" />
     <ClInclude Include="..\..\source\compiler_portability\preprocessor.h" />
     <ClInclude Include="..\..\source\compiler_portability\thread_local.h" />
     <ClInclude Include="..\..\source\compiler_portability\unused.h" />
+    <ClInclude Include="..\..\source\concurrent\base_lock.h" />
+    <ClInclude Include="..\..\source\concurrent\lock.hpp" />
+    <ClInclude Include="..\..\source\concurrent\profiling\lock_profiler.h" />
+    <ClInclude Include="..\..\source\concurrent\profiling\thread_profiler.h" />
     <ClInclude Include="..\..\source\concurrent\queue_mpmc.hpp" />
     <ClInclude Include="..\..\source\concurrent\queue_mpsc.hpp" />
     <ClInclude Include="..\..\source\concurrent\ring_buffer_mpmc.hpp" />
@@ -121,6 +129,8 @@
     <ClInclude Include="..\..\source\concurrent\task.h" />
     <ClInclude Include="..\..\source\concurrent\thread.h" />
     <ClInclude Include="..\..\source\concurrent\thread_pool.h" />
+    <ClInclude Include="..\..\source\concurrent\thread_pool_arguments.h" />
+    <ClInclude Include="..\..\source\concurrent\thread_priority.h" />
     <ClInclude Include="..\..\source\memory\aligned.hpp" />
     <ClInclude Include="..\..\source\memory\aligned_allocator.hpp" />
     <ClInclude Include="..\..\source\memory\aligned_container_policy.hpp" />
@@ -140,20 +150,38 @@
     <ClInclude Include="..\..\source\order_matcher\quickfix_converter.h" />
     <ClInclude Include="..\..\source\precompiled_header.h" />
     <ClInclude Include="..\..\source\server\server.h" />
+    <ClInclude Include="..\..\source\server\server_configuration.h" />
+    <ClInclude Include="..\..\source\server\server_constants.h" />
+    <ClInclude Include="..\..\source\server\server_error.h" />
     <ClInclude Include="..\..\source\server\server_incoming_message_dispatcher.h" />
+    <ClInclude Include="..\..\source\server\server_interface.h" />
+    <ClInclude Include="..\..\source\server\server_interface_cli.h" />
     <ClInclude Include="..\..\source\server\server_outgoing_message_processor.h" />
-    <ClInclude Include="..\..\source\utility\datetime_utility.h" />
-    <ClInclude Include="..\..\source\utility\file_utility.h" />
-    <ClInclude Include="..\..\source\utility\observer.hpp" />
+    <ClInclude Include="..\..\source\utility\callstack.h" />
     <ClInclude Include="..\..\source\utility\config_file.h" />
+    <ClInclude Include="..\..\source\utility\console_utility.h" />
+    <ClInclude Include="..\..\source\utility\datetime_utility.h" />
+    <ClInclude Include="..\..\source\utility\design_patterns\factory.hpp" />
+    <ClInclude Include="..\..\source\utility\design_patterns\observer.hpp" />
+    <ClInclude Include="..\..\source\utility\design_patterns\singleton_dclp.hpp" />
+    <ClInclude Include="..\..\source\utility\design_patterns\singleton_static.hpp" />
+    <ClInclude Include="..\..\source\utility\design_patterns\visitor.hpp" />
+    <ClInclude Include="..\..\source\utility\file_utility.h" />
+    <ClInclude Include="..\..\source\utility\logger\base_logger_sink.hpp" />
+    <ClInclude Include="..\..\source\utility\logger\console_sink.hpp" />
+    <ClInclude Include="..\..\source\utility\logger\file_sink.hpp" />
+    <ClInclude Include="..\..\source\utility\logger\logger.h" />
+    <ClInclude Include="..\..\source\utility\logger\logger_sinks.hpp" />
+    <ClInclude Include="..\..\source\utility\logger\logger_sink_factory.hpp" />
+    <ClInclude Include="..\..\source\utility\logger\log_entry.hpp" />
+    <ClInclude Include="..\..\source\utility\logger\log_levels.h" />
+    <ClInclude Include="..\..\source\utility\microbenchmark.hpp" />
+    <ClInclude Include="..\..\source\utility\os_utility.h" />
     <ClInclude Include="..\..\source\utility\pretty_exception.h" />
-    <ClInclude Include="..\..\source\utility\singleton.hpp" />
-    <ClInclude Include="..\..\source\utility\string_utility.h" />
-    <ClInclude Include="..\..\source\utility\trace.h" />
-    <ClInclude Include="..\..\source\utility\logger.h" />
     <ClInclude Include="..\..\source\utility\single_instance.h" />
     <ClInclude Include="..\..\source\utility\stopwatch.h" />
-    <ClInclude Include="..\..\source\utility\visitor.hpp" />
+    <ClInclude Include="..\..\source\utility\string_utility.h" />
+    <ClInclude Include="..\..\source\utility\trace.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -15,7 +15,7 @@ void ConfigFile::loadFromFile(const string& fileName) throw(std::runtime_error)
 {
     // For reusability
     m_dictionary.clear();
-    
+
     ifstream file(fileName); // ifstream dtor also closes the file so no need for using a smart ptr to close the file
 
     if ( ! file.good())
@@ -23,7 +23,7 @@ void ConfigFile::loadFromFile(const string& fileName) throw(std::runtime_error)
         auto exceptionMessage = boost::str(boost::format("File %s could not be opened") % fileName);
         THROW_PRETTY_RUNTIME_EXCEPTION(exceptionMessage)
     }
-    
+
     file.seekg(0, std::ios::beg);
     string line;
     boost::char_separator<char> seperator("=");
@@ -36,7 +36,7 @@ void ConfigFile::loadFromFile(const string& fileName) throw(std::runtime_error)
 
         if (line.c_str()[0] == '#' || lineLength == 0 ) // Skip comment lines and empty lines
         {
-            continue; 
+            continue;
         }
 
         if ( lineLength < 3)
@@ -58,7 +58,7 @@ void ConfigFile::loadFromFile(const string& fileName) throw(std::runtime_error)
             auto exceptionMessage = boost::str(boost::format("Line contains more than one equals sign , line number : %d") % lineNumber);
             THROW_PRETTY_RUNTIME_EXCEPTION(exceptionMessage)
         }
-        
+
         boost::tokenizer<boost::char_separator<char>> tokenizer(line, seperator);
         auto iter = tokenizer.begin();
 
@@ -71,6 +71,16 @@ void ConfigFile::loadFromFile(const string& fileName) throw(std::runtime_error)
     file.close();
 }
 
+bool ConfigFile::doesAttributeExist(const std::string& attribute)
+{
+    auto element = m_dictionary.find(attribute);
+    if (element == m_dictionary.end())
+    {
+        return false;
+    }
+    return true;
+}
+
 const string& ConfigFile::getStringValue(const string& attribute) const throw(std::invalid_argument)
 {
     auto element = m_dictionary.find(attribute);
@@ -79,7 +89,7 @@ const string& ConfigFile::getStringValue(const string& attribute) const throw(st
         auto exceptionMessage = boost::str(boost::format("Attribute %s could not be found") % attribute);
         THROW_PRETTY_INVALID_ARG_EXCEPTION(exceptionMessage)
     }
-    
+
     return element->second;
 }
 
@@ -87,10 +97,10 @@ bool ConfigFile::getBoolValue(const string& attribute) const throw(std::invalid_
 {
     auto stringVal = getStringValue(attribute);
     std::transform(stringVal.begin(), stringVal.end(), stringVal.begin(), ::tolower);
-    return (stringVal == "true") ? true : false; 
+    return (stringVal == "true") ? true : false;
 }
 
-int ConfigFile::getIntVaue(const string& attribute) const throw(std::invalid_argument)
+int ConfigFile::getIntValue(const string& attribute) const throw(std::invalid_argument)
 {
     return std::stoi(getStringValue(attribute));
 }
@@ -101,7 +111,7 @@ vector<string> ConfigFile::getArray(const string& attribute)
     string actualAttribute = attribute + "[]";
 
     auto range = m_dictionary.equal_range(actualAttribute);
-    
+
     for_each(
         range.first,
         range.second,

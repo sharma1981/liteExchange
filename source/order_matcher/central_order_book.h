@@ -16,8 +16,8 @@
 #include <concurrent/queue_mpmc.hpp>
 #include <concurrent/thread_pool.h>
 
-#include <utility/visitor.hpp>
-#include <utility/observer.hpp>
+#include <utility/design_patterns/visitor.hpp>
+#include <utility/design_patterns/observer.hpp>
 
 namespace order_matcher
 {

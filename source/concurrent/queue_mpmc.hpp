@@ -3,6 +3,8 @@
 
 #include <boost/noncopyable.hpp>
 #include <mutex>
+
+#include <concurrent/lock.hpp>
 #include <memory/aligned_container_policy.hpp>
 
 namespace concurrent
@@ -15,8 +17,8 @@ template< typename T>
 class QueueMPMC : public boost::noncopyable, AlignedContainerPolicy<T>
 {
     public:
-        
-        QueueMPMC()
+
+        QueueMPMC() : m_headMutex("QueueMPMCHead"), m_tailMutex("QueueMPMCTail")
         {
             // Create a new empty node so we avoid a lock for accessing head in enqueue
             Node* dummy = new Node;
@@ -26,7 +28,7 @@ class QueueMPMC : public boost::noncopyable, AlignedContainerPolicy<T>
         }
 
         ~QueueMPMC()
-        {            
+        {
             while (m_head)
             {
                 auto temp = m_head;
@@ -34,36 +36,36 @@ class QueueMPMC : public boost::noncopyable, AlignedContainerPolicy<T>
                 delete temp;
             }
         }
-        
+
         void enqueue(T data)
         {
             Node* newNode =  new Node;
             newNode->m_data = data;
-            
-            std::lock_guard<std::mutex> tailLock(m_tailMutex);
+
+            std::lock_guard<concurrent::Lock> tailLock(m_tailMutex);
             m_tail->m_next = newNode;
             m_tail = newNode;
          }
-        
+
         bool dequeue(T* data)
         {
             m_headMutex.lock();
-            
+
             Node* currentHead = m_head;
             Node* newHead = currentHead->m_next;
-            
+
             if( newHead == nullptr)
             {
                 m_headMutex.unlock();
                 return false;
             }
-            
+
             *data = newHead->m_data;
             m_head = newHead; // Swapping dummy-initial node so we avoid to update the tail pointer
                              // Therefore no need for protecting the tail
-            
+
             m_headMutex.unlock();
-            
+
             delete(currentHead); // De allocate previous dummy node
             return true;
         }
@@ -77,8 +79,8 @@ class QueueMPMC : public boost::noncopyable, AlignedContainerPolicy<T>
             Node() : m_next(nullptr){}
         };
 
-        std::mutex m_headMutex;
-        std::mutex m_tailMutex;
+        concurrent::Lock m_headMutex;
+        concurrent::Lock m_tailMutex;
 
         Node* m_head;
         Node* m_tail;

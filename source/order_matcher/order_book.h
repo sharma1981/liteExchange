@@ -9,7 +9,7 @@
 #include <functional>
 #include <memory>
 
-#include <utility/visitor.hpp>
+#include <utility/design_patterns/visitor.hpp>
 
 namespace order_matcher
 {
@@ -30,7 +30,7 @@ class OrderBook : public utility::Visitable<Order>
 
     private:
         std::string m_symbol;
-        
+
         // Bid orders , place the greatest on top
         std::multimap < double, Order, std::greater < double > > m_bidOrders;
         // Ask orders , place the lowest on top

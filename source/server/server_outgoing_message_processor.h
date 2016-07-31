@@ -12,7 +12,11 @@
 #include <order_matcher/central_order_book.h>
 #include <order_matcher/quickfix_converter.h>
 #include <concurrent/actor.h>
-#include <utility/logger.h>
+#include <utility/logger/logger.h>
+
+#include <server/server_constants.h>
+
+#include <concurrent/profiling/thread_profiler.h>
 
 using namespace concurrent;
 using namespace order_matcher;
@@ -25,7 +29,7 @@ class OutgoingMessageProcessor : public Actor
         // We can`t have more than 16 characters in Linux for a pthread name ,that is why compacted the thread name...
         {
         }
-        
+
         void setMessageQueue(OutgoingMessageQueue* queue)
         {
             assert( queue != nullptr );
@@ -34,6 +38,9 @@ class OutgoingMessageProcessor : public Actor
 
         void* run() override
         {
+            DECLARE_THREAD_PROFILER;
+            THREAD_PROFILER_START;
+
             LOG_INFO("Outgoing message processor", "Thread starting")
 
             // Let`s wait until message queue initialisation
@@ -46,7 +53,7 @@ class OutgoingMessageProcessor : public Actor
 
                 if (m_messageQueue == nullptr)
                 {
-                    concurrent::Thread::sleep(1000);
+                    concurrent::Thread::sleep(server_constants::SERVER_THREAD_SLEEP_DURATION);
                 }
                 else
                 {
@@ -60,7 +67,7 @@ class OutgoingMessageProcessor : public Actor
                 {
                     break;
                 }
-                
+
                 {//Creating scope for the smart ptr
                     std::unique_ptr<OutgoingMessage> message{ new OutgoingMessage };
                     if (m_messageQueue->dequeue(message.get()) == true)
@@ -68,7 +75,7 @@ class OutgoingMessageProcessor : public Actor
                         const Order& order = message->getOrder();
 
                         LOG_INFO("Outgoing message processor", boost::str(boost::format("Processing %s for order : %s ") % message->toString() % order.toString()) )
-                        
+
                         FIX::TargetCompID targetCompID(order.getOwner());
                         FIX::SenderCompID senderCompID(order.getTarget());
                         auto status = convertToQuickFixOutgoingMessageType(message->getType());
@@ -99,22 +106,26 @@ class OutgoingMessageProcessor : public Actor
                         {
                             FIX::Session::sendToTarget(fixOrder, senderCompID, targetCompID);
                         }
-                        catch (FIX::SessionNotFound&) 
+                        catch (const FIX::SessionNotFound&)
                         {
                             // TO BE IMPLEMENTED
                         }
-                        
+
                     }
                     else
                     {
                         concurrent::Thread::yield();
                     }
                 }//Scope for the smart pointer
-              
-                
+
+
             }// while
 
             LOG_INFO("Outgoing message processor", "Thread exiting")
+
+            THREAD_PROFILER_END;
+            THREAD_PROFILER_TRACE;
+
             return nullptr;
         }
 
