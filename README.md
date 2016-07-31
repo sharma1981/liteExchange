@@ -32,15 +32,15 @@ Sections :
 
 - See end of this readme for future plans.
 
-. Overview of multithreading system : If you look at the source , the concurrency layer ( https://github.com/akhin/cpp_multithreaded_order_matching_engine/tree/master/source/concurrent , using concurrent word since MS using concurrency for their own libraries ) , 
-  the engine currently is using :
+Overview of multithreading system : If you look at the source , the concurrency layer ( https://github.com/akhin/cpp_multithreaded_order_matching_engine/tree/master/source/concurrent , using concurrent word since MS using concurrency for their own libraries ) , 
+the engine currently is using :
 
-	A thread class which you can set stack size and set names for debugging
-	1 lock free SPSC ring buffer
-	other fine grained lock based ring buffer and queues
-	Actor pattern
-	A thread pool with ability to pin threads to CPU cores and avoid hyperthreading
-	Also the engine currently makes use of a set of CPU cache aligned allocators for memory allocations in order to avoid false sharing :
+	- A thread class which you can set stack size and set names for debugging
+	- 1 lock free SPSC ring buffer
+	- Other fine grained lock based ring buffer and queues
+	- Actor pattern
+	- A thread pool with ability to pin threads to CPU cores and avoid hyperthreading
+	- Also the engine currently makes use of a set of CPU cache aligned allocators for memory allocations in order to avoid false sharing :
 	https://github.com/akhin/cpp_multithreaded_order_matching_engine/tree/master/source/memory
 
 Mainly, the engine consists of 2 parts : FIX server/engine and the order matching layer. The core of order matching layer is called a central order book, which keeps order books per security symbol. Each order book has a table for bids and another table for asks. Briefly the multithreaded system works as below :
