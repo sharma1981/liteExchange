@@ -32,7 +32,7 @@ Sections :
 
 - See end of this readme for future plans.
 
-Overview of multithreading system : If you look at the source , the concurrency layer ( https://github.com/akhin/cpp_multithreaded_order_matching_engine/tree/master/source/concurrent , using concurrent word since MS using concurrency for their own libraries ) , 
+**Overview of multithreading system :** If you look at the source , the concurrency layer ( https://github.com/akhin/cpp_multithreaded_order_matching_engine/tree/master/source/concurrent , using concurrent word since MS using concurrency for their own libraries ) , 
 the engine currently is using :
 
 	- A thread class which you can set stack size and set names for debugging
@@ -55,9 +55,10 @@ b) Central Order book has a thread pool :
 
 – When a new message arrives ( new order, or cancel ) from the incoming message dispatcher, it will be submitted to corresponding thread`s queue in the thread pool of the central order book.
 
-c) Each thread in the thread pool will get message from their SPSC queue in the thread pool , and add them to corresponding order queue which is used by only itself and eventually trigger the order matching process for that queue. At the end of the order matching , worker threads will submit messages ( FILLED or PARTIALLY FILLED ) to the outgoing messages queue
+c) Each thread in the thread pool will get message from their SPSC queue in the thread pool , and add them to corresponding order queue which is used by only itself and eventually trigger the order matching process for that queue. At the end of the order matching , worker threads will submit messages ( FILLED or PARTIALLY FILLED ) to the outgoing messages queue.
 
 d) Outgoing message processor which is a fine grained MPMC queue will process the outgoing messages and send responses back to the clients.
+
 ===========================================================================
 						
 **2. Limit orders and order matching engines :** For limit orders please see : https://en.wikipedia.org/wiki/Order_%28exchange%29#Limit_order
