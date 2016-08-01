@@ -330,20 +330,8 @@ MSVC120 C++11 Limitations : Curly brace initialisation at MILs and noexcept is n
 
 Memory : 3rd party memory allocators support : jemalloc, intelTBB, tcMalloc, Lockless. Currently the engine is using a set of CPU cache aligned allocators in "source/memory".
 
-Event broadcasting : Will broadcast events to subscribers possibly with ZeroMQ , also sample feed handlers might be added
-
-Probes : Will add probes for SystemTap for Linux, might add ETW support for Windows as well
-
-**Possible considerations for future :**
-
-Concurrency : MPMC and MPSC lockfree container implementations , currently only SPSC bounded queue is lock free.
-
 GPU Offloading with CUDA : Will add experimental support for offloading order matching to GPU
 
-Visualizer : Might add a visualizer with either OpenGL or Vulkan , will subscribe to OME to receive events
-
-Order matching : Adding other order types ( market orders, stop loss order) , order update and market data request support, TIF support
-
-Exchange connectivity : Support ITCH ( London Stock Exchange & NASDAQ ) and/or FIX engines , interested in using Libtrade : https://github.com/libtrading/libtrading
+Concurrency : MPMC and MPSC lockfree container implementations , currently only SPSC bounded queue is lock free.
 
 ===========================================================================
