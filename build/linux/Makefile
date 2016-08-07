@@ -57,6 +57,11 @@ debug_with_tsan: all
 #Use O2 as it is the most tested optimisation level in most software projects
 release: CFLAGS +=  -O2
 release: all
+# Release mode however meant for profiling winth gprof
+# So by using gprof we can see most time taking functions	
+release_with_gprof: CFLAGS +=  -O2 -pg -g -fno-omit-frame-pointer
+release_with_gprof: LFLAGS +=  -pg
+release_with_gprof: all
 
 all: $(OBJECTS) $(EXECUTABLE)
 
