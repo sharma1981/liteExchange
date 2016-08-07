@@ -34,7 +34,7 @@ using namespace order_matcher;
 using namespace std;
 
 Server::Server(const string& fixEngineConfigFile, const ServerConfiguration& serverConfiguration)
-throw(std::runtime_error) : m_serverInterface{ nullptr }, m_fixEngineConfigFile( fixEngineConfigFile )
+: m_serverInterface{ nullptr }, m_fixEngineConfigFile( fixEngineConfigFile )
 {
     if (!utility::doesFileExist(m_fixEngineConfigFile))
     {

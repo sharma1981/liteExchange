@@ -13,12 +13,12 @@ class ConfigFile
 {
     public :
 
-        void loadFromFile(const std::string& fileName) throw(std::runtime_error);
+        void loadFromFile(const std::string& fileName);
         bool doesAttributeExist(const std::string& attribute);
 
-        const std::string& getStringValue(const std::string& attribute) const throw(std::invalid_argument);
-        bool getBoolValue(const std::string& attribute) const throw(std::invalid_argument);
-        int getIntValue(const std::string& attribute) const throw(std::invalid_argument);
+        const std::string& getStringValue(const std::string& attribute) const;
+        bool getBoolValue(const std::string& attribute) const;
+        int getIntValue(const std::string& attribute) const;
         std::vector<std::string> getArray(const std::string& attribute);
 
     private:

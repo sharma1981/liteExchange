@@ -23,7 +23,7 @@ class ServerConfiguration
         {
         }
 
-        void load(const std::string& configurationFile) throw(std::invalid_argument, std::runtime_error)
+        void load(const std::string& configurationFile)
         {
             utility::ConfigFile configuration;
             configuration.loadFromFile(configurationFile);

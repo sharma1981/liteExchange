@@ -37,7 +37,7 @@ inline OrderSide convertOrderSideFromQuickFix(const FIX::Side& side)
     return ret;
 }
 
-inline FIX::Side convertOrderSideToQuickFix(const OrderSide& side) throw(std::invalid_argument)
+inline FIX::Side convertOrderSideToQuickFix(const OrderSide& side)
 {
     switch (side)
     {
@@ -52,7 +52,7 @@ inline FIX::Side convertOrderSideToQuickFix(const OrderSide& side) throw(std::in
     }
 }
 
-inline char convertToQuickFixOutgoingMessageType(const OutgoingMessageType& type) throw(std::invalid_argument)
+inline char convertToQuickFixOutgoingMessageType(const OutgoingMessageType& type)
 {
     switch (type)
     {

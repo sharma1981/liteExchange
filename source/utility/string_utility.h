@@ -31,6 +31,11 @@ inline bool contains(const std::string& input_string, const std::string& search_
     return false;
 }
 
+inline void replaceCharacterInString(std::string& input, char oldChar, char newChar)
+{
+  std::replace(input.begin(), input.end(), oldChar, newChar);
+}
+
 template <typename T>
 inline T toLowercase(const T& input)
 {

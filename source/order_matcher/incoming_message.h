@@ -29,7 +29,7 @@ class IncomingMessage : public memory::Aligned<>
         const IncomingMessageType& getType() const { return m_type; }
         const std::string& getOrigClientOrderID() const { return m_originalOrderID; }
 
-        std::string toString() const throw(std::invalid_argument)
+        std::string toString() const
         {
             switch (m_type)
             {

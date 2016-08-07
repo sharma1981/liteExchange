@@ -45,7 +45,7 @@ class BaseLoggerSink
         }
 
         //Abstract methods
-        virtual void open() throw(std::runtime_error) = 0;
+        virtual void open() = 0;
         virtual void process(LogEntry entry) = 0;
         virtual void close() = 0;
 

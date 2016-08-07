@@ -26,7 +26,7 @@ inline std::string getDirectoryNameFromPath(const std::string& fullPath)
 
     // We are finding last occurence of // in Linux and \\ in Windows
 #ifdef __linux__
-    pathPtr = strrchr(pathPtr, '//');
+    pathPtr = strrchr(pathPtr, '/');
 #elif _WIN32
     pathPtr = strrchr(pathPtr, '\\');
 #endif
@@ -39,6 +39,21 @@ inline std::string getDirectoryNameFromPath(const std::string& fullPath)
     directoryName = &path[0];
     return directoryName;
 }
+
+inline bool appendTextToFile(const std::string& fileName, const std::string& text, bool createIfNecessary = true)
+{
+  std::ofstream outfile;
+  auto mode = createIfNecessary ? std::ios_base::app : std::ios_base::out;
+  outfile.open(fileName, mode);
+
+  if (outfile.is_open() == false)
+  {
+    return false;
+  }
+
+  outfile << text;
+  return true;
+} 
 
 inline bool doesFileExist(const std::string& fileName)
 {

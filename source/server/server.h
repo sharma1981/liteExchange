@@ -27,7 +27,7 @@
 class Server : public boost::noncopyable, public FIX::Application, public FIX::MessageCracker
 {
     public:
-        Server(const std::string& fixEngineConfigFile, const ServerConfiguration& serverConfiguration) throw(std::runtime_error);
+        Server(const std::string& fixEngineConfigFile, const ServerConfiguration& serverConfiguration);
         ~Server();
         void run();
 

@@ -35,7 +35,7 @@ NO_INLINE void orderBookMatchingBenchmark()
     order_matcher::OrderBook book(symbol);
 
     //Add order tO the order book then process the order book
-    for (int i = 0; i < 100; i++)
+    for (int i = 0; i < 1000; i++)
     {
         book.insert(orderSell);
         book.insert(orderBuy1);

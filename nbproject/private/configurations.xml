@@ -3,37 +3,11 @@
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <df root="." name="0">
       <df name="bin">
-        <df name="intermediate">
-          <df name="ome.tlog">
-          </df>
-        </df>
-        <df name="quickfix_log">
-          <df name="TEST_CLIENT1">
-          </df>
-          <df name="TEST_CLIENT2">
-          </df>
-          <df name="TEST_CLIENT3">
-          </df>
-          <df name="TEST_CLIENT4">
-          </df>
-          <df name="TEST_CLIENT5">
-          </df>
-          <df name="TEST_CLIENT6">
-          </df>
-          <df name="TEST_CLIENT7">
-          </df>
-          <df name="TEST_CLIENT8">
-          </df>
-        </df>
       </df>
       <df name="build">
         <df name="linux">
         </df>
         <df name="windows">
-          <df name="ipch">
-            <df name="ome-9bd57895">
-            </df>
-          </df>
         </df>
       </df>
       <df name="dependencies">
@@ -3605,6 +3579,7 @@
           <in>aligned_memory.cpp</in>
           <in>aligned_memory.h</in>
           <in>cache_line.h</in>
+          <in>is_power_of_two.h</in>
           <in>memory_utilities.h</in>
         </df>
         <df name="order_matcher">
@@ -3627,6 +3602,8 @@
           <in>server_constants.h</in>
           <in>server_error.h</in>
           <in>server_incoming_message_dispatcher.h</in>
+          <in>server_interface.h</in>
+          <in>server_interface_cli.h</in>
           <in>server_outgoing_message_processor.h</in>
         </df>
         <df name="utility">
@@ -3654,11 +3631,13 @@
           <in>console_utility.h</in>
           <in>datetime_utility.h</in>
           <in>file_utility.h</in>
+          <in>logger.cpp</in>
           <in>microbenchmark.hpp</in>
           <in>os_utility.h</in>
           <in>pretty_exception.h</in>
           <in>single_instance.cpp</in>
           <in>single_instance.h</in>
+          <in>singleton.hpp</in>
           <in>stopwatch.cpp</in>
           <in>stopwatch.h</in>
           <in>string_utility.h</in>
@@ -3666,17 +3645,6 @@
         </df>
         <in>precompiled_header.h</in>
         <in>server_main.cpp</in>
-      </df>
-      <df name="test_benchmark">
-        <df name=".vs">
-          <df name="ome_micro_benchmark">
-            <df name="v14">
-            </df>
-          </df>
-        </df>
-        <in>microbenchmarks.cpp</in>
-        <in>order_book_benchmark.cpp</in>
-        <in>order_book_benchmark.h</in>
       </df>
       <df name="test_functional">
         <df name="client_executable_source">
@@ -3687,555 +3655,24 @@
           <in>client_request.h</in>
         </df>
       </df>
-      <df name="test_unit">
-        <df name="google_test_windows">
-          <df name="Debug">
-            <df name="google_t.BE460948.tlog">
-            </df>
-          </df>
-        </df>
-        <in>test.cpp</in>
-        <in>test_concurrent.h</in>
-        <in>test_order_matcher.h</in>
-        <in>test_utility.h</in>
-      </df>
-    </df>
-    <df root="." name="1">
-      <df name="bin">
-        <df name="intermediate">
-          <df name="ome.tlog">
-          </df>
-        </df>
-        <df name="quickfix_log">
-          <df name="TEST_CLIENT1">
-          </df>
-          <df name="TEST_CLIENT2">
-          </df>
-          <df name="TEST_CLIENT3">
-          </df>
-          <df name="TEST_CLIENT4">
-          </df>
-          <df name="TEST_CLIENT5">
-          </df>
-          <df name="TEST_CLIENT6">
-          </df>
-          <df name="TEST_CLIENT7">
-          </df>
-          <df name="TEST_CLIENT8">
-          </df>
-        </df>
-      </df>
-      <df name="build">
-        <df name="linux">
-        </df>
-        <df name="windows">
-          <df name="ipch">
-            <df name="ome-9bd57895">
-            </df>
-          </df>
-        </df>
-      </df>
-      <df name="dependencies">
-        <df name="boost">
-          <df name="align">
-            <df name="detail">
-            </df>
-          </df>
-          <df name="archive">
-            <df name="detail">
-            </df>
-            <df name="impl">
-            </df>
-            <df name="iterators">
-            </df>
-          </df>
-          <df name="bind">
-          </df>
-          <df name="concept">
-            <df name="detail">
-            </df>
-          </df>
-          <df name="config">
-            <df name="abi">
-            </df>
-            <df name="compiler">
-            </df>
-            <df name="no_tr1">
-            </df>
-            <df name="platform">
-            </df>
-            <df name="stdlib">
-            </df>
-          </df>
-          <df name="container">
-            <df name="detail">
-            </df>
-          </df>
-          <df name="core">
-          </df>
-          <df name="date_time">
-            <df name="gregorian">
-            </df>
-            <df name="posix_time">
-            </df>
-          </df>
-          <df name="detail">
-          </df>
-          <df name="exception">
-            <df name="detail">
-            </df>
-          </df>
-          <df name="flyweight">
-            <df name="detail">
-            </df>
-          </df>
-          <df name="format">
-            <df name="detail">
-            </df>
-          </df>
-          <df name="function">
-            <df name="detail">
-            </df>
-          </df>
-          <df name="functional">
-            <df name="hash">
-              <df name="detail">
-              </df>
-            </df>
-          </df>
-          <df name="integer">
-          </df>
-          <df name="interprocess">
-            <df name="allocators">
-              <df name="detail">
-              </df>
-            </df>
-            <df name="containers">
-            </df>
-            <df name="detail">
-            </df>
-            <df name="indexes">
-            </df>
-            <df name="mem_algo">
-              <df name="detail">
-              </df>
-            </df>
-            <df name="smart_ptr">
-            </df>
-            <df name="streams">
-            </df>
-            <df name="sync">
-              <df name="detail">
-              </df>
-              <df name="spin">
-              </df>
-              <df name="windows">
-              </df>
-            </df>
-          </df>
-          <df name="intrusive">
-            <df name="detail">
-            </df>
-          </df>
-          <df name="io">
-          </df>
-          <df name="iterator">
-            <df name="detail">
-            </df>
-          </df>
-          <df name="lexical_cast">
-            <df name="detail">
-            </df>
-          </df>
-          <df name="math">
-            <df name="policies">
-            </df>
-            <df name="special_functions">
-              <df name="detail">
-              </df>
-            </df>
-            <df name="tools">
-            </df>
-          </df>
-          <df name="move">
-            <df name="detail">
-            </df>
-          </df>
-          <df name="mpl">
-            <df name="aux_">
-              <df name="config">
-              </df>
-              <df name="preprocessed">
-                <df name="bcc">
-                </df>
-                <df name="bcc551">
-                </df>
-                <df name="bcc_pre590">
-                </df>
-                <df name="dmc">
-                </df>
-                <df name="gcc">
-                </df>
-                <df name="msvc60">
-                </df>
-                <df name="msvc70">
-                </df>
-                <df name="mwcw">
-                </df>
-                <df name="no_ctps">
-                </df>
-                <df name="no_ttp">
-                </df>
-                <df name="plain">
-                </df>
-              </df>
-              <df name="preprocessor">
-              </df>
-            </df>
-            <df name="limits">
-            </df>
-            <df name="list">
-              <df name="aux_">
-                <df name="preprocessed">
-                  <df name="plain">
-                  </df>
-                </df>
-              </df>
-            </df>
-            <df name="set">
-              <df name="aux_">
-              </df>
-            </df>
-            <df name="vector">
-              <df name="aux_">
-                <df name="preprocessed">
-                  <df name="no_ctps">
-                  </df>
-                  <df name="plain">
-                  </df>
-                  <df name="typeof_based">
-                  </df>
-                </df>
-              </df>
-            </df>
-          </df>
-          <df name="multi_index">
-            <df name="detail">
-            </df>
-          </df>
-          <df name="numeric">
-            <df name="conversion">
-              <df name="detail">
-                <df name="preprocessed">
-                </df>
-              </df>
-            </df>
-          </df>
-          <df name="optional">
-          </df>
-          <df name="parameter">
-            <df name="aux_">
-            </df>
-          </df>
-          <df name="predef">
-            <df name="architecture">
-              <df name="x86">
-              </df>
-            </df>
-            <df name="compiler">
-            </df>
-            <df name="detail">
-            </df>
-            <df name="language">
-            </df>
-            <df name="library">
-              <df name="c">
-              </df>
-              <df name="std">
-              </df>
-            </df>
-            <df name="os">
-              <df name="bsd">
-              </df>
-            </df>
-            <df name="other">
-            </df>
-            <df name="platform">
-            </df>
-          </df>
-          <df name="preprocessor">
-            <df name="arithmetic">
-              <df name="detail">
-              </df>
-            </df>
-            <df name="array">
-            </df>
-            <df name="comparison">
-            </df>
-            <df name="config">
-            </df>
-            <df name="control">
-              <df name="detail">
-                <df name="dmc">
-                </df>
-                <df name="edg">
-                </df>
-                <df name="msvc">
-                </df>
-              </df>
-            </df>
-            <df name="debug">
-            </df>
-            <df name="detail">
-              <df name="dmc">
-              </df>
-            </df>
-            <df name="facilities">
-              <df name="detail">
-              </df>
-            </df>
-            <df name="iteration">
-              <df name="detail">
-                <df name="bounds">
-                </df>
-                <df name="iter">
-                </df>
-              </df>
-            </df>
-            <df name="list">
-              <df name="detail">
-                <df name="dmc">
-                </df>
-                <df name="edg">
-                </df>
-              </df>
-            </df>
-            <df name="logical">
-            </df>
-            <df name="punctuation">
-              <df name="detail">
-              </df>
-            </df>
-            <df name="repetition">
-              <df name="detail">
-                <df name="dmc">
-                </df>
-                <df name="edg">
-                </df>
-                <df name="msvc">
-                </df>
-              </df>
-            </df>
-            <df name="seq">
-              <df name="detail">
-              </df>
-            </df>
-            <df name="slot">
-              <df name="detail">
-              </df>
-            </df>
-            <df name="tuple">
-              <df name="detail">
-              </df>
-            </df>
-            <df name="variadic">
-            </df>
-          </df>
-          <df name="range">
-            <df name="algorithm">
-            </df>
-            <df name="detail">
-            </df>
-          </df>
-          <df name="serialization">
-            <df name="detail">
-            </df>
-          </df>
-          <df name="smart_ptr">
-            <df name="detail">
-            </df>
-          </df>
-          <df name="spirit">
-            <df name="home">
-              <df name="classic">
-                <df name="core">
-                  <df name="composite">
-                    <df name="impl">
-                    </df>
-                  </df>
-                  <df name="impl">
-                  </df>
-                  <df name="non_terminal">
-                    <df name="impl">
-                    </df>
-                  </df>
-                  <df name="primitives">
-                    <df name="impl">
-                    </df>
-                  </df>
-                  <df name="scanner">
-                    <df name="impl">
-                    </df>
-                  </df>
-                </df>
-                <df name="debug">
-                </df>
-                <df name="meta">
-                </df>
-                <df name="utility">
-                  <df name="impl">
-                    <df name="chset">
-                    </df>
-                  </df>
-                </df>
-              </df>
-            </df>
-            <df name="include">
-            </df>
-          </df>
-          <df name="test">
-            <df name="detail">
-            </df>
-            <df name="impl">
-            </df>
-            <df name="output">
-            </df>
-            <df name="tools">
-              <df name="detail">
-              </df>
-              <df name="old">
-              </df>
-            </df>
-            <df name="tree">
-            </df>
-            <df name="utils">
-              <df name="basic_cstring">
-              </df>
-              <df name="iterator">
-              </df>
-              <df name="runtime">
-                <df name="cla">
-                  <df name="detail">
-                  </df>
-                  <df name="iface">
-                  </df>
-                </df>
-                <df name="env">
-                </df>
-              </df>
-            </df>
-          </df>
-          <df name="tuple">
-            <df name="detail">
-            </df>
-          </df>
-          <df name="type_index">
-            <df name="detail">
-            </df>
-          </df>
-          <df name="type_traits">
-            <df name="detail">
-            </df>
-          </df>
-          <df name="typeof">
-            <df name="dmc">
-            </df>
-            <df name="msvc">
-            </df>
-          </df>
-          <df name="unordered">
-            <df name="detail">
-            </df>
-          </df>
-          <df name="utility">
-            <df name="detail">
-            </df>
-          </df>
-          <df name="variant">
-            <df name="detail">
-            </df>
-          </df>
-        </df>
-        <df name="gtest-1.7.0">
-          <df name="include">
-            <df name="gtest">
-              <df name="internal">
-              </df>
-            </df>
-          </df>
-          <df name="src">
-          </df>
-        </df>
-        <df name="quickfix">
-          <df name="include">
-            <df name="quickfix">
-              <df name="fix40">
-              </df>
-              <df name="fix41">
-              </df>
-              <df name="fix42">
-              </df>
-              <df name="fix43">
-              </df>
-              <df name="fix44">
-              </df>
-              <df name="fix50">
-              </df>
-              <df name="fix50sp1">
-              </df>
-              <df name="fix50sp2">
-              </df>
-              <df name="fixt11">
-              </df>
-            </df>
-          </df>
-          <df name="lib">
-          </df>
-          <df name="linux_runtime">
-          </df>
-        </df>
-      </df>
-      <df name="source">
-        <df name="compiler_portability">
-        </df>
-        <df name="concurrent">
-          <df name="profiling">
-          </df>
-        </df>
-        <df name="memory">
-          <df name="debugging">
-          </df>
-        </df>
-        <df name="order_matcher">
-        </df>
-        <df name="server">
-        </df>
-        <df name="utility">
-          <df name="design_patterns">
-          </df>
-          <df name="logger">
-          </df>
-        </df>
-      </df>
-      <df name="test_benchmark">
+      <df name="test_microbenchmark">
         <df name=".vs">
           <df name="ome_micro_benchmark">
             <df name="v14">
             </df>
           </df>
         </df>
-      </df>
-      <df name="test_functional">
-        <df name="client_executable_source">
-        </df>
+        <in>microbenchmarks.cpp</in>
+        <in>order_book_benchmark.cpp</in>
+        <in>order_book_benchmark.h</in>
       </df>
       <df name="test_unit">
         <df name="google_test_windows">
-          <df name="Debug">
-            <df name="google_t.BE460948.tlog">
-            </df>
-          </df>
         </df>
+        <in>test.cpp</in>
+        <in>test_concurrent.h</in>
+        <in>test_order_matcher.h</in>
+        <in>test_utility.h</in>
       </df>
     </df>
   </logicalFolder>

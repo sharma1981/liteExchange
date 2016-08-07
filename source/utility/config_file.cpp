@@ -11,7 +11,7 @@ using namespace std;
 namespace utility
 {
 
-void ConfigFile::loadFromFile(const string& fileName) throw(std::runtime_error)
+void ConfigFile::loadFromFile(const string& fileName)
 {
     // For reusability
     m_dictionary.clear();
@@ -81,7 +81,7 @@ bool ConfigFile::doesAttributeExist(const std::string& attribute)
     return true;
 }
 
-const string& ConfigFile::getStringValue(const string& attribute) const throw(std::invalid_argument)
+const string& ConfigFile::getStringValue(const string& attribute) const
 {
     auto element = m_dictionary.find(attribute);
     if (element == m_dictionary.end())
@@ -93,14 +93,14 @@ const string& ConfigFile::getStringValue(const string& attribute) const throw(st
     return element->second;
 }
 
-bool ConfigFile::getBoolValue(const string& attribute) const throw(std::invalid_argument)
+bool ConfigFile::getBoolValue(const string& attribute) const
 {
     auto stringVal = getStringValue(attribute);
     std::transform(stringVal.begin(), stringVal.end(), stringVal.begin(), ::tolower);
     return (stringVal == "true") ? true : false;
 }
 
-int ConfigFile::getIntValue(const string& attribute) const throw(std::invalid_argument)
+int ConfigFile::getIntValue(const string& attribute) const
 {
     return std::stoi(getStringValue(attribute));
 }

@@ -22,7 +22,7 @@ class FileSink : public BaseLoggerSink
         {
         }
 
-        void open() throw(std::runtime_error) override
+        void open() override
         {
             assert(m_resourceName.length() > 0);
 

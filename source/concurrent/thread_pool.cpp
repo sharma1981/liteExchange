@@ -74,7 +74,7 @@ void ThreadPool::initialise(const ThreadPoolArguments& args)
 }
 
 // THIS METHOD ITSELF IS NOT THREAD SAFE
-void ThreadPool::submitTask(const Task& task, size_t queueID) throw(std::invalid_argument)
+void ThreadPool::submitTask(const Task& task, size_t queueID)
 {
     if( queueID >= m_threadQueues.size() )
     {

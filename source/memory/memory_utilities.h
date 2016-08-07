@@ -27,22 +27,22 @@ inline T getCPUArchitecture()
 }
 
 template <typename T>
-inline T align_to_target_cpu_architecture(T input)
+inline T alignToTargetCPUArchitecture(T input)
 {
 #ifndef _CPU_ARCHITECTURE_
 #error "memory_utilities.h : You have to include compiler_portability/cpu_architecture.h in order to call align_to_target_cpu_architecture"
 #endif
-    static_assert(std::is_integral<T>::value, "align_to_target_cpu_architecture : Only numeric values can be used in specialisation");
+    static_assert(std::is_integral<T>::value, "alignToTargetCPUArchitecture : Only numeric values can be used in specialisation");
 
     T alignment = getCPUArchitecture<T>();
-    T aligned_number = input;
+    T alignedNumber = input;
 
-    while(aligned_number % alignment != 0)
+    while(alignedNumber % alignment != 0)
     {
-      aligned_number += 1;
+      alignedNumber += 1;
     }
 
-    return aligned_number;
+    return alignedNumber;
 }
 
 }

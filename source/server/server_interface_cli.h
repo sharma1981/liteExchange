@@ -6,6 +6,7 @@
 #include <server/server_error.h>
 
 #include <utility/logger/logger.h>
+#include <utility/string_utility.h>
 
 #include <iostream>
 #include <string>
@@ -27,7 +28,7 @@ class ServerInterfaceCli : public ServerInterface
                 std::string value;
                 std::cin >> value;
 
-                std::transform(value.begin(), value.end(), value.begin(), ::tolower);
+                value = utility::toLowercase(value);
 
                 if (value == "display")
                 {

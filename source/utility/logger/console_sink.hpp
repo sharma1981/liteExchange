@@ -18,7 +18,7 @@ class ConsoleSink : public BaseLoggerSink
         {
         }
 
-        void open() throw(std::runtime_error) override
+        void open() override
         {
         }
 

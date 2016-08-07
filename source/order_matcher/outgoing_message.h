@@ -28,7 +28,7 @@ class OutgoingMessage : public memory::Aligned<>
         const Order& getOrder() const { return m_order; }
         const OutgoingMessageType& getType() const { return m_type; }
 
-        std::string toString() const throw(std::invalid_argument)
+        std::string toString() const
         {
             switch (m_type)
             {

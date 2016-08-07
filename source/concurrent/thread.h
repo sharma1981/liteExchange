@@ -40,7 +40,7 @@ class Thread : public boost::noncopyable
 
         const std::string getThreadName()const {return m_name;}
 
-        void start(std::size_t stackSize=0) throw(std::runtime_error);
+        void start(std::size_t stackSize=0);
         void join();
         bool isAlive() const;
         int pinToCPUCore(int coreId);

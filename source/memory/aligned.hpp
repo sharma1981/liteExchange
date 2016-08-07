@@ -29,7 +29,7 @@ class Aligned
             you're writing the code and as a reminder to the next programmer who has to maintain it.
         */
 
-        static void* operator new(std::size_t size) throw(std::bad_alloc)
+        static void* operator new(std::size_t size)
         {
             void* ret = nullptr;
 

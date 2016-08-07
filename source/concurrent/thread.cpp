@@ -89,7 +89,7 @@ void Thread::setThreadName()
     }
 }
 
-void Thread::start(size_t stackSize) throw(std::runtime_error)
+void Thread::start(size_t stackSize)
 {
     bool success = true;
  #ifdef __linux__

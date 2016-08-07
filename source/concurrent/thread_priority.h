@@ -57,7 +57,7 @@ const static std::array<ThreadPriorityNode, 5> NATIVE_THREAD_PRIORITIES =
     }
 };
 
-inline ThreadPriority getThreadPriorityFromString(const std::string& input) throw(std::invalid_argument)
+inline ThreadPriority getThreadPriorityFromString(const std::string& input)
 {
     ThreadPriority ret;
 
