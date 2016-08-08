@@ -6,15 +6,15 @@ Sections :
 	1. Introduction
 	2. Limit orders and order matching engines
 	3. FIX ( Financial Information Exchange ) protocol
-	4. Build dependencies
-	5. Runtime dependencies
-	6. How to build
-	7. Server parameters and running the server
-	8. Example log messages with FIX 
-	9. Functional testing
-	10. Unit testing with GoogleTest
-	11. Coding and other guidelines
-	12. TODO List
+	4. Overview of the system
+	5. Build dependencies
+	6. Runtime dependencies
+	7. How to build
+	8. Server parameters and running the server
+	9. Example log messages with FIX 
+	10. Functional testing
+	11. Unit testing with GoogleTest
+	12. Coding and other guidelines
 
 ===========================================================================
 			
@@ -86,10 +86,39 @@ http://www.investopedia.com/university/intro-to-order-types/
 For more information , please see https://en.wikipedia.org/wiki/Financial_Information_eXchange .
 
 For the time being, this projectis using opensource QuickFix engine and FIX specification 4.2.
+
+===========================================================================
+			
+**4. Overview of multithreading system :** If you look at the source , the concurrency layer ( https://github.com/akhin/cpp_multithreaded_order_matching_engine/tree/master/source/concurrent , using concurrent word since MS using concurrency for their own libraries ) , 
+the engine currently is using :
+
+	- A thread class which you can set stack size and set names for debugging
+	- 1 lock free SPSC ring buffer
+	- Other fine grained lock based ring buffer and queues
+	- Actor pattern
+	- A thread pool with ability to pin threads to CPU cores and avoid hyperthreading
+	- Also the engine currently makes use of a set of CPU cache aligned allocators for memory allocations in order to avoid false sharing :
+	https://github.com/akhin/cpp_multithreaded_order_matching_engine/tree/master/source/memory
+
+Mainly, the engine consists of 2 parts : FIX server/engine and the order matching layer. The core of order matching layer is called a central order book, which keeps order books per security symbol. Each order book has a table for bids and another table for asks. Briefly the multithreaded system works as below :
+
+a) The FIX engine will listen for session requests from the clients, and if a session is established then it listens for incoming ask/bid orders. If the order type is not supported, it sends “rejected” message. Otherwise the message will be submitted to an incoming message dispatcher which is a fine grained MPSC unbounded queue. ( The main reason being for MPSC here is the FIX engine being used is multithreaded and the worker queues in the thread pool are SPSC by design ) The incoming message dispatcher will submit messages to the central order book.
+
+b) Central Order book has a thread pool :
+
+– The thread pool will have N lockfree SPSC queues for N threads ( N = num of symbol ). The thread pool  also has the ability to pin threads to CPU cores. And based on configuration it can also avoid hyperthreading/logical processors by pinning threads only to CPU cores with even indexes.
+
+– Central Order book also has 1 MPMC queue for outgoing messages.
+
+– When a new message arrives ( new order, or cancel ) from the incoming message dispatcher, it will be submitted to corresponding thread`s queue in the thread pool of the central order book.
+
+c) Each thread in the thread pool will get message from their SPSC queue in the thread pool , and add them to corresponding order queue which is used by only itself and eventually trigger the order matching process for that queue. At the end of the order matching , worker threads will submit messages ( FILLED or PARTIALLY FILLED ) to the outgoing messages queue.
+
+d) Outgoing message processor which is a fine grained MPMC queue will process the outgoing messages and send responses back to the clients.
 	
 ===========================================================================
 
-**4. Build dependencies :** For Linux , the project is built and tested with GCC4.8 only on CentOS7. 
+**5. Build dependencies :** For Linux , the project is built and tested with GCC4.8 only on CentOS7. 
 
 As for Windows it is using MSVC1200(VS2013). An important note about VS2013 , its version shouldn`t be later then Update2 as the project is using C++11 curly brace initialisation in MILs and MSVC rollbacked that feature starting from Update3 :
 
@@ -105,7 +134,7 @@ In the libraries side :
 
 ===========================================================================
 
-**5. Runtime dependencies :** For Windows, you have to install MSVC120 runtime : https://www.microsoft.com/en-gb/download/details.aspx?id=40784
+**6. Runtime dependencies :** For Windows, you have to install MSVC120 runtime : https://www.microsoft.com/en-gb/download/details.aspx?id=40784
 
 For Linux, you need GNU Libstd C++ 6 runtime and QuickFIX runtime.
 
@@ -119,7 +148,7 @@ Note : This script will copy shared object to library path, create soft links, w
 		
 ===========================================================================
 
-**6. How to build :**
+**7. How to build :**
 			
 How to build the project on Linux :
 	
@@ -143,7 +172,7 @@ How to build the project on Windows  :
 	
 ===========================================================================
 
-**7. Server parameters and running the matching engine :** The engine executable looks for "ome.ini" file. Here is the list of things you can set :
+**8. Server parameters and running the matching engine :** The engine executable looks for "ome.ini" file. Here is the list of things you can set :
 
 		FILE_LOGGING_ENABLED						enables/disables logging
 		CONSOLE_OUTPUT_ENABLED						enables/disables output to stdout
@@ -192,7 +221,7 @@ Once you start the ome executable , initially you will see a screen like this :
 				
 ===========================================================================
 				
-**8. Example log message from the engine :** The engine produces log messages below when it receives 1 buy order with quantity 1 and 1 sell order with quantity 1 for the same symbol :
+**9. Example log message from the engine :** The engine produces log messages below when it receives 1 buy order with quantity 1 and 1 sell order with quantity 1 for the same symbol :
 
 	06-02-2016 20:16:09 : INFO , FIX Engine , New logon , session ID : FIX.4.2:OME->TEST_CLIENT1
 	06-02-2016 20:16:09 : INFO , FIX Engine , Sending fix message : 8=FIX.4.29=15435=834=543=Y49=OME52=20160206-20:16:09.29556=TEST_CLIENT1122=20160206-20:15:03.9556=011=414=017=1820=037=438=139=054=155=MSFT150=0151=110=000
@@ -242,7 +271,7 @@ QuickFixMessanger , https://github.com/jramoyo/quickfix-messenger
 
 ===========================================================================
 
-**9. Functional testing :** There is a prebuilt executable for both Linux and Windows which can send specified ask/bid orders to the order matching engine.
+**10. Functional testing :** There is a prebuilt executable for both Linux and Windows which can send specified ask/bid orders to the order matching engine.
    
    Under "test_functional" directory :
    
@@ -258,7 +287,7 @@ QuickFixMessanger , https://github.com/jramoyo/quickfix-messenger
 		
 ===========================================================================
 		
-**10. Unit testing with GoogleTest :** The project uses GoogleTest 1.7. You can find a makefile and vcproj under "test_unit" directory.
+**11. Unit testing with GoogleTest :** The project uses GoogleTest 1.7. You can find a makefile and vcproj under "test_unit" directory.
 
 	
 Building and running unit test on Linux : You have to build and install Google Test 1.7 first , the instructions for CentOS and Ubuntu :
@@ -282,7 +311,7 @@ Building and running unit test on Windows : You can use VisualStudio solution in
 
 ===========================================================================
 
-**11. Coding and other guidelines :**
+**12. Coding and other guidelines :**
 
 Source code and file/directory naming conventions :
 	
@@ -305,7 +334,7 @@ Source code indentations and new line usage :
 	Needs to be set in VS2013 : https://msdn.microsoft.com/en-gb/library/ms165330(v=vs.90).aspx
 	New lines : Unix CR only ( \n ) , VisualStudio can handle it even though Windows is \r\n
 	
-source_code_formatter.sh : It is a Bash script that scans all cpp,h,hpp files in project directory and converts Windows end of lines to Linux, converts tabs to 4 spaces and removes trailing whitespace. It requires dos2unix.
+utility/source_code_formatter.sh : It is a Bash script that scans all cpp,h,hpp files in project directory and converts Windows end of lines to Linux, converts tabs to 4 spaces and removes trailing whitespace. It requires dos2unix.
 	
 Inclusions : Using forward slash as it works for both Linux and Windows :
 
@@ -323,15 +352,5 @@ For GCC see https://gcc.gnu.org/onlinedocs/gcc/Precompiled-Headers.html
 For MSVC 120 see https://msdn.microsoft.com/en-us/library/8c5ztk84(v=vs.120).aspx
 
 MSVC120 C++11 Limitations : Curly brace initialisation at MILs and noexcept is not supported. For noexcept usage please see compiler_portability/noexcept.h .
-
-===========================================================================
-
-**12. Todo List :**
-
-Memory : 3rd party memory allocators support : jemalloc, intelTBB, tcMalloc, Lockless. Currently the engine is using a set of CPU cache aligned allocators in "source/memory".
-
-GPU Offloading with CUDA : Will add experimental support for offloading order matching to GPU
-
-Concurrency : MPMC and MPSC lockfree container implementations , currently only SPSC bounded queue is lock free.
 
 ===========================================================================
