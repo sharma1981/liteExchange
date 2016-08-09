@@ -11,23 +11,23 @@ clear
 
 function display_usage()
 {
-	echo ""
-	echo "chmod +x ./client_automated_test.sh"
-	echo "./client_automated_test.sh"
-	echo ""
+    echo ""
+    echo "chmod +x ./client_automated_test.sh"
+    echo "./client_automated_test.sh"
+    echo ""
 }
 
 function run_client()
 {
-	local client_name=$1
-	./client $TEMPLATE_FILE $SERVER $client_name $TEST_CASES_FILE
+    local client_name=$1
+    ./client $TEMPLATE_FILE $SERVER $client_name $TEST_CASES_FILE
 }
 
 if [[ $initrv > 0 ]]
 then
-	echo "Current user needs to have root rights in order to execute OME"
-	display_usage  
-	exit 1
+    echo "Current user needs to have root rights in order to execute OME"
+    display_usage  
+    exit 1
 fi
 
 echo ""
@@ -37,8 +37,8 @@ echo ""
 start=$(($(date +%s%N)/1000000))
 for i in "${CLIENTS[@]}"
 do
-	echo "Starting $i"
-	run_client $i &
+    echo "Starting $i"
+    run_client $i &
 done
 
 #Wait for all forked child processes
