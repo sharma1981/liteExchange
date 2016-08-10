@@ -1,9 +1,0 @@
-g++ microbenchmarks.cpp -o microbenchmarks.o -I./ -I../dependencies/gtest-1.7.0/include/	 -I../source -I../dependencies/ -std=c++11 -c -DDEBUG -g -Wall -fexceptions -frtti
-In file included from ../source/utility/microbenchmark.hpp:21:0,
-                 from microbenchmarks.cpp:4:
-../source/utility/console_utility.h: In function ‘void utility::consoleOutputWithColor(utility::ConsoleColor, const char*, ...)’:
-../source/utility/console_utility.h:88:10: warning: unused variable ‘foreGroundColorCode’ [-Wunused-variable]
-     auto foreGroundColorCode = NATIVE_CONSOLE_COLORS[fgIndex].value;
-          ^
-g++ order_book_benchmark.cpp -o order_book_benchmark.o -I./ -I../dependencies/gtest-1.7.0/include/	 -I../source -I../dependencies/ -std=c++11 -c -DDEBUG -g -Wall -fexceptions -frtti
-g++ -o ome_perf_test  microbenchmarks.o order_book_benchmark.o ../source/memory/aligned_memory.o ../source/concurrent/thread.o ../source/concurrent/thread_pool.o ../source/concurrent/profiling/lock_profiler.o ../source/concurrent/profiling/thread_profiler.o ../source/utility/config_file.o ../source/utility/stopwatch.o ../source/utility/logger/logger.o ../source/utility/single_instance.o ../source/order_matcher/order.o ../source/order_matcher/order_book.o ../source/order_matcher/central_order_book.o  -lstdc++ -pthread -lgtest -lgtest_main
