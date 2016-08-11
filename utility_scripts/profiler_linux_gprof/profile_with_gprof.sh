@@ -28,7 +28,7 @@ kill $(ps aux | grep ome | awk '{print $2}')
 kill $(ps aux | grep client | awk '{print $2}')
 # Move gperf report to current directory
 cd ..
-mv bin/${GPROF_OUTPUT_REPORT} utility_scripts/profiler_linux_grof/${GPROF_OUTPUT_REPORT}
+mv bin/${GPROF_OUTPUT_REPORT} utility_scripts/profiler_linux_gprof/${GPROF_OUTPUT_REPORT}
 # Remove initially copied gmon.out
 rm -rf bin/gmon.out
 #End of the script
