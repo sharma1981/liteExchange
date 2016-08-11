@@ -8,32 +8,32 @@
 namespace utility
 {
 
-inline bool replaceInString(std::string& str, const std::string& from, const std::string& to)
+inline bool replaceInString(std::string& target, const std::string& from, const std::string& to)
 {
-    auto start_pos = str.find(from);
+    auto startPos = target.find(from);
 
-    if (start_pos == std::string::npos)
+    if (startPos == std::string::npos)
     {
         return false;
     }
 
-    str.replace(start_pos, from.length(), to);
+    target.replace(startPos, from.length(), to);
     return true;
 }
 
-inline bool contains(const std::string& input_string, const std::string& search_string)
+inline void replaceCharacterInString(std::string& target, char oldChar, char newChar)
 {
-    if (input_string.find(search_string) != std::string::npos)
+  std::replace(target.begin(), target.end(), oldChar, newChar);
+}
+
+inline bool contains(const std::string& input, const std::string& searchString)
+{
+    if (input.find(searchString) != std::string::npos)
     {
         return true;
     }
 
     return false;
-}
-
-inline void replaceCharacterInString(std::string& input, char oldChar, char newChar)
-{
-  std::replace(input.begin(), input.end(), oldChar, newChar);
 }
 
 template <typename T>
@@ -50,6 +50,46 @@ inline T toUppercase(const T& input)
     T ret = input;
     std::transform(ret.begin(), ret.end(), ret.begin(), ::toupper);
     return ret;
+}
+
+inline bool compare(const std::string& first, const std::string& second)
+{
+  bool same = false;
+
+  auto firstLowerCase = toLowercase(first);
+  auto secondLowerCase = toLowercase(second);
+
+  if (!strcmp(firstLowerCase.c_str(), secondLowerCase.c_str()))
+  {
+    same = true;
+  }
+
+  return same;
+}
+
+inline bool startsWith(const std::string& inputString, char c)
+{
+  if (inputString.length() > 0)
+  {
+    if (inputString[0] == c)
+    {
+      return true;
+    }
+  }
+  return false;
+}
+
+inline void narrowStringToWideString(const std::string& source, std::wstring& destination)
+{
+  std::wstringstream wideStringStream;
+  wideStringStream << source.c_str();
+  destination = wideStringStream.str();
+}
+
+inline void wideStringToNarrowString(const std::wstring& source, std::string& destination)
+{
+  std::string narrowString(source.begin(), source.end());
+  destination = narrowString;
 }
 
 }// namespace
