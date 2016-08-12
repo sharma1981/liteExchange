@@ -1,7 +1,8 @@
 $global:SERVER="127.0.0.1"
-$global:TEMPLATE_FILE="template.cfg"
-$global:TEST_CASES_FILE="test_cases.txt"
+$global:TEMPLATE_FILE=Resolve-Path ".\client_executable\template.cfg"
+$global:TEST_CASES_FILE=Resolve-Path ".\test_cases.txt"
 $global:CLIENTS='TEST_CLIENT1','TEST_CLIENT2','TEST_CLIENT3','TEST_CLIENT4','TEST_CLIENT5','TEST_CLIENT6','TEST_CLIENT7','TEST_CLIENT8'
+$global:CLIENT_DIRECTORY='..'
 
 function initialise()
 {
@@ -61,7 +62,7 @@ function initialise()
 	Add-Type -TypeDefinition $source;
 }
 
-Clear-Host
+#Clear-Host
 initialise
 
 Write-Host ""
@@ -69,8 +70,10 @@ Write-Host "Client automation is starting : " -foregroundcolor "Yellow"
 Write-Host ""
 
 
-$client_executable = Resolve-Path ".\client.exe"
+$client_executable = Resolve-Path ".\client_executable\client.exe"
 $process_executor = New-Object MultiProcessStarter
+
+cd $global:CLIENT_DIRECTORY
 
 #Start tests       
 foreach( $client in $global:CLIENTS )
@@ -88,7 +91,9 @@ $sw.Stop()
 Write-Host
 $time_taken = $sw.ElapsedMilliseconds.toString();
 Write-Host "Time : $time_taken milliseconds "
-
+#Remove cfg files
+cd ..
+Get-ChildItem . -include *.cfg -force | Remove-Item
 # Ending
 Write-Host ""
 Write-Host "Client automation finished , press enter to quit." -foregroundcolor "Yellow"

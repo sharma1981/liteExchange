@@ -2,6 +2,7 @@
 SERVER="127.0.0.1"
 TEMPLATE_FILE="template.cfg"
 TEST_CASES_FILE="test_cases.txt"
+CLIENT_DIRECTORY="./client_executable"
 CLIENTS=('TEST_CLIENT1' 'TEST_CLIENT2' 'TEST_CLIENT3' 'TEST_CLIENT4' 'TEST_CLIENT5' 'TEST_CLIENT6' 'TEST_CLIENT7' 'TEST_CLIENT8');
 
 #Sudoable test
@@ -20,7 +21,7 @@ function display_usage()
 function run_client()
 {
     local client_name=$1
-    ./client $TEMPLATE_FILE $SERVER $client_name $TEST_CASES_FILE
+    ./client $TEMPLATE_FILE $SERVER $client_name ../$TEST_CASES_FILE
 }
 
 if [[ $initrv > 0 ]]
@@ -33,6 +34,8 @@ fi
 echo ""
 echo "Client automation is starting :"
 echo ""
+
+cd $CLIENT_DIRECTORY
 
 start=$(($(date +%s%N)/1000000))
 for i in "${CLIENTS[@]}"
@@ -48,6 +51,9 @@ finish=$(($(date +%s%N)/1000000))
 current_execution_time=$(($finish-$start))
 echo ""
 echo "Time : $current_execution_time milliseconds "
+
+#Delete config files
+sudo rm -rf *.cfg
 
 
 echo ""
