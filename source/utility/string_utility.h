@@ -3,6 +3,8 @@
 
 #include <cctype>
 #include <string>
+#include <vector>
+#include <sstream>
 #include <algorithm>
 
 namespace utility
@@ -34,6 +36,21 @@ inline bool contains(const std::string& input, const std::string& searchString)
     }
 
     return false;
+}
+
+inline std::vector<std::string> split(const std::string& input, char seperator)
+{
+  std::vector<std::string> ret;
+  if (input.length() > 0)
+  {
+    std::istringstream stream(input);
+    std::string token;
+    while (std::getline(stream, token, seperator)) 
+    {
+      ret.push_back(token);
+    }
+  }
+  return ret;
 }
 
 template <typename T>

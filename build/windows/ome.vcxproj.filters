@@ -179,9 +179,6 @@
     <ClInclude Include="..\..\source\utility\file_utility.h">
       <Filter>utility</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\utility\microbenchmark.hpp">
-      <Filter>utility</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\source\utility\os_utility.h">
       <Filter>utility</Filter>
     </ClInclude>

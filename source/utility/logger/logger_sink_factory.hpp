@@ -41,6 +41,7 @@ class LoggerSinkFactory : Factory<LoggerSinkPtr>
         LoggerSinkPtr create(const std::string& sinkName) override
         {
             BaseLoggerSink* product{nullptr};
+
             if (sinkName.compare(FILE_SINK) == 0)
             {
                 product = new FileSink();
