@@ -11,7 +11,13 @@ REM MSDN Link for using vsperf from command line : https://msdn.microsoft.com/en
 REM MSDN Link for using vs perf cmd from command line : https://msdn.microsoft.com/en-us/library/dd255377.aspx
 REM 
 REM For VS 2013 commnad prompt
-call "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\vcvarsall.bat" x86_amd64
+SET VS_CMD_BAT="C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\vcvarsall.bat"
+if exist %VS_CMD_BAT% (
+	echo VisualStudio commmand prompt found
+) else (
+    echo VisualStudio commmand prompt not found && pause && exit 1
+)
+call %VS_CMD_BAT% x86_amd64
 REM For VS 2015 command prompt
 REM call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" x86_amd64
 REM
