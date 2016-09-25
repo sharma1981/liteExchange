@@ -11,7 +11,7 @@
 #include <concurrent/actor.h>
 #include <concurrent/ring_buffer_mpmc.hpp>
 
-#include <utility/design_patterns/singleton_static.hpp>
+#include <utility/design_patterns/singleton_dlcp.hpp>
 
 #include <utility/logger/log_levels.h>
 #include <utility/logger/log_entry.hpp>
@@ -20,18 +20,18 @@
 namespace utility
 {
 
-#define LOG_INFO(SENDER, MESSAGE) (utility::Logger::getInstance().log(utility::LogLevel::LEVEL_INFO,(SENDER),(MESSAGE)));
-#define LOG_WARNING(SENDER, MESSAGE) (utility::Logger::getInstance().log(utility::LogLevel::LEVEL_WARNING,(SENDER),(MESSAGE)));
-#define LOG_ERROR(SENDER, MESSAGE) (utility::Logger::getInstance().log(utility::LogLevel::LEVEL_ERROR,(SENDER),(MESSAGE)));
+#define LOG_INFO(SENDER, MESSAGE) (utility::Logger::getInstance()->log(utility::LogLevel::LEVEL_INFO,(SENDER),(MESSAGE)));
+#define LOG_WARNING(SENDER, MESSAGE) (utility::Logger::getInstance()->log(utility::LogLevel::LEVEL_WARNING,(SENDER),(MESSAGE)));
+#define LOG_ERROR(SENDER, MESSAGE) (utility::Logger::getInstance()->log(utility::LogLevel::LEVEL_ERROR,(SENDER),(MESSAGE)));
 //Sink-exclusive macros, the logs will be sent to only specified sinks
-#define LOG_CONSOLE(SENDER, MESSAGE) (utility::Logger::getInstance().logForExclusiveSink(utility::LogLevel::LEVEL_INFO,(SENDER),(MESSAGE),(CONSOLE_SINK)));
-#define LOG_FILE(SENDER, MESSAGE) (utility::Logger::getInstance().logForExclusiveSink(utility::LogLevel::LEVEL_INFO,(SENDER),(MESSAGE),(FILE_SINK)));
+#define LOG_CONSOLE(SENDER, MESSAGE) (utility::Logger::getInstance()->logForExclusiveSink(utility::LogLevel::LEVEL_INFO,(SENDER),(MESSAGE),(CONSOLE_SINK)));
+#define LOG_FILE(SENDER, MESSAGE) (utility::Logger::getInstance()->logForExclusiveSink(utility::LogLevel::LEVEL_INFO,(SENDER),(MESSAGE),(FILE_SINK)));
 
 #define DEFAULT_LOGGER_RING_BUFFER_SIZE 819200
 
 using LogBuffer = std::unique_ptr< concurrent::RingBufferMPMC<LogEntry> >;
 
-class Logger : public concurrent::Actor, public SingletonStatic<Logger>
+class Logger : public concurrent::Actor, public SingletonDLCP<Logger>
 {
     public :
         Logger() : Actor("LoggerThread") {}

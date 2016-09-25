@@ -31,19 +31,19 @@ class ServerConfiguration
             m_singleInstanceTCPPortNumber = configuration.getIntValue(server_constants::CONFIGURATION_FILE_SINGLE_INSTANCE_TCP_PORT);
 
             // Get logging related configurations, the loop is for per logger sink
-            utility::Logger::getInstance().initialise(configuration.getIntValue(server_constants::CONFIGURATION_FILE_LOG_BUFFER_SIZE));
+            utility::Logger::getInstance()->initialise(configuration.getIntValue(server_constants::CONFIGURATION_FILE_LOG_BUFFER_SIZE));
 
             for (auto& sinkName : utility::LOGGER_SINKS)
             {
                 if (configuration.getBoolValue(sinkName) == true)
                 {
-                    utility::Logger::getInstance().setSinkEnabled(sinkName, true);
+                    utility::Logger::getInstance()->setSinkEnabled(sinkName, true);
 
                     std::string resourceNameAttribute = std::string(sinkName) + "_RESOURCE_NAME";
                     if (configuration.doesAttributeExist(resourceNameAttribute))
                     {
                         auto resourceName = configuration.getStringValue(resourceNameAttribute);
-                        utility::Logger::getInstance().setSinkResourceName(sinkName, resourceName);
+                        utility::Logger::getInstance()->setSinkResourceName(sinkName, resourceName);
                     }
                 }
             }

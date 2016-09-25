@@ -9,6 +9,9 @@
 
     Note that , the order of initialisation for statics in different translation units
     is undefined , so this could be problematic if more singletons used in the project
+	
+	Note about MSVC : In MSVC using static are not thread safe :
+	https://blogs.msdn.microsoft.com/oldnewthing/20040308-00/?p=40363/
 */
 
 namespace utility

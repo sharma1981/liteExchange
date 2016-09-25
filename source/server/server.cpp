@@ -99,10 +99,10 @@ void Server::onError(const string& message, ServerError error)
     std::cerr << message << std::endl;
     auto exit_code = static_cast<std::underlying_type<ServerError>::type >(error);
 
-    if (utility::Logger::getInstance().isAlive())
+    if (utility::Logger::getInstance()->isAlive())
     {
         LOG_ERROR("Main thread", "Ending")
-        utility::Logger::getInstance().shutdown();
+        utility::Logger::getInstance()->shutdown();
     }
     std::exit(exit_code);
 }

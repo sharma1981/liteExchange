@@ -84,7 +84,7 @@ int main ()
     try
     {
         // Start logger
-        utility::Logger::getInstance().start();
+        utility::Logger::getInstance()->start();
         LOG_INFO("Main thread", "starting")
 
         Server application(server_constants::FIX_ENGINE_CONFIG_FILE, serverConfiguration);
@@ -111,6 +111,6 @@ int main ()
     //////////////////////////////////////////
     // Application exit
     LOG_INFO("Main thread", "Ending")
-    utility::Logger::getInstance().shutdown();
+    utility::Logger::getInstance()->shutdown();
     return 0;
 }
