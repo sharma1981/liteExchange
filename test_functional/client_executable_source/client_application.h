@@ -7,6 +7,7 @@
 #include <quickfix/MessageCracker.h>
 #include <quickfix/Values.h>
 #include <quickfix/Mutex.h>
+#include <quickfix/SocketInitiator.h>
 
 #include <quickfix/fix42/NewOrderSingle.h>
 #include <quickfix/fix42/OrderCancelRequest.h>
@@ -15,6 +16,7 @@
 #include "client_request.h"
 
 #include <sstream>
+#include <fstream>
 #include <string>
 #include <vector>
 #include <queue>
@@ -108,6 +110,10 @@ class ClientApplication : public FIX::Application, public FIX::MessageCracker, p
         }
 
         std::string orderStatusToString(const FIX::OrdStatus& type);
+
+		std::string m_outputFileName;
+		std::ofstream m_outputFile;
+
 };
 
 #endif

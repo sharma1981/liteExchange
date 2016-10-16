@@ -1,4 +1,11 @@
 #include "client_application.h"
+
+#include <quickfix/FileStore.h>
+
+#include <quickfix/SessionSettings.h>
+#include <quickfix/Log.h>
+
+
 #include <quickfix/Session.h>
 #include <iostream>
 #include <fstream>
@@ -11,10 +18,6 @@ using namespace std;
 
 #include <boost/format.hpp>
 
-#include <quickfix/FileStore.h>
-#include <quickfix/SocketInitiator.h>
-#include <quickfix/SessionSettings.h>
-#include <quickfix/Log.h>
 
 #define ONE_SECOND 1000
 #define SESSION_TIMEOUT 120
@@ -40,6 +43,14 @@ ClientApplication::ClientApplication(const string& csvTestFile, const string& fi
     // Extract client id from the name of the cfg file
     m_ClientID = m_fixEngineConfigFile.substr(0, m_fixEngineConfigFile.length() - 4);
 
+	// 
+	m_outputFileName = m_ClientID + ".txt";
+	if (utility::doesFileExist(m_outputFileName))
+	{
+		utility::deleteFile(m_outputFileName);
+	}
+	m_outputFile.open(m_outputFileName);
+
     // Load requests from csv file
     loadRequests(csvTestFile);
 
@@ -52,6 +63,7 @@ ClientApplication::~ClientApplication()
 {
     m_applicationEnding.store(true);
     m_consoleOutputThread.join();
+	m_outputFile.close();
 }
 
 // COARSE-GRAINED LOCKING AS IT IS ONLY FOR TEST SOFTWARE
@@ -72,6 +84,8 @@ void ClientApplication::consoleOutputThread()
 
                 m_fileOutputMessageBuffer << utility::getCurrentDateTime();
                 m_fileOutputMessageBuffer << " : "<< message << endl;
+
+				m_outputFile << message << endl;
             }
 
             m_consoleMessages.clear();

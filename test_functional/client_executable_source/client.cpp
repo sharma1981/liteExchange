@@ -44,6 +44,9 @@ int main(int argc, char** argv)
         string clientName = argv[3];
         string csvTestFile = argv[4];
 
+		// Set current working directory as current executable`s directory
+		utility::setCurrentWorkingDirectory(utility::getCurrentExecutableDirectory());
+
         string quickFixConfigFile = clientName + ".cfg";
         createQuickFixConfigFile(quickFixTemplateFile, targetServer, clientName, quickFixConfigFile);
 
