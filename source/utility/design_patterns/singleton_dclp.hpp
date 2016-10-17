@@ -14,7 +14,7 @@
 namespace utility
 {
 template <class T>
-class SingletonDLCP : public boost::noncopyable
+class SingletonDCLP : public boost::noncopyable
 {
     public:
         static T * getInstance()
@@ -40,10 +40,10 @@ class SingletonDLCP : public boost::noncopyable
 };
 
 template <class T>
-std::atomic<T*> SingletonDLCP<T>::m_instance = nullptr;
+std::atomic<T*> SingletonDCLP<T>::m_instance = nullptr;
 
 template <class T>
-concurrent::Lock SingletonDLCP<T>::m_lock;
+concurrent::Lock SingletonDCLP<T>::m_lock;
 
 } //namespace
 

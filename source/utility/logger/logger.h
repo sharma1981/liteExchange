@@ -11,7 +11,7 @@
 #include <concurrent/actor.h>
 #include <concurrent/ring_buffer_mpmc.hpp>
 
-#include <utility/design_patterns/singleton_dlcp.hpp>
+#include <utility/design_patterns/singleton_dclp.hpp>
 
 #include <utility/logger/log_levels.h>
 #include <utility/logger/log_entry.hpp>
@@ -31,7 +31,7 @@ namespace utility
 
 using LogBuffer = std::unique_ptr< concurrent::RingBufferMPMC<LogEntry> >;
 
-class Logger : public concurrent::Actor, public SingletonDLCP<Logger>
+class Logger : public concurrent::Actor, public SingletonDCLP<Logger>
 {
     public :
         Logger() : Actor("LoggerThread") {}
