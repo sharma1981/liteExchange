@@ -33,7 +33,7 @@ static inline void *gnuLibcMallocHook(std::size_t size, const void *caller)
     // Restore all old hooks
     __malloc_hook = old_malloc_hook;
     __free_hook = old_free_hook;
-	
+
     // Save underlying hooks
     old_malloc_hook = __malloc_hook;
     old_free_hook = __free_hook;
@@ -48,13 +48,13 @@ static inline void gnuLibcFreeHook(void*, const void * caller)
     // Restore all old hooks
     __malloc_hook = old_malloc_hook;
     __free_hook = old_free_hook;
-    
-    
+
+
     // Save underlying hooks
     old_malloc_hook = __malloc_hook;
     old_free_hook = __free_hook;
-  
-	// Restore our own hooks
+
+    // Restore our own hooks
     __malloc_hook = gnuLibcMallocHook;
     __free_hook = gnuLibcFreeHook;
 }

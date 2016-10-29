@@ -14,7 +14,7 @@ INCLUDE_DIR_QUICKFIX = ../../dependencies/quickfix/include
 #Objects
 OBJECTS = $(SOURCES:.cpp=.o)
 #Executable
-EXECUTABLE = ../client
+EXECUTABLE = ../client_executable/client
 #Compiler flags
 CFLAGS= -I$(INCLUDE_DIR) -I$(INCLUDE_DIR_BOOST) -I$(INCLUDE_DIR_QUICKFIX) -std=c++11 -c
 #Linker flags

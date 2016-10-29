@@ -30,11 +30,11 @@ inline OrderSide convertOrderSideFromQuickFix(const FIX::Side& side)
     {
         case FIX::Side_BUY:
             ret = OrderSide::BUY;
-			break;
+            break;
 
         case FIX::Side_SELL:
             ret = OrderSide::SELL;
-			break;
+            break;
     }
     return ret;
 }

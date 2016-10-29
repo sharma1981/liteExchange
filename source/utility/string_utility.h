@@ -45,7 +45,7 @@ inline std::vector<std::string> split(const std::string& input, char seperator)
   {
     std::istringstream stream(input);
     std::string token;
-    while (std::getline(stream, token, seperator)) 
+    while (std::getline(stream, token, seperator))
     {
       ret.push_back(token);
     }

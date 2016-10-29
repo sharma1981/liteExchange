@@ -52,11 +52,11 @@ class Lock : public BaseLock
 #elif _WIN32
             InitializeCriticalSectionAndSpinCount(&m_criticalSection, m_spinCount);
 #endif
-		}
+        }
 
-		Lock() : Lock("", DEFAULT_SPIN_COUNT) // CPP11 Constructor delegation
-		{
-		}
+        Lock() : Lock("", DEFAULT_SPIN_COUNT) // CPP11 Constructor delegation
+        {
+        }
 
         explicit Lock(const std::string lockName) : Lock(lockName, DEFAULT_SPIN_COUNT) // CPP11 Constructor delegation
         {

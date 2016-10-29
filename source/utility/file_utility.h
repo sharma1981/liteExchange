@@ -53,7 +53,7 @@ inline bool appendTextToFile(const std::string& fileName, const std::string& tex
 
   outfile << text;
   return true;
-} 
+}
 
 inline bool doesFileExist(const std::string& fileName)
 {
