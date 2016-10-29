@@ -17,13 +17,13 @@ function initialise()
             {
                 private System.Collections.Generic.List<string> m_processNames;
                 private System.Collections.Generic.List<string> m_processArgs;
-				private System.Collections.Generic.List<Process> m_processes;
+                private System.Collections.Generic.List<Process> m_processes;
 
                 public MultiProcessStarter()
                 {
                     m_processNames = new System.Collections.Generic.List<string>();
                     m_processArgs = new System.Collections.Generic.List<string>();
-					m_processes = new System.Collections.Generic.List<Process>();
+                    m_processes = new System.Collections.Generic.List<Process>();
                 }
 
                 public void add(string processName, string args)
@@ -39,28 +39,28 @@ function initialise()
                         m_processes.Add(System.Diagnostics.Process.Start(m_processNames[i], m_processArgs[i]));
                     }
                 }
-				
-				public void wait_for_all()
-				{
-					foreach(var process in m_processes)
+                
+                public void wait_for_all()
+                {
+                    foreach(var process in m_processes)
                     {
                         process.WaitForExit();
                         process.Close();
                     }
-				}
-				
-				public void kill_all()
-				{
-					foreach(var process in m_processes)
+                }
+                
+                public void kill_all()
+                {
+                    foreach(var process in m_processes)
                     {
                         process.Kill();
                     }
-				}
+                }
 
             }
 "@
 
-	Add-Type -TypeDefinition $source;
+    Add-Type -TypeDefinition $source;
 }
 
 #Clear-Host
