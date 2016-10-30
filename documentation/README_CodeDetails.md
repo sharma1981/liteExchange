@@ -1,4 +1,4 @@
-Thread class , thread affinities & named threads : The projects uses C++11 thread library for std::mutex and std::condition_variable and also std::lock_guard for scope based lock pattern. However I implemented a thread class using platform specific POSIX, NP POSIX and WindowsAPIs.
+**Thread class , thread affinities & named threads :** The projects uses C++11 thread library for std::mutex and std::condition_variable and also std::lock_guard for scope based lock pattern. However I implemented a thread class using platform specific POSIX, NP POSIX and WindowsAPIs.
 
 The reasons are :
 
@@ -56,7 +56,7 @@ On Linux , you can also use ps commands , as in Linux architecture actually thre
 
 As for Windows side, you can see both names of threads and different thread affinities in Visual Studio debugger thread window :
 
-666
+<img src="https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/documentation/thread_names_affinities.png">
 
 Thread class header : https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/source/concurrent/thread.h
 
@@ -64,11 +64,11 @@ Thread class source : https://github.com/akhin/cpp_multithreaded_order_matching_
 
 I particularly find setting names for threads very useful for debugging. A note here is that in Linux you can only use maximum 16 characters for thread names. In Windows side, the name support for threads in kernel doesn`t exist , it is a mechanism provided by Windows debuggers.
 
-Actor/Active object pattern : Regarding the actor model , you can find information on Herb Sutter`s page : http://herbsutter.com/2010/07/12/effective-concurrency-prefer-using-active-objects-instead-of-naked-threads/
+**Actor/Active object pattern :** Regarding the actor model , you can find information on Herb Sutter`s page : http://herbsutter.com/2010/07/12/effective-concurrency-prefer-using-active-objects-instead-of-naked-threads/
 
 I find this approach very convenient when designing mutithreaded objects that will run continously. In the class diagram below , you can see that engine`s logger , incoming message dispatcher and the outgoing message processor are actually actors/active objects :
 
-666
+<img src="https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/documentation/class_diagram_thread_actor.png">
 
 If you look at their code, you will notice that what you do is basically deriving from concurrent::Actor class and then override virtual run method :
 
@@ -82,7 +82,7 @@ Outgoing message processor : https://github.com/akhin/cpp_multithreaded_order_ma
 
 They also pass their name to the base constructor of actor class , therefore their thread will be named threads.
 
-Thread safe container implementations : As mentioned in the overview , SPSC lockbuffer queue is used as work queues and they are per worker thread in a thread pool. You can see information about its implementation as below :
+**Thread safe container implementations :** As mentioned in the overview , SPSC lockbuffer queue is used as work queues and they are per worker thread in a thread pool. You can see information about its implementation as below :
 
 https://nativecoding.wordpress.com/2015/06/17/multithreading-lockless-thread-safe-spsc-ring-buffer-queue/
 
@@ -96,17 +96,17 @@ Finally the incoming message dispatcher demultiplexes messages coming from multi
 
 https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/source/concurrent/queue_mpsc.hpp
 
- Task, Thread pool, CPU pinning and hyperthreading considerations  : The task class packages all kind of tasks and return values. For flexibility it uses C++11 variadic templates and std::function and std::bind , and as for flexibility for the return values it uses both boost::optional and boost::any :
+**Task, Thread pool, CPU pinning and hyperthreading considerations  :** The task class packages all kind of tasks and return values. For flexibility it uses C++11 variadic templates and std::function and std::bind , and as for flexibility for the return values it uses both boost::optional and boost::any :
 
 https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/source/concurrent/task.h
 
-As mentioned above one of the main considertations of this project was seeing how we can gian performance by pinning each thread to CPU cores and also experiments affects of hyperthreading. Therefore the thread pool class is able to pin threads to CPU cores and if it is told that to avoid hyperthreading , it will pin threads to cores with only even indexes. ( Odd indexed CPU cores will be logical processors ).
+One of the main considerations of this project was seeing how we can gain performance by pinning each thread to CPU cores and also experiments affects of hyperthreading. Therefore the thread pool class is able to pin threads to CPU cores and if it is told that to avoid hyperthreading , it will pin threads to cores with only even indexes. ( Odd indexed CPU cores will be logical processors ).
 
 Thread pool is not applying anything like work stealing and work load balancing. The main reason for that , each worker thread is already assigned to a specific security symbol. Therefore work items of worker threads can`t be shared. Here you can see the thread pool`s source :
 
 https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/source/concurrent/thread_pool.cpp
 
-CPU-CacheLine Aligned Memory allocations : The main consideration for concurrency performance was avoiding the false sharing issue , which you can read about here :
+**CPU-CacheLine Aligned Memory allocations :** The main consideration for concurrency performance was avoiding the false sharing issue , which you can read about here :
 
 https://nativecoding.wordpress.com/2015/06/19/multithreading-multicore-programming-and-false-sharing-benchmark/
 
@@ -114,10 +114,11 @@ So the memory layer of the engine provides CPU-cache line aligned allocators in 
 
 The classes that derived from "aligned" class are tasks, incoming messages and outgoing messages as these will be used thread safe containers heavily. In the picture below , you can see the class diagram :
 
-666
+<img src="https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/documentation/class_diagram_aligned.png">
 
 As for the use aligned container policy, the unbounded queue based thread safe containers are derived from it :
 
+<img src="https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/documentation/class_diagram_aligned_container_policy.png">
 
 Cross platform aligned memory allocations: https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/source/memory/aligned_memory.cpp
 
@@ -127,7 +128,7 @@ Aligned container policy : https://github.com/akhin/cpp_multithreaded_order_matc
 
 An aligned STL allocator : https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/source/memory/aligned_allocator.hpp
 
-Logging in multithreaded environment & thread safe singleton : As for the design of the logger , it uses a thread safe ring buffer. When you call the log methods, the log message is being pushed on that queue , but they are not directly being written to a log file or std::out. As for logging to file and std::outconsole , the logger uses actor model and its threads dumps all messages at once.
+**Logging in multithreaded environment & thread safe singleton :** As for the design of the logger , it uses a thread safe ring buffer. When you call the log methods, the log message is being pushed on that queue , but they are not directly being written to a log file or std::out. As for logging to file and std::outconsole , the logger uses actor model and its threads dumps all messages at once.
 
 As for the interface exposed by the logger , it uses Scott Meyer`s singleton. It uses a static local variable. The main advantage is that local static variables in C++11 are thread safe. Therefore there is no need to concern about thread safetiness of the logger. However the order of initialisation of static variables might still be problematic. In this project I used this method safely as there is only local static variable :
 
@@ -137,7 +138,7 @@ Logger header : https://github.com/akhin/cpp_multithreaded_order_matching_engine
 
 Logger source : https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/source/utility/logger.cpp
 
- Variable synchronisation with atomic variables: I have previously written about atomics in C++11 :
+**Variable synchronisation with atomic variables:** I have previously written about atomics in C++11 :
 
 https://nativecoding.wordpress.com/2015/02/15/transition-to-c11-the-most-important-features/
 
