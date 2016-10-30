@@ -155,7 +155,7 @@ How to build the project on Windows with Visual Studio in command line :
     
     You can build with Visual Studio 2013
     Go to "build/windows_msvc_command_line" directory
-    Click and execute one of batch files.
+    Execute one of batch files : build_debug.bat or build_release.bat
     
 ===========================================================================
 
