@@ -31,6 +31,14 @@ Sections :
 
 - Currently supports only limit orders and currently doesn`t support TIF.
 
+Watch server when working :
+
+<a href="https://asciinema.org/a/929cs0jcbso3g7v7b3cd6g82f" target="_blank"><img src="https://asciinema.org/a/929cs0jcbso3g7v7b3cd6g82f.png" /></a>
+
+Client test automation when working :
+
+<a href="https://asciinema.org/a/29km7ksm8ylrne24zkv9ripxu" target="_blank"><img src="https://asciinema.org/a/29km7ksm8ylrne24zkv9ripxu.png" /></a>
+
 ===========================================================================
                         
 **2. Limit orders and order matching engines :** For limit orders please see : https://en.wikipedia.org/wiki/Order_%28exchange%29#Limit_order
