@@ -10,7 +10,7 @@
 #
 #   1. File filters : Currently acts on cpp , h and hpp files , modify FIND_FILE_FILTER to change it
 #   2. Keeping original files before conversion : set SED_ARGUMENT to "-i.orig"
-#    3. We ignore source files in dependencies directories
+#   3. We ignore source files in dependencies directories
 #
 #   Dependencies :
 #
