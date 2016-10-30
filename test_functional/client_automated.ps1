@@ -93,9 +93,6 @@ $sw.Stop()
 Write-Host
 $time_taken = $sw.ElapsedMilliseconds.toString();
 Write-Host "Time : $time_taken milliseconds "
-#Remove cfg files
-cd ..
-Get-ChildItem . -include *.cfg -force | Remove-Item
 # Ending
 Write-Host ""
 Write-Host "Client automation finished , press enter to quit." -foregroundcolor "Yellow"

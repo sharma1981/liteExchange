@@ -98,7 +98,7 @@ class LoggerSinks
             {
                 if (sink.second->enabled())
                 {
-                    sink.second->open();
+                    sink.second->close();
                 }
             }
         }

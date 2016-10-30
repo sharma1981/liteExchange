@@ -31,8 +31,6 @@ Sections :
 
 - Currently supports only limit orders and currently doesn`t support TIF.
 
-- See end of this readme for future plans.
-
 ===========================================================================
                         
 **2. Limit orders and order matching engines :** For limit orders please see : https://en.wikipedia.org/wiki/Order_%28exchange%29#Limit_order

@@ -40,7 +40,12 @@ class SingletonDCLP : public boost::noncopyable
 };
 
 template <class T>
+#if defined(_MSC_VER)
+std::atomic<T*> SingletonDCLP<T>::m_instance = nullptr;
+#elif defined(__GNUC__)
 std::atomic<T*> SingletonDCLP<T>::m_instance{0}; // Atomic types don`t have copy constructors
+#endif
+
 
 template <class T>
 concurrent::Lock SingletonDCLP<T>::m_lock;

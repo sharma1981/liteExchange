@@ -52,10 +52,6 @@ current_execution_time=$(($finish-$start))
 echo ""
 echo "Time : $current_execution_time milliseconds "
 
-#Delete config files
-sudo rm -rf *.cfg
-
-
 echo ""
 echo "Client automation finished , press enter key to quit."
 echo ""
