@@ -1,7 +1,7 @@
 #ifndef _THREAD_PROFILER_
 #define _THREAD_PROFILER_
 
-#define ENABLE_THREAD_PROFILER 1
+#define ENABLE_THREAD_PROFILER 0
 
 #include <string>
 
