@@ -90,13 +90,23 @@ An aligned STL allocator : https://github.com/akhin/cpp_multithreaded_order_matc
 
 **Logging in multithreaded environment & thread safe singleton :** As for the design of the logger , it uses a thread safe ring buffer. When you call the log methods, the log message is being pushed on that queue , but they are not directly being written to a log file or std::out. As for logging to file and std::outconsole , the logger uses actor model and its threads dumps all messages at once.
 
-As for the interface exposed by the logger , it uses Scott Meyer`s singleton. It uses a static local variable. The main advantage is that local static variables in C++11 are thread safe. Therefore there is no need to concern about thread safetiness of the logger. However the order of initialisation of static variables might still be problematic. In this project I used this method safely as there is only local static variable :
+As for the interface exposed by the logger , it uses DLCP ( Double Lock Checking Pattern ) singleton. And it is implemented by using memory fences. Regarding DLCP , see :
 
-Thread safe singleton template base class : https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/source/utility/singleton.hpp
+http://www.aristeia.com/Papers/DDJ_Jul_Aug_2004_revised.pdf
 
-Logger header : https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/source/utility/logger.h
+The project also has another singleton type which is called as "Meyers singleton" invented by Scott Meyers. It uses a static local variable. The main advantage is that local static variables in C++11 are thread safe. Therefore there is no need to concern about thread safetiness of the logger.  However using static variables in MSVC is not thread safe : 
 
-Logger source : https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/source/utility/logger.cpp
+https://blogs.msdn.microsoft.com/oldnewthing/20040308-00/?p=40363/
+
+Further more, the order of initialisation of static variables might still be problematic.
+
+DCLP Thread safe singleton : https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/source/utility/design_patterns/singleton_dclp.hpp
+
+Meyers singleton : https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/source/utility/design_patterns/singleton_static.hpp
+
+Logger header : https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/source/utility/logger/logger.h
+
+Logger source : https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/source/utility/logger/logger.cpp
 
 **Variable synchronisation with atomic variables:** I have previously written about atomics in C++11 :
 
