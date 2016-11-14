@@ -48,7 +48,7 @@ Basically a limit order is an order which you specify a maximum price for the se
 As for the terminology a limit order to buy is called a "bid" and a limit order to sell is called an "ask".
 
 An order matching engine matches the ask orders and the bid orders. This implementation places the highest bid order on
-top of bids table and places the lowest ask order on top of asks table. Then it chekcs the bids and asks and tries to 
+top of bids table and places the lowest ask order on top of asks table. Then it checks the bids and asks and tries to 
 match the orders. And then it sends status reports back to the owners of the orders. A status of an order can be :
 
 - "accepted" : the server accepted the order and it will be processed
