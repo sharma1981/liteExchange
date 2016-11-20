@@ -7,7 +7,6 @@
 #include <server/server_interface_cli.h>
 
 #include <iostream>
-#include <exception>
 #include <algorithm>
 #include <ctype.h>
 #include <cstdlib>

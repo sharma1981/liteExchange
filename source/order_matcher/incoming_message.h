@@ -1,7 +1,6 @@
 #ifndef _INCOMING_MESSAGE_H_
 #define _INCOMING_MESSAGE_H_
 
-#include <exception>
 #include <string>
 #include "order.h"
 #include <memory/aligned.hpp>

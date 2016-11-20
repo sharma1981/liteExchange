@@ -8,7 +8,6 @@
 #include <windows.h>
 #endif
 
-#include <exception>
 #include <cstddef>
 #include <utility>
 #include <string>

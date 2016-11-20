@@ -3,7 +3,6 @@
 
 #include <vector>
 #include <string>
-#include <exception>
 
 #include <server/server_constants.h>
 

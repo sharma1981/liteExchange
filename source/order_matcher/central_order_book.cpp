@@ -1,6 +1,5 @@
 #include "central_order_book.h"
 #include <queue>
-#include <exception>
 #include <boost/format.hpp>
 using namespace std;
 

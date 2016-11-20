@@ -1,7 +1,7 @@
 #ifndef _QUICK_FIX_CONVERTER_H_
 #define _QUICK_FIX_CONVERTER_H_
 
-#include <exception>
+#include <utility/pretty_exception.h>
 
 #include "outgoing_message.h"
 #include "order.h"
@@ -50,7 +50,7 @@ inline FIX::Side convertOrderSideToQuickFix(const OrderSide& side)
             return FIX::Side_SELL;
 
         default:
-            throw std::invalid_argument("Unsupported Side, use buy or sell");
+            THROW_PRETTY_INVALID_ARG_EXCEPTION(std::string("Unsupported Side, use buy or sell"))
     }
 }
 
@@ -74,7 +74,7 @@ inline char convertToQuickFixOutgoingMessageType(const OutgoingMessageType& type
             return FIX::OrdStatus_REJECTED;
 
         default:
-            throw std::invalid_argument("Unsupported outgoing message type");
+            THROW_PRETTY_INVALID_ARG_EXCEPTION(std::string("Unsupported outgoing message type"))
     }
 }
 

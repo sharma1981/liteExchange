@@ -3,7 +3,6 @@
 
 #include <array>
 #include <string>
-#include <exception>
 
 #include <utility/pretty_exception.h>
 

@@ -2,7 +2,6 @@
 #define _THREAD_POOL_H_
 
 #include <cstddef>
-#include <exception>
 #include <atomic>
 #include <vector>
 #include <memory>

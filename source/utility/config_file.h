@@ -3,7 +3,6 @@
 
 #include<string>
 #include<vector>
-#include<exception>
 #include<unordered_map>
 
 namespace utility

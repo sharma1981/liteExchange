@@ -3,9 +3,6 @@
 
 #include <cstddef>
 #include <string>
-#include <atomic>
-#include <mutex>
-#include <exception>
 
 #include <concurrent/lock.hpp>
 #include <concurrent/actor.h>

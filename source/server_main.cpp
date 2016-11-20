@@ -8,7 +8,6 @@
                                                     // matches the compiled one
 #include <utility/os_utility.h>                     // To check whether we are root/admin or not
 
-#include <exception>
 #include <iostream>
 
 #include <boost/format.hpp>
