@@ -24,6 +24,8 @@ Thread class source : https://github.com/akhin/cpp_multithreaded_order_matching_
 
 I particularly find setting names for threads very useful for debugging. A note here is that in Linux you can only use maximum 16 characters for thread names. In Windows side, the name support for threads in kernel doesn`t exist , it is a mechanism provided by Windows debuggers.
 
+Another note is that , the project uses MS CRT rather than MS Windows API ( preferring _beginthread over _beginthreadex. ) So we can specify a worker function with void* retval like pthreads
+
 **Actor/Active object pattern :** Regarding the actor model , you can find information on Herb Sutter`s page : http://herbsutter.com/2010/07/12/effective-concurrency-prefer-using-active-objects-instead-of-naked-threads/
 
 I find this approach very convenient when designing mutithreaded objects that will run continously. In the class diagram below , you can see that engine`s logger , incoming message dispatcher and the outgoing message processor are actually actors/active objects :
