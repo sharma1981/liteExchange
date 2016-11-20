@@ -24,7 +24,7 @@ Sections :
 
 - It targets both Linux ( tested on CentOS and Ubuntu ) and Windows systems ( tested on Windows 8.1).
 
-- It uses STL,Boost and also platform specific APIs ( POSIX including a few NP POSIX calls, GNU LiC Runtime, WindowsAPIs and Microsoft CRT) in some places, QuickFix for FIX protocol.
+- It uses STL,Boost and also platform specific APIs ( POSIX including a few NP POSIX calls, GNU LibC Runtime, WindowsAPIs and Microsoft CRT) in some places, QuickFix for FIX protocol.
 
 - It supports GCC4.8 and MSVC120 (VS2013). See "source/compiler_portability" 
 
