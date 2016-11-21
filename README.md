@@ -302,7 +302,7 @@ Building and running unit test on Windows : You can use VisualStudio solution in
 
 You can find them under "utility_scripts" directory :
     
-    source_code_formatter.sh            convert EOL to Unix, converts tabs to 4 spaces, 
+    source_code_formatter.sh            converts EOL to Unix, converts tabs to 4 spaces, removes trailing white space
     leak_detector_linux_valgrind        memory leak detection with Valgrind
     build_with_thread_sanitizer.sh      build with GCC thread sanitizer
     build_with_address_sanitizer.sh     build with GCC address sanitizer

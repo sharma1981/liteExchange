@@ -4,6 +4,8 @@ The reasons are :
 
 - Ability to set thread stack size , neither Boost nor C++11 threads can do this.
 
+- Ability to set thread priority , neither Boost nor C++11 threads can do this.
+
 - To provide an OOP way to pin threads to CPU cores, setting thread names and also associating static methods with the thread class such as concurrent::Thread::isHyperThreading.
 
 Regarding setting names for threads , this is how it looks in GDB debugger on Linux :
