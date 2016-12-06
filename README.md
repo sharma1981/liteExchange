@@ -18,7 +18,8 @@ Sections :
     11. Unit testing with GoogleTest
     12. Utility scripts
     13. Coding and other guidelines
-	14. Code details
+	14. Continous integration
+	15. Code details
 
 ===========================================================================
             
@@ -358,7 +359,13 @@ MSVC120 C++11 Limitations : Curly brace initialisation at MILs and noexcept is n
 
 ===========================================================================
 
-**14. Code details :**
+**14. Continous integration :**
+
+For the time being , online CI has been setup for only MSVC using Appveyor. Planning to add GCC based online CI with TravisCI.
+
+===========================================================================
+
+**15. Code details :**
 
 For source code implementation details : https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/documentation/README_CodeDetails.md
 
