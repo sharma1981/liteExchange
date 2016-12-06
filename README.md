@@ -1,7 +1,7 @@
 Licence : All samples are "Public Domain" code 
 http://en.wikipedia.org/wiki/Public_domain_software
 
-https://ci.appveyor.com/api/projects/status/hw8s5o46kcgr388l?svg=true
+[![Build status](https://ci.appveyor.com/api/projects/status/hw8s5o46kcgr388l?svg=true)](https://ci.appveyor.com/project/akhin/cpp-multithreaded-order-matching-engine)
 
 Sections :
 
