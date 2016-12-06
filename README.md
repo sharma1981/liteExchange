@@ -1,6 +1,8 @@
 Licence : All samples are "Public Domain" code 
 http://en.wikipedia.org/wiki/Public_domain_software
 
+https://ci.appveyor.com/api/projects/status/hw8s5o46kcgr388l?svg=true
+
 Sections :
 
     1. Introduction
