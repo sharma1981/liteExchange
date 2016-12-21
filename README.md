@@ -1,5 +1,4 @@
-Licence : All samples are "Public Domain" code 
-http://en.wikipedia.org/wiki/Public_domain_software
+<td><img src="https://img.shields.io/badge/LICENCE-PUBLIC%20DOMAIN-green.svg" alt="Licence badge"></td>
 
 [![Build status](https://ci.appveyor.com/api/projects/status/hw8s5o46kcgr388l?svg=true)](https://ci.appveyor.com/project/akhin/cpp-multithreaded-order-matching-engine)
 
