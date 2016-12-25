@@ -2,11 +2,6 @@
 
 [![Build status](https://ci.appveyor.com/api/projects/status/hw8s5o46kcgr388l?svg=true)](https://ci.appveyor.com/project/akhin/cpp-multithreaded-order-matching-engine)
 
-<a href="https://scan.coverity.com/projects/akhin-cpp_multithreaded_order_matching_engine">
-  <img alt="Coverity Scan Build Status"
-       src="https://scan.coverity.com/projects/11269/badge.svg"/>
-</a>
-
 Sections :
 
     1. Introduction
