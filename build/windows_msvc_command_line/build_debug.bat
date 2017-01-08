@@ -10,7 +10,7 @@ REM
 REM Arrange working directory
 cd %~dp0
 cd ..
-cd windows
+cd windows_msvc_visual_studio
 CD
 msbuild %SOLUTION% /p:Configuration=Debug /property:Platform=Win32
 pause
