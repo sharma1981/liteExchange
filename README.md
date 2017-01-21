@@ -347,7 +347,7 @@ Warning level used for GCC : -Wall
 
 Warning level used for MSVC : /W3
         
-Precompiled header file usage : On Windows , the project is using /FI ( Force include parameter, therefore no need to include the pch header everywhere ) and specified the pch header to be precompiled_header.h. Note that this breaks edit-and-continue in Visual Studio.
+Precompiled header file usage : On Windows , the project is using /FI ( Force include parameter, therefore no need to include the pch header everywhere ) and specified the pch header to be precompiled_header.h. Note that this breaks edit-and-continue in Visual Studio. Also all project and sources` precompiled header setting is "use" whereas precompiled_header.cpp is "create".
 For Linux , there is pch rule to enable it in the makefile ( build/linux/Makefile) , but currently that rule is not being used since it doesn`t appear as it is doing much improvement as on Windows.
 
 For GCC see https://gcc.gnu.org/onlinedocs/gcc/Precompiled-Headers.html

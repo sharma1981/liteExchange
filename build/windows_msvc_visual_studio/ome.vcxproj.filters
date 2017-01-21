@@ -41,6 +41,7 @@
     <ClCompile Include="..\..\source\utility\logger\logger.cpp">
       <Filter>utility\logger</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\source\precompiled_header.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\source\concurrent\task.h">

@@ -55,7 +55,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\..\source\;..\..\dependencies\;..\..\dependencies\quickfix\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PrecompiledHeader>Create</PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>precompiled_header.h</PrecompiledHeaderFile>
       <ForcedIncludeFiles>precompiled_header.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
     </ClCompile>
@@ -75,7 +75,7 @@
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\..\source;..\..\dependencies;..\..\dependencies\quickfix\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <PrecompiledHeader>Create</PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>precompiled_header.h</PrecompiledHeaderFile>
       <ForcedIncludeFiles>precompiled_header.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
     </ClCompile>
@@ -96,6 +96,10 @@
     <ClCompile Include="..\..\source\order_matcher\central_order_book.cpp" />
     <ClCompile Include="..\..\source\order_matcher\order.cpp" />
     <ClCompile Include="..\..\source\order_matcher\order_book.cpp" />
+    <ClCompile Include="..\..\source\precompiled_header.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="..\..\source\server\server.cpp" />
     <ClCompile Include="..\..\source\server_main.cpp" />
     <ClCompile Include="..\..\source\utility\config_file.cpp" />
