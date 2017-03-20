@@ -270,9 +270,10 @@ QuickFixMessanger , https://github.com/jramoyo/quickfix-messenger
 		
 		2. A GUI will appear. Simply specify target server , number of test clients and the test case file :
 		
-		<img src="https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/documentation/testfunctional_gui.png">
-		
 		3. Press the start button.
+		
+<img src="https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/documentation/testfunctional_gui.png">		
+		
 		   
 		For Linux 
    
