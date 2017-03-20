@@ -32,7 +32,7 @@ Sections :
 
 - Additionally used GoogleTest for unit testing, Bash for Linux test scripts and Powershell for Windows test scripts.
 
-- Currently supports only limit orders and currently doesn`t support TIF.
+- Currently supports only limit orders for equities and currently doesn`t support any TIF.
 
 Watch server when working :
 
@@ -264,15 +264,25 @@ QuickFixMessanger , https://github.com/jramoyo/quickfix-messenger
    
    Under "test_functional" directory :
    
+		For windows
+		
+		1. For firing Windows test client(s), you can use client_automated_test.bat.
+		
+		2. A GUI will appear. Simply specify target server , number of test clients and the test case file :
+		
+		<img src="https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/documentation/testfunctional_gui.png">
+		
+		3. Press the start button.
+		   
+		For Linux 
+   
         1. Modify test_data.txt which has the orders to send to the engine as you wish.
         
         2. Modify  the arrays declared on top of client_automated_test.sh/client_automated_test.ps1 script files in order to configure the number of clients. You should provide a name for each client.
         
         3. For firing Linux test client(s), you can use client_automated_test.sh Bash script.
         
-        4. For firing Windows test client(s), you can use client_automated_test.bat which drives client_automated_test.ps1 Powershell script.
-        
-        5. After firing the script, it will be executing all orders in test_data.txt file per client that is declared in the script file.
+        4. After firing the script, it will be executing all orders in test_data.txt file per client that is declared in the script file.
         
 ===========================================================================
         
