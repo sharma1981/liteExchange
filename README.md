@@ -25,7 +25,8 @@ Sections :
 | Feature       				| Details       										|
 | ----------------------------- |:-----------------------------------------------------:|
 | FIX Version   				| 4.2													|
-| Order types   				| NewOrder, Cancel										|
+| Order types   				| Limit													|
+| Order commands   				| NewOrder, Cancel										|
 | Exec report order statuses	| accepted,filled,partially filled, rejected, canceled	|
 | TIF							| Currently not supported								|
 | Securities					| Shares												|
