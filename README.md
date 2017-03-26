@@ -22,11 +22,13 @@ Sections :
             
 **1. Introduction :** A multithreaded order matching engine written in C++11 using FIX protocol. Features can be seen in the table below :
 
-| Feature       | Details       			|
-| ------------- |:-------------------------:|
-| FIX Version   | 4.2						|
-| Order types   | NewOrder, Cancel			|
-| TIF			| Currently not supported	|
+| Feature       				| Details       										|
+| ----------------------------- |:-----------------------------------------------------:|
+| FIX Version   				| 4.2													|
+| Order types   				| NewOrder, Cancel										|
+| Exec report order statuses	| accepted,filled,partially filled, rejected, canceled	|
+| TIF							| Currently not supported								|
+| Securities					| Shares												|
 
 Technical implementation details are as below : 
 
