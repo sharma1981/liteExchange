@@ -1,9 +1,11 @@
 #!/bin/bash
-SERVER="127.0.0.1"
+SERVER=$1
+TEST_CASES_FILE=$2
+NUMBER_OF_CLIENTS=$3
 TEMPLATE_FILE="template.cfg"
-TEST_CASES_FILE="test_cases.txt"
 CLIENT_DIRECTORY="./client_executable"
-CLIENTS=('TEST_CLIENT1' 'TEST_CLIENT2' 'TEST_CLIENT3' 'TEST_CLIENT4' 'TEST_CLIENT5' 'TEST_CLIENT6' 'TEST_CLIENT7' 'TEST_CLIENT8');
+CLIENTS=
+#CLIENTS=('TEST_CLIENT1' 'TEST_CLIENT2' 'TEST_CLIENT3' 'TEST_CLIENT4' 'TEST_CLIENT5' 'TEST_CLIENT6' 'TEST_CLIENT7' 'TEST_CLIENT8');
 
 #Sudoable test
 sudo ifconfig
@@ -38,6 +40,13 @@ echo ""
 cd $CLIENT_DIRECTORY
 
 start=$(($(date +%s%N)/1000000))
+
+i=1
+while [ "$i" -le "$NUMBER_OF_CLIENTS" ]; do
+  CLIENTS[$i]="TEST_CLIENT$i"
+  i=$(($i + 1))  
+done
+
 for i in "${CLIENTS[@]}"
 do
     echo "Starting $i"
@@ -53,6 +62,5 @@ echo ""
 echo "Time : $current_execution_time milliseconds "
 
 echo ""
-echo "Client automation finished , press enter key to quit."
+echo "Client automation finished."
 echo ""
-read

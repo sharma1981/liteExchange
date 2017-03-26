@@ -41,8 +41,6 @@ Watch server when working :
 Client test automation when working :
 
 <a href="https://asciinema.org/a/29km7ksm8ylrne24zkv9ripxu" target="_blank"><img src="https://asciinema.org/a/29km7ksm8ylrne24zkv9ripxu.png" width="589"/></a>
-
-===========================================================================
                         
 **2. Limit orders and order matching engines :** For limit orders please see : https://en.wikipedia.org/wiki/Order_%28exchange%29#Limit_order
 
@@ -62,15 +60,11 @@ match the orders. And then it sends status reports back to the owners of the ord
 For general information about the trading systems and the order types , please see :
 http://www.investopedia.com/university/intro-to-order-types/
 
-===========================================================================
-
 **3. FIX ( Financial information exchange ) protocol :** It is a session based TCP protocol that carries financial security transcation data.
 
 For more information , please see https://en.wikipedia.org/wiki/Financial_Information_eXchange .
 
 For the time being, this projectis using opensource QuickFix engine and FIX specification 4.2.
-
-===========================================================================
             
 **4. Overview of multithreading system :** If you look at the source , the concurrency layer ( https://github.com/akhin/cpp_multithreaded_order_matching_engine/tree/master/source/concurrent , using concurrent word since MS using concurrency for their own libraries ) , 
 the engine currently is using :
@@ -98,8 +92,6 @@ b) Central Order book has a thread pool :
 c) Each thread in the thread pool will get message from their SPSC queue in the thread pool , and add them to corresponding order queue which is used by only itself and eventually trigger the order matching process for that queue. At the end of the order matching , worker threads will submit messages ( FILLED or PARTIALLY FILLED ) to the outgoing messages queue.
 
 d) Outgoing message processor which is a fine grained MPMC queue will process the outgoing messages and send responses back to the clients.
-    
-===========================================================================
 
 **5. Build dependencies :** For Linux , the project is built and tested with GCC4.8 only on CentOS7. 
 
@@ -115,8 +107,6 @@ In the libraries side :
                         
 - QuickFix & its requirements : For Windows you don`t need to do anything as the static library for Windows is already in dependencies directory. For Linux you need to apply the steps on http://www.quickfixengine.org/quickfix/doc/html/install.html
 
-===========================================================================
-
 **6. Runtime dependencies :** For Windows, you have to install MSVC120 runtime : https://www.microsoft.com/en-gb/download/details.aspx?id=40784
 
 For Linux, you need GNU Libstd C++ 6 runtime and QuickFIX runtime.
@@ -128,8 +118,6 @@ How to install Quickfix runtime on Linux ( tested on Ubuntu ) :
         3. sudo ./install_quickfix_runtime.sh
         
 Note : This script will copy shared object to library path, create soft links, will add library path to /etc/ld.so.conf and finally execute ldconfig.
-        
-===========================================================================
 
 **7. How to build :**
             
@@ -158,8 +146,6 @@ How to build the project on Windows with Visual Studio in command line :
     You can build with Visual Studio 2013
     Go to "build/windows_msvc_command_line" directory
     Execute one of batch files : build_debug.bat or build_release.bat
-    
-===========================================================================
 
 **8. Server parameters and running the matching engine :** The engine executable looks for "ome.ini" file. Here is the list of things you can set :
 
@@ -207,8 +193,6 @@ Once you start the ome executable , initially you will see a screen like this :
 
                 display : Shows all order books in the central order book
                 quit : Shutdowns the server
-                
-===========================================================================
                 
 **9. Example log message from the engine :** The engine produces log messages below when it receives 1 buy order with quantity 1 and 1 sell order with quantity 1 for the same symbol :
 
@@ -258,34 +242,40 @@ MiniFIX , http://elato.se/minifix/download.html , Windows only with a GUI
 
 QuickFixMessanger , https://github.com/jramoyo/quickfix-messenger
 
-===========================================================================
-
 **10. Functional testing :** There is a prebuilt executable for both Linux and Windows which can send specified ask/bid orders to the order matching engine.
    
    Under "test_functional" directory :
    
-		For windows
+		For Windows
 		
-		1. For firing Windows test client(s), you can use client_automated_test.bat.
+		1. Modify test_data.txt which has the orders to send to the engine as you wish.
 		
-		2. A GUI will appear. Simply specify target server , number of test clients and the test case file :
+		2. For firing Windows test client(s), you can use client_automated_test.bat.
 		
-		3. Press the start button.
+		3. A GUI will appear. Simply specify target server , number of test clients and the test case file :
 		
-<img src="https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/documentation/testfunctional_gui.png">		
+		4. Press the start button.
 		
-		   
-		For Linux 
+<img align="center" src="https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/documentation/testfunctional_gui_windows.png">		
+		
+		For Linux with Bash Script
    
         1. Modify test_data.txt which has the orders to send to the engine as you wish.
         
-        2. Modify  the arrays declared on top of client_automated_test.sh/client_automated_test.ps1 script files in order to configure the number of clients. You should provide a name for each client.
+        2. For firing Linux test client(s), you can use client_automated_test.sh Bash script. You have to pass it 3 arguments :
+		   server address , the test case file and number of clients. Example :
+		   
+			.\client_automated_test.sh 127.0.1 test_cases.txt 8
         
-        3. For firing Linux test client(s), you can use client_automated_test.sh Bash script.
-        
-        4. After firing the script, it will be executing all orders in test_data.txt file per client that is declared in the script file.
-        
-===========================================================================
+        3. After firing the script, it will be executing all orders in test_data.txt file per client that is declared in the script file.
+		
+		Alternatively on Linux , there is a GUI script as in Windows one :
+		
+		1. Install TCL and TK ( For CentOS : yum install tcl tk )
+		2. In the command line , run the script as : .\client_automated_test.tcl
+		3. Set the arguments and then press the start button.
+		
+<img align="center" src="https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/documentation/testfunctional_gui_linux.png">
         
 **11. Unit testing with GoogleTest :** The project uses GoogleTest 1.7. You can find a makefile and vcproj under "test_unit" directory.
 
@@ -309,8 +299,6 @@ Building and running unit test on Linux : You have to build and install Google T
 
 Building and running unit test on Windows : You can use VisualStudio solution in "test_unit" directory.
 
-===========================================================================
-
 **12. Utility scripts :**
 
 You can find them under "utility_scripts" directory :
@@ -322,8 +310,6 @@ You can find them under "utility_scripts" directory :
     build_for_gprof.sh                  profile wit gprof
     profiler_windows_visual_studio      profile with Visual Studio`s vsperf
     leak_detector_windows_drmemory.bat  memory leak detection with Dr.Memory
-
-===========================================================================
 
 **13. Coding and other guidelines :**
 
@@ -367,16 +353,10 @@ For MSVC 120 see https://msdn.microsoft.com/en-us/library/8c5ztk84(v=vs.120).asp
 
 MSVC120 C++11 Limitations : Curly brace initialisation at MILs and noexcept is not supported. For noexcept usage please see compiler_portability/noexcept.h .
 
-===========================================================================
-
 **14. Continous integration :**
 
 For the time being , online CI has been setup for only MSVC using Appveyor. Planning to add GCC based online CI with TravisCI.
 
-===========================================================================
-
 **15. Code details :**
 
 For source code implementation details : https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/documentation/README_CodeDetails.md
-
-===========================================================================
