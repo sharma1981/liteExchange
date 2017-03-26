@@ -19,8 +19,6 @@ Sections :
     13. Coding and other guidelines
 	14. Continous integration
 	15. Code details
-
-===========================================================================
             
 **1. Introduction :** A multithreaded order matching engine written in C++11 using FIX protocol 4.2 . 
 
@@ -244,39 +242,45 @@ QuickFixMessanger , https://github.com/jramoyo/quickfix-messenger
 
 **10. Functional testing :** There is a prebuilt executable for both Linux and Windows which can send specified ask/bid orders to the order matching engine.
    
-   Under "test_functional" directory :
+Under "test_functional" directory :
    
-		For Windows
+For Windows
+
+1. Modify test_data.txt which has the orders to send to the engine as you wish.
+
+2. For firing Windows test client(s), you can use client_automated_test.bat.
+
+3. A GUI will appear. Simply specify target server , number of test clients and the test case file :
+
+4. Press the start button.
 		
-		1. Modify test_data.txt which has the orders to send to the engine as you wish.
+<p align="center">	
+<img src="https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/documentation/testfunctional_gui_windows.png">		
+</p>
 		
-		2. For firing Windows test client(s), you can use client_automated_test.bat.
-		
-		3. A GUI will appear. Simply specify target server , number of test clients and the test case file :
-		
-		4. Press the start button.
-		
-<img align="center" src="https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/documentation/testfunctional_gui_windows.png">		
-		
-		For Linux with Bash Script
+For Linux with Bash Script
+
+1. Modify test_data.txt which has the orders to send to the engine as you wish.
+
+2. For firing Linux test client(s), you can use client_automated_test.sh Bash script. You have to pass it 3 arguments :
+   server address , the test case file and number of clients. Example :
    
-        1. Modify test_data.txt which has the orders to send to the engine as you wish.
+	.\client_automated_test.sh 127.0.1 test_cases.txt 8
         
-        2. For firing Linux test client(s), you can use client_automated_test.sh Bash script. You have to pass it 3 arguments :
-		   server address , the test case file and number of clients. Example :
-		   
-			.\client_automated_test.sh 127.0.1 test_cases.txt 8
-        
-        3. After firing the script, it will be executing all orders in test_data.txt file per client that is declared in the script file.
-		
-		Alternatively on Linux , there is a GUI script as in Windows one :
-		
-		1. Install TCL and TK ( For CentOS : yum install tcl tk )
-		2. In the command line , run the script as : .\client_automated_test.tcl
-		3. Set the arguments and then press the start button.
-		
-<img align="center" src="https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/documentation/testfunctional_gui_linux.png">
-        
+3. After firing the script, it will be executing all orders in test_data.txt file per client that is declared in the script file.
+
+Alternatively on Linux , there is a GUI script as in Windows one :
+
+1. Install TCL and TK ( For CentOS : yum install tcl tk )
+
+2. In the command line , run the script as : .\client_automated_test.tcl
+
+3. Set the arguments and then press the start button.
+
+<p align="center">		
+<img src="https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/documentation/testfunctional_gui_linux.png">
+</p>
+    
 **11. Unit testing with GoogleTest :** The project uses GoogleTest 1.7. You can find a makefile and vcproj under "test_unit" directory.
 
     
