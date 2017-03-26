@@ -4,7 +4,7 @@
 
 Sections :
 
-    1. Introduction
+    1. Introduction and features
     2. Limit orders and order matching engines
     3. FIX ( Financial Information Exchange ) protocol
     4. Overview of the system
@@ -20,17 +20,23 @@ Sections :
 	14. Continous integration
 	15. Code details
             
-**1. Introduction :** A multithreaded order matching engine written in C++11 using FIX protocol 4.2 . 
+**1. Introduction :** A multithreaded order matching engine written in C++11 using FIX protocol. Features can be seen in the table below :
 
-- It targets both Linux ( tested on CentOS and Ubuntu ) and Windows systems ( tested on Windows 8.1).
+| Feature       | Details       			|
+| ------------- |:-------------------------:|
+| FIX Version   | 4.2						|
+| Order types   | NewOrder, Cancel			|
+| TIF			| Currently not supported	|
 
-- It uses STL,Boost and also platform specific APIs ( POSIX including a few NP POSIX calls, GNU LibC Runtime, WindowsAPIs and Microsoft CRT) in some places, QuickFix for FIX protocol.
+Technical implementation details are as below : 
 
-- It supports GCC4.8 and MSVC120 (VS2013). See "source/compiler_portability" 
-
-- Additionally used GoogleTest for unit testing, Bash for Linux test scripts and Powershell for Windows test scripts.
-
-- Currently supports only limit orders for equities and currently doesn`t support any TIF.
+| Feature       		| Details       												|
+| ----------------------|:-------------------------------------------------------------:|
+| OS 					| Windows ( tested on 8.1), Linux ( tested on Ubuntu and CentOS)|
+| C++   				| C++11															|
+| C++ Compiler Support  | GCC4.8 and MSVC120 (VS2013). See "source/compiler_portability"|														|
+| C++ Platform APIs		| GNU LibC, POSIX, some POSIX NP ,WinAPI, MS CRT				|
+| C++ Libraries			| STL, Boost, QuickFix											|
 
 Watch server when working :
 
