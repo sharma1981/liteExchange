@@ -280,9 +280,9 @@ For Linux with Bash Script
 
 Alternatively on Linux , there is a GUI script as in Windows one :
 
-1. Install TCL and TK ( For CentOS : yum install tcl tk )
+1. Install Perl TK ( For CentOS : yum install perl-Tk )
 
-2. In the command line , run the script as : .\client_automated_test.tcl
+2. In the command line , run the script as : perl .\client_automated_test.pl
 
 3. Set the arguments and then press the start button.
 
