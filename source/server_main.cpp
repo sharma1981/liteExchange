@@ -4,7 +4,7 @@
 #include <compiler_portability/os_version_check.h>  // Linux and Windows supported
 
 // RUNTIME CHECKS
-#include <memory/cache_line.h>                      // To see if cache line we are running on
+#include <memory/cpu_cache_line.h>                      // To see if cache line we are running on
                                                     // matches the compiled one
 #include <utility/os_utility.h>                     // To check whether we are root/admin or not
 

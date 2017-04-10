@@ -19,7 +19,7 @@ namespace memory
             SharedMemory();
             ~SharedMemory();
 
-            bool open(std::string name, std::size_t maxSize = 4192, bool createFile = false);
+            bool open(std::string name, std::size_t maxSize = 4192, bool createFile = false, bool ipc = false, bool buffered = false);
             void write(void* buffer , std::size_t size);
             void close();
 
@@ -34,9 +34,6 @@ namespace memory
 #endif
                 return ret;
             }
-
-            static std::size_t getPageSize();
-            static std::size_t adjustSizeToPageSize(std::size_t size);
 
         private :
             char* m_buffer;

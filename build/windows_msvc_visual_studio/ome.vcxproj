@@ -148,6 +148,7 @@
     <ClInclude Include="..\..\source\memory\debugging\hook_ms_crt.h" />
     <ClInclude Include="..\..\source\memory\shared_memory.h" />
     <ClInclude Include="..\..\source\memory\memory_utilities.h" />
+    <ClInclude Include="..\..\source\memory\virtual_memory.h" />
     <ClInclude Include="..\..\source\order_matcher\central_order_book.h" />
     <ClInclude Include="..\..\source\order_matcher\central_order_book_observer.h" />
     <ClInclude Include="..\..\source\order_matcher\central_order_book_visitor.h" />

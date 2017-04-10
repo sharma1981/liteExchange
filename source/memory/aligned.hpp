@@ -3,7 +3,7 @@
 
 #include <cstddef>
 #include <compiler_portability/noexcept.h>
-#include "cache_line.h"
+#include "cpu_cache_line.h"
 #include "memory_utilities.h"
 #include "aligned_memory.h"
 

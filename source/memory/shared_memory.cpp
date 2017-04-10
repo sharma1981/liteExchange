@@ -1,13 +1,16 @@
+#include <compiler_portability/unused.h>
 #include "shared_memory.h"
+#include "virtual_memory.h"
 
 #ifdef __linux__
 #include <sys/mman.h>
 #include <fcntl.h>
 #include <unistd.h>
-#elif _WIN32
+#include "aligned_memory.h"
 #endif
 
 #include <cstring>
+#include <stdlib.h>
 using namespace std;
 
 namespace memory
@@ -56,22 +59,28 @@ namespace memory
 #endif
         m_size = 0;
         m_buffer = nullptr;
+        m_writtenSize = 0;
     }
 
-    bool SharedMemory::open(string name, size_t maxSize, bool createFile)
+    bool SharedMemory::open(string name, size_t maxSize, bool createFile, bool ipc, bool buffered)
     {
         bool ret = true;
-        m_size = adjustSizeToPageSize(maxSize);
+        m_size = VirtualMemory::adjustSizeToPageSize(maxSize);
 #ifdef __linux__
+        UNUSED(buffered); // Not using O_DIRECT due to alignment requirements
+        UNUSED(ipc);
         // Prepare a file large enough to hold an unsigned integer.
-        m_fileDescriptor = ::open (name.c_str(), O_RDWR | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
+        int flags = O_RDWR | O_CREAT | O_TRUNC;
+        m_fileDescriptor = ::open (name.c_str(), flags, S_IRUSR | S_IWUSR);
+
         if(lseek(m_fileDescriptor, m_size, SEEK_SET) != -1 )
         {
              // Something needs to be written at the end of the file to have the file actually have the new size.
             if( ::write(m_fileDescriptor, "", 1) == 1)
             {
+                int mmapFlags = MAP_SHARED;
                 // Create memory mapping
-                m_buffer = static_cast<char*>(mmap (0, m_size, PROT_WRITE, MAP_SHARED, m_fileDescriptor, 0));
+                m_buffer = static_cast<char*>(mmap (0, m_size, PROT_WRITE, mmapFlags, m_fileDescriptor, 0));
             }
             else
             {
@@ -85,12 +94,26 @@ namespace memory
 #elif _WIN32
         if (createFile)
         {
+            DWORD access = 0;
+
+            if (ipc)
+            {
+                access = FILE_SHARE_READ | FILE_SHARE_WRITE;
+            }
+
+            DWORD flags = 0;
+
+            if (buffered == false)
+            {
+                flags = FILE_FLAG_NO_BUFFERING;
+            }
+
             m_fileHandle = CreateFile(name.c_str(),                // name of the write
                     GENERIC_WRITE | GENERIC_READ,
-                    FILE_SHARE_READ | FILE_SHARE_WRITE,
+                    access,
                     NULL,                   // default security
                     OPEN_ALWAYS,             // create new file only
-                    NULL,  // normal file
+                    flags,  // normal file
                     NULL);                  // no attr. template
         }
 
@@ -116,7 +139,7 @@ namespace memory
 
             if (m_buffer == nullptr)
             {
-                    ret = false;
+                ret = false;
             }
         }
 #endif
@@ -135,43 +158,6 @@ namespace memory
         CopyMemory(m_buffer + (m_writtenSize % m_size), buffer, size);
 #endif
         m_writtenSize += size;
-    }
-
-    size_t SharedMemory::getPageSize()
-    {
-        size_t size = 0;
-#ifdef __linux__
-        size = (size_t)sysconf(_SC_PAGESIZE);
-#elif _WIN32
-        SYSTEM_INFO siSysInfo;
-        GetSystemInfo(&siSysInfo);
-        size = siSysInfo.dwPageSize;
-#endif
-        return size;
-    }
-
-    size_t SharedMemory::adjustSizeToPageSize(size_t size)
-    {
-        size_t adjustedSize = 0;
-        auto pageSize = getPageSize();
-
-        if (size <= pageSize)
-        {
-            adjustedSize = pageSize;
-        }
-        else
-        {
-            int pageCount = size / pageSize;
-
-            if (pageCount * pageSize < size)
-            {
-                pageCount += 1;
-            }
-
-            adjustedSize = pageCount * pageSize;
-        }
-
-        return adjustedSize;
     }
 
 } // namespace

@@ -282,6 +282,9 @@
     <ClInclude Include="..\..\source\utility\logger\shared_memory_sink.hpp">
       <Filter>utility\logger</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\source\memory\virtual_memory.h">
+      <Filter>memory</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="concurrent">
