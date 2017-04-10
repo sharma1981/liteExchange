@@ -12,6 +12,8 @@
 namespace memory
 {
 
+#define DEFAULT_VIRTUAL_MEMORY_PAGE_SIZE 4096
+
 class VirtualMemory
 {
     public :

@@ -1,6 +1,8 @@
 #ifndef _SHARED_MEMORY_H_
 #define _SHARED_MEMORY_H_
 
+#include "virtual_memory.h"
+
 #ifdef __linux__
 #elif _WIN32
 #include <windows.h>
@@ -19,7 +21,7 @@ namespace memory
             SharedMemory();
             ~SharedMemory();
 
-            bool open(std::string name, std::size_t maxSize = 4192, bool createFile = false, bool ipc = false, bool buffered = false);
+			bool open(std::string name, std::size_t maxSize = DEFAULT_VIRTUAL_MEMORY_PAGE_SIZE, bool createFile = false, bool ipc = false, bool buffered = false);
             void write(void* buffer , std::size_t size);
             void close();
 

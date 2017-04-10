@@ -1,6 +1,5 @@
 #include <compiler_portability/unused.h>
 #include "shared_memory.h"
-#include "virtual_memory.h"
 
 #ifdef __linux__
 #include <sys/mman.h>

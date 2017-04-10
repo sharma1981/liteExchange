@@ -59,9 +59,6 @@
     <ClInclude Include="..\..\source\memory\aligned_memory.h">
       <Filter>memory</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\memory\cache_line.h">
-      <Filter>memory</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\source\order_matcher\order.h">
       <Filter>order_matcher</Filter>
     </ClInclude>
@@ -283,6 +280,9 @@
       <Filter>utility\logger</Filter>
     </ClInclude>
     <ClInclude Include="..\..\source\memory\virtual_memory.h">
+      <Filter>memory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\memory\cpu_cache_line.h">
       <Filter>memory</Filter>
     </ClInclude>
   </ItemGroup>

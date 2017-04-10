@@ -30,7 +30,7 @@ namespace utility
         {
             assert(m_resourceName.length() > 0);
 
-            m_logFile.open(m_resourceName, 4192, true);
+			m_logFile.open(m_resourceName, DEFAULT_VIRTUAL_MEMORY_PAGE_SIZE, true);
 
             if (!m_logFile.is_open())
             {
