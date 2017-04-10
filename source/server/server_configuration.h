@@ -34,15 +34,18 @@ class ServerConfiguration
 
             for (auto& sinkName : utility::LOGGER_SINKS)
             {
-                if (configuration.getBoolValue(sinkName) == true)
+                if (configuration.doesAttributeExist(sinkName) == true)
                 {
-                    utility::Logger::getInstance()->setSinkEnabled(sinkName, true);
-
-                    std::string resourceNameAttribute = std::string(sinkName) + "_RESOURCE_NAME";
-                    if (configuration.doesAttributeExist(resourceNameAttribute))
+                    if (configuration.getBoolValue(sinkName) == true)
                     {
-                        auto resourceName = configuration.getStringValue(resourceNameAttribute);
-                        utility::Logger::getInstance()->setSinkResourceName(sinkName, resourceName);
+                        utility::Logger::getInstance()->setSinkEnabled(sinkName, true);
+
+                        std::string resourceNameAttribute = std::string(sinkName) + "_RESOURCE_NAME";
+                        if (configuration.doesAttributeExist(resourceNameAttribute))
+                        {
+                            auto resourceName = configuration.getStringValue(resourceNameAttribute);
+                            utility::Logger::getInstance()->setSinkResourceName(sinkName, resourceName);
+                        }
                     }
                 }
             }

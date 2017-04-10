@@ -42,6 +42,9 @@
       <Filter>utility\logger</Filter>
     </ClCompile>
     <ClCompile Include="..\..\source\precompiled_header.cpp" />
+    <ClCompile Include="..\..\source\memory\shared_memory.cpp">
+      <Filter>memory</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\source\concurrent\task.h">
@@ -272,6 +275,12 @@
     </ClInclude>
     <ClInclude Include="..\..\source\utility\design_patterns\singleton_dclp.hpp">
       <Filter>utility\design_patterns</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\memory\shared_memory.h">
+      <Filter>memory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\utility\logger\shared_memory_sink.hpp">
+      <Filter>utility\logger</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

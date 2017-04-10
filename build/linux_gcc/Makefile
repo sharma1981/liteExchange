@@ -12,6 +12,7 @@ SOURCE_DIR_UTILITY_LOGGER= $(SOURCE_DIR)/utility/logger
 SOURCE_DIR_UTILITY_DESIGN_PATTERNS= $(SOURCE_DIR)/utility/design_patterns
 SOURCE_DIR_SERVER= $(SOURCE_DIR)/server
 SOURCES =  $(SOURCE_DIR_MEMORY)/aligned_memory.cpp \
+		$(SOURCE_DIR_MEMORY)/shared_memory.cpp \
 		$(SOURCE_DIR_CONCURRENT)/thread.cpp \
 		$(SOURCE_DIR_CONCURRENT)/thread_pool.cpp \
 		$(SOURCE_DIR_CONCURRENT_PROFILING)/lock_profiler.cpp \

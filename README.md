@@ -133,6 +133,8 @@ How to build the project on Linux :
     cd build/linux_gcc
     make clean
     make debug  OR make release
+	or if you want to make a parallel build :
+	./build_in_parallel.sh release
 
 How to build the project on Linux using Netbeans 8.0.2 C++ IDE:
 

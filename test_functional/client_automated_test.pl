@@ -24,10 +24,10 @@ $mw->MainLoop();
 #
 ##################################################
 sub start_test {
-	my $server_address = $var4->get();
-	my $test_case_file = $var5->get();
-	my $number_of_test_clients = $var6->get();
-	my $command_to_execute = "/bin/bash ./client_automated_test.sh $server_address $test_case_file $number_of_test_clients";
-	print ($command_to_execute);
-	system($command_to_execute);
+    my $server_address = $var4->get();
+    my $test_case_file = $var5->get();
+    my $number_of_test_clients = $var6->get();
+    my $command_to_execute = "/bin/bash ./client_automated_test.sh $server_address $test_case_file $number_of_test_clients";
+    print ($command_to_execute);
+    system($command_to_execute);
 }

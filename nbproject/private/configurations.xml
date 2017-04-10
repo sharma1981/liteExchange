@@ -3,11 +3,31 @@
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <df root="." name="0">
       <df name="bin">
+        <df name="intermediate">
+          <df name="ome.tlog">
+          </df>
+        </df>
+        <df name="quickfix_log">
+          <df name="TEST_CLIENT1">
+          </df>
+          <df name="TEST_CLIENT2">
+          </df>
+          <df name="TEST_CLIENT3">
+          </df>
+          <df name="TEST_CLIENT4">
+          </df>
+          <df name="TEST_CLIENT5">
+          </df>
+          <df name="TEST_CLIENT6">
+          </df>
+          <df name="TEST_CLIENT7">
+          </df>
+          <df name="TEST_CLIENT8">
+          </df>
+        </df>
       </df>
       <df name="build">
-        <df name="linux">
-        </df>
-        <df name="windows">
+        <df name="linux_gcc">
         </df>
       </df>
       <df name="dependencies">
@@ -3579,8 +3599,9 @@
           <in>aligned_memory.cpp</in>
           <in>aligned_memory.h</in>
           <in>cache_line.h</in>
-          <in>is_power_of_two.h</in>
           <in>memory_utilities.h</in>
+          <in>shared_memory.cpp</in>
+          <in>shared_memory.h</in>
         </df>
         <df name="order_matcher">
           <in>central_order_book.cpp</in>
@@ -3624,6 +3645,7 @@
             <in>logger.h</in>
             <in>logger_sink_factory.hpp</in>
             <in>logger_sinks.hpp</in>
+            <in>shared_memory_sink.hpp</in>
           </df>
           <in>callstack.h</in>
           <in>config_file.cpp</in>
@@ -3632,21 +3654,54 @@
           <in>datetime_utility.h</in>
           <in>file_utility.h</in>
           <in>logger.cpp</in>
-          <in>microbenchmark.hpp</in>
           <in>os_utility.h</in>
           <in>pretty_exception.h</in>
           <in>single_instance.cpp</in>
           <in>single_instance.h</in>
-          <in>singleton.hpp</in>
           <in>stopwatch.cpp</in>
           <in>stopwatch.h</in>
           <in>string_utility.h</in>
           <in>trace.h</in>
         </df>
+        <in>precompiled_header.cpp</in>
         <in>precompiled_header.h</in>
         <in>server_main.cpp</in>
       </df>
       <df name="test_functional">
+        <df name="client_executable">
+          <df name="old_quickfix_logs">
+            <df name="quickfix_log_03_02_2017_00_37_10">
+            </df>
+            <df name="quickfix_log_03_02_2017_00_38_55">
+            </df>
+            <df name="quickfix_log_20_03_2017_00_30_20">
+            </df>
+            <df name="quickfix_log_20_03_2017_00_34_03">
+            </df>
+            <df name="quickfix_log_20_03_2017_00_35_48">
+            </df>
+            <df name="quickfix_log_20_03_2017_00_36_56">
+            </df>
+            <df name="quickfix_log_26_03_2017_23_02_38">
+            </df>
+            <df name="quickfix_log_26_03_2017_23_07_56">
+            </df>
+            <df name="quickfix_log_26_03_2017_23_11_17">
+            </df>
+            <df name="quickfix_log_26_03_2017_23_11_55">
+            </df>
+            <df name="quickfix_log_26_03_2017_23_15_37">
+            </df>
+            <df name="quickfix_log_26_03_2017_23_19_26">
+            </df>
+            <df name="quickfix_log_26_03_2017_23_20_39">
+            </df>
+            <df name="quickfix_log_29_03_2017_02_06_53">
+            </df>
+          </df>
+          <df name="quickfix_log">
+          </df>
+        </df>
         <df name="client_executable_source">
           <in>client.cpp</in>
           <in>client_application.cpp</in>
@@ -3655,17 +3710,6 @@
           <in>client_request.h</in>
         </df>
       </df>
-      <df name="test_microbenchmark">
-        <df name=".vs">
-          <df name="ome_micro_benchmark">
-            <df name="v14">
-            </df>
-          </df>
-        </df>
-        <in>microbenchmarks.cpp</in>
-        <in>order_book_benchmark.cpp</in>
-        <in>order_book_benchmark.h</in>
-      </df>
       <df name="test_unit">
         <df name="google_test_windows">
         </df>
@@ -3673,6 +3717,12 @@
         <in>test_concurrent.h</in>
         <in>test_order_matcher.h</in>
         <in>test_utility.h</in>
+      </df>
+      <df name="utility_scripts">
+        <df name="profiler_linux_gprof">
+        </df>
+        <df name="profiler_windows_visual_studio">
+        </df>
       </df>
     </df>
   </logicalFolder>
@@ -3701,6 +3751,8 @@
         <gdb_interceptlist>
           <gdbinterceptoptions gdb_all="false" gdb_unhandled="true" gdb_unexpected="true"/>
         </gdb_interceptlist>
+        <gdb_signals>
+        </gdb_signals>
         <gdb_options>
           <DebugOptions>
             <option name="debug_dir" value="../../bin/"/>

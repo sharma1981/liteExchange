@@ -38,7 +38,8 @@ int main ()
     if (utility::amIAdmin() == false)
     {
         // Mainly needed for ability to set thread priorities
-        Server::onError("You can only run in root/administrator mode", ServerError::NON_SUPPORTED_EXECUTION);
+        utility::consoleOutputWithColor(utility::ConsoleColor::FG_RED, " WARNING : Program didn`t start with admin/root rights. Therefore will not be able to modify thread priorities.\n");
+        cin;
     }
 
     // Set current working directory as current executable`s directory

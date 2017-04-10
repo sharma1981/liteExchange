@@ -95,6 +95,7 @@
     <ClCompile Include="..\..\source\concurrent\thread.cpp" />
     <ClCompile Include="..\..\source\concurrent\thread_pool.cpp" />
     <ClCompile Include="..\..\source\memory\aligned_memory.cpp" />
+    <ClCompile Include="..\..\source\memory\shared_memory.cpp" />
     <ClCompile Include="..\..\source\order_matcher\central_order_book.cpp" />
     <ClCompile Include="..\..\source\order_matcher\order.cpp" />
     <ClCompile Include="..\..\source\order_matcher\order_book.cpp" />
@@ -145,6 +146,7 @@
     <ClInclude Include="..\..\source\memory\debugging\hardware_breakpoint.h" />
     <ClInclude Include="..\..\source\memory\debugging\hook_gnu_libc.h" />
     <ClInclude Include="..\..\source\memory\debugging\hook_ms_crt.h" />
+    <ClInclude Include="..\..\source\memory\shared_memory.h" />
     <ClInclude Include="..\..\source\memory\memory_utilities.h" />
     <ClInclude Include="..\..\source\order_matcher\central_order_book.h" />
     <ClInclude Include="..\..\source\order_matcher\central_order_book_observer.h" />
@@ -181,6 +183,7 @@
     <ClInclude Include="..\..\source\utility\logger\logger_sink_factory.hpp" />
     <ClInclude Include="..\..\source\utility\logger\log_entry.hpp" />
     <ClInclude Include="..\..\source\utility\logger\log_levels.h" />
+    <ClInclude Include="..\..\source\utility\logger\shared_memory_sink.hpp" />
     <ClInclude Include="..\..\source\utility\os_utility.h" />
     <ClInclude Include="..\..\source\utility\pretty_exception.h" />
     <ClInclude Include="..\..\source\utility\single_instance.h" />
