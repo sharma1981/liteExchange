@@ -4,12 +4,10 @@
 #include <sys/mman.h>
 #include <fcntl.h>
 #include <unistd.h>
-#include <cstring>
 #elif _WIN32
 #endif
 
 #include <cstring>
-
 using namespace std;
 
 namespace memory
@@ -132,11 +130,11 @@ namespace memory
     void SharedMemory::write(void* buffer, size_t size)
     {
 #ifdef __linux__
-            std::memcpy(m_buffer + m_writtenSize, buffer, size);
+        std::memcpy(m_buffer + (m_writtenSize % m_size), buffer, size);
 #elif _WIN32
-            CopyMemory(m_buffer + m_writtenSize, buffer, size);
+        CopyMemory(m_buffer + (m_writtenSize % m_size), buffer, size);
 #endif
-            m_writtenSize += size;
+        m_writtenSize += size;
     }
 
     size_t SharedMemory::getPageSize()
