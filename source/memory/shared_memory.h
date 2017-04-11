@@ -21,7 +21,7 @@ namespace memory
             SharedMemory();
             ~SharedMemory();
 
-			bool open(std::string name, std::size_t maxSize = DEFAULT_VIRTUAL_MEMORY_PAGE_SIZE, bool createFile = false, bool ipc = false, bool buffered = false);
+            bool open(std::string name, std::size_t maxSize = DEFAULT_VIRTUAL_MEMORY_PAGE_SIZE, bool createFile = false, bool ipc = false, bool buffered = false);
             void write(void* buffer , std::size_t size);
             void close();
 
