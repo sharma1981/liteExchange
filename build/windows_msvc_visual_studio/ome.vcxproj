@@ -184,7 +184,6 @@
     <ClInclude Include="..\..\source\utility\logger\logger_sink_factory.hpp" />
     <ClInclude Include="..\..\source\utility\logger\log_entry.hpp" />
     <ClInclude Include="..\..\source\utility\logger\log_levels.h" />
-    <ClInclude Include="..\..\source\utility\logger\shared_memory_sink.hpp" />
     <ClInclude Include="..\..\source\utility\os_utility.h" />
     <ClInclude Include="..\..\source\utility\pretty_exception.h" />
     <ClInclude Include="..\..\source\utility\single_instance.h" />

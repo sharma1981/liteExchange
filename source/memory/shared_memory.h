@@ -26,7 +26,7 @@ namespace memory
             void close();
 
             std::size_t getSize() const { return m_size;  }
-            bool is_open() const
+            bool isOpen() const
             {
                 bool ret = false;
 #ifdef __linux__

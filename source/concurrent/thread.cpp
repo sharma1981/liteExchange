@@ -286,6 +286,16 @@ void Thread::join()
     m_joined = true;
 }
 
+void Thread::detach()
+{
+#ifdef __linux__
+    pthread_t t = m_threadID;
+    pthread_detach(t);
+#elif _WIN32
+    CloseHandle(m_threadHandle);
+#endif
+}
+
 void* Thread::internalThreadFunction(void* argument)
 {
     assert(argument != nullptr);

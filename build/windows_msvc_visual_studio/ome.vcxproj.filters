@@ -276,9 +276,6 @@
     <ClInclude Include="..\..\source\memory\shared_memory.h">
       <Filter>memory</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\utility\logger\shared_memory_sink.hpp">
-      <Filter>utility\logger</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\source\memory\virtual_memory.h">
       <Filter>memory</Filter>
     </ClInclude>

@@ -22,19 +22,17 @@
 // SINK INCLUDES
 #include <utility/logger/file_sink.hpp>
 #include <utility/logger/console_sink.hpp>
-#include <utility/logger/shared_memory_sink.hpp>
 
 namespace utility
 {
 
 // SINK NUMBER
-const int SINK_NUMBER = 3;
+const int SINK_NUMBER = 2;
 
 // SINK ARRAY
 const std::array<const char*, SINK_NUMBER> LOGGER_SINKS = {
                                                                 FILE_SINK,
-                                                                CONSOLE_SINK,
-                                                                SHARED_MEMORY_SINK
+                                                                CONSOLE_SINK
                                                           };
 
 class LoggerSinkFactory : Factory<LoggerSinkPtr>
@@ -51,10 +49,6 @@ class LoggerSinkFactory : Factory<LoggerSinkPtr>
             else if (sinkName.compare(CONSOLE_SINK) == 0)
             {
                 product = new ConsoleSink();
-            }
-            else if (sinkName.compare(SHARED_MEMORY_SINK) == 0)
-            {
-                product = new SharedMemorySink();
             }
 
             return LoggerSinkPtr(product);

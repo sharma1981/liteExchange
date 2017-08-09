@@ -100,7 +100,7 @@ Add-Type -AssemblyName System.Windows.Forms
 
 $FormFunctionalTest = New-Object system.Windows.Forms.Form
 $FormFunctionalTest.Text = "OME Functional Test GUI"
-$FormFunctionalTest.TopMost = $true
+$FormFunctionalTest.TopMost = $false
 $FormFunctionalTest.Width = 377
 $FormFunctionalTest.Height = 254
 

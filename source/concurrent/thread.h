@@ -41,6 +41,7 @@ class Thread : public boost::noncopyable
 
         void start(std::size_t stackSize=0);
         void join();
+        void detach();
         bool isAlive() const;
         int pinToCPUCore(int coreId);
         bool setPriority(ThreadPriority priority);

@@ -1,0 +1,23 @@
+##########################
+# GCC SPECIFIC
+*.o
+##########################
+# MSVC SPECIFIC
+*.sdf
+*.ipch
+*.ilk
+*.pdb
+*.obj
+*.idb
+*.tlog
+*.exp
+*.ncb
+*.suo
+##########################
+# PROJECT SPECIFIC
+ome_log.txt
+ipch/
+intermediate/
+quickfix_log/
+old_quickfix_logs/
+TEST_CLIENT*
