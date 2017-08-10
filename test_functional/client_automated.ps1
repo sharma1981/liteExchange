@@ -84,7 +84,6 @@ function start_test()
 	# Ending
 	Write-Host ""
 	Write-Host "Client automation finished , close the window to quit." -foregroundcolor "Yellow"
-	Read-Host
 	Write-Host ""
 }
 

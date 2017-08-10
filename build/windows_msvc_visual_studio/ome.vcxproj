@@ -143,9 +143,6 @@
     <ClInclude Include="..\..\source\memory\aligned_container_policy.hpp" />
     <ClInclude Include="..\..\source\memory\aligned_memory.h" />
     <ClInclude Include="..\..\source\memory\cpu_cache_line.h" />
-    <ClInclude Include="..\..\source\memory\debugging\hardware_breakpoint.h" />
-    <ClInclude Include="..\..\source\memory\debugging\hook_gnu_libc.h" />
-    <ClInclude Include="..\..\source\memory\debugging\hook_ms_crt.h" />
     <ClInclude Include="..\..\source\memory\shared_memory.h" />
     <ClInclude Include="..\..\source\memory\memory_utilities.h" />
     <ClInclude Include="..\..\source\memory\virtual_memory.h" />

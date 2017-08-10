@@ -1,0 +1,11 @@
+#
+#	New order
+#	
+#		order_type symbol side target_id price quantity
+#
+#	Cancel order
+#
+#		order_type symbol side target_id orig_order_id
+#
+NEW_ORDER,AAPL,BUY,OME,1,3
+NEW_ORDER,AAPL,SELL,OME,1,3

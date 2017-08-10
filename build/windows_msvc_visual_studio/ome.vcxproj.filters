@@ -144,15 +144,6 @@
     <ClInclude Include="..\..\source\compiler_portability\unused.h">
       <Filter>compiler_portability</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\memory\debugging\hardware_breakpoint.h">
-      <Filter>memory\debugging</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\memory\debugging\hook_gnu_libc.h">
-      <Filter>memory\debugging</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\memory\debugging\hook_ms_crt.h">
-      <Filter>memory\debugging</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\source\compiler_portability\ignored_warnings.h">
       <Filter>compiler_portability</Filter>
     </ClInclude>
@@ -301,9 +292,6 @@
     </Filter>
     <Filter Include="compiler_portability">
       <UniqueIdentifier>{5495b43b-3f74-468d-ba77-11a63f6effea}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="memory\debugging">
-      <UniqueIdentifier>{e2506043-3705-4a74-be42-ec87752f681e}</UniqueIdentifier>
     </Filter>
     <Filter Include="concurrent\profiling">
       <UniqueIdentifier>{ecbe61b6-113c-4b69-a04e-5a14eb3b5c27}</UniqueIdentifier>
