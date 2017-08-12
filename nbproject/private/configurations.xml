@@ -3,31 +3,13 @@
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <df root="." name="0">
       <df name="bin">
-        <df name="intermediate">
-          <df name="ome.tlog">
-          </df>
-        </df>
-        <df name="quickfix_log">
-          <df name="TEST_CLIENT1">
-          </df>
-          <df name="TEST_CLIENT2">
-          </df>
-          <df name="TEST_CLIENT3">
-          </df>
-          <df name="TEST_CLIENT4">
-          </df>
-          <df name="TEST_CLIENT5">
-          </df>
-          <df name="TEST_CLIENT6">
-          </df>
-          <df name="TEST_CLIENT7">
-          </df>
-          <df name="TEST_CLIENT8">
-          </df>
-        </df>
       </df>
       <df name="build">
         <df name="linux_gcc">
+        </df>
+        <df name="windows_msvc_command_line">
+        </df>
+        <df name="windows_msvc_visual_studio">
         </df>
       </df>
       <df name="dependencies">
@@ -3549,6 +3531,8 @@
           </df>
         </df>
       </df>
+      <df name="documentation">
+      </df>
       <df name="source">
         <df name="compiler_portability">
           <in>alignas.h</in>
@@ -3588,20 +3572,16 @@
           <in>thread_priority.h</in>
         </df>
         <df name="memory">
-          <df name="debugging">
-            <in>hardware_breakpoint.h</in>
-            <in>hook_gnu_libc.h</in>
-            <in>hook_ms_crt.h</in>
-          </df>
           <in>aligned.hpp</in>
           <in>aligned_allocator.hpp</in>
           <in>aligned_container_policy.hpp</in>
           <in>aligned_memory.cpp</in>
           <in>aligned_memory.h</in>
-          <in>cache_line.h</in>
+          <in>cpu_cache_line.h</in>
           <in>memory_utilities.h</in>
           <in>shared_memory.cpp</in>
           <in>shared_memory.h</in>
+          <in>virtual_memory.h</in>
         </df>
         <df name="order_matcher">
           <in>central_order_book.cpp</in>
@@ -3645,7 +3625,6 @@
             <in>logger.h</in>
             <in>logger_sink_factory.hpp</in>
             <in>logger_sinks.hpp</in>
-            <in>shared_memory_sink.hpp</in>
           </df>
           <in>callstack.h</in>
           <in>config_file.cpp</in>
@@ -3669,38 +3648,6 @@
       </df>
       <df name="test_functional">
         <df name="client_executable">
-          <df name="old_quickfix_logs">
-            <df name="quickfix_log_03_02_2017_00_37_10">
-            </df>
-            <df name="quickfix_log_03_02_2017_00_38_55">
-            </df>
-            <df name="quickfix_log_20_03_2017_00_30_20">
-            </df>
-            <df name="quickfix_log_20_03_2017_00_34_03">
-            </df>
-            <df name="quickfix_log_20_03_2017_00_35_48">
-            </df>
-            <df name="quickfix_log_20_03_2017_00_36_56">
-            </df>
-            <df name="quickfix_log_26_03_2017_23_02_38">
-            </df>
-            <df name="quickfix_log_26_03_2017_23_07_56">
-            </df>
-            <df name="quickfix_log_26_03_2017_23_11_17">
-            </df>
-            <df name="quickfix_log_26_03_2017_23_11_55">
-            </df>
-            <df name="quickfix_log_26_03_2017_23_15_37">
-            </df>
-            <df name="quickfix_log_26_03_2017_23_19_26">
-            </df>
-            <df name="quickfix_log_26_03_2017_23_20_39">
-            </df>
-            <df name="quickfix_log_29_03_2017_02_06_53">
-            </df>
-          </df>
-          <df name="quickfix_log">
-          </df>
         </df>
         <df name="client_executable_source">
           <in>client.cpp</in>
@@ -3751,8 +3698,6 @@
         <gdb_interceptlist>
           <gdbinterceptoptions gdb_all="false" gdb_unhandled="true" gdb_unexpected="true"/>
         </gdb_interceptlist>
-        <gdb_signals>
-        </gdb_signals>
         <gdb_options>
           <DebugOptions>
             <option name="debug_dir" value="../../bin/"/>

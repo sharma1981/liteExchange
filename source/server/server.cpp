@@ -42,9 +42,14 @@ Server::Server(const string& fixEngineConfigFile, const ServerConfiguration& ser
     }
 
     // Central order book initialisation
-    concurrent::ThreadPoolArguments args = serverConfiguration.getThreadPoolArguments();
-    args.m_threadNames = serverConfiguration.getSymbols();
-    m_centralOrderBook.initialise(args);
+    m_centralOrderBook.setSymbols(serverConfiguration.getSymbols());
+
+    if (serverConfiguration.getMatchingMultithreadingMode() == true)
+    {
+        concurrent::ThreadPoolArguments args = serverConfiguration.getThreadPoolArguments();
+        args.m_threadNames = serverConfiguration.getSymbols();
+        m_centralOrderBook.initialiseMultithreadedMatching(args);
+    }
 
     // Attach central order book observer to the central order book
     m_centralOrderBook.attach(m_centralOrderBookObserver);

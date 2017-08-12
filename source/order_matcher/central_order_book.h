@@ -27,15 +27,16 @@ using OutgoingMessageQueue = concurrent::QueueMPMC<OutgoingMessage>;
 class CentralOrderBook : public boost::noncopyable, public utility::Visitable<Order>, public utility::Observable<CentralOrderBook>
 {
     public:
-        CentralOrderBook() = default;
+        CentralOrderBook() : m_isMatchingMultithreaded{ false } {}
 
         ~CentralOrderBook()
         {
             m_orderBookThreadPool.shutdown();
         }
 
+        void setSymbols(const std::vector<std::string>symbols);
         void accept(utility::Visitor<Order>& v) override;
-        void initialise(concurrent::ThreadPoolArguments& args);
+        void initialiseMultithreadedMatching(concurrent::ThreadPoolArguments& args);
 
         bool addOrder(const Order& order);
         void rejectOrder(const Order& order, const std::string& message);
@@ -43,11 +44,15 @@ class CentralOrderBook : public boost::noncopyable, public utility::Visitable<Or
 
         OutgoingMessageQueue* getOutgoingMessageQueue() { return &m_outgoingMessages; }
 
+        bool isMatchingMultithreaded() const { return m_isMatchingMultithreaded; }
+
     private:
         std::unordered_map<std::string, OrderBook> m_orderBookDictionary; // Symbol - OrderBook dictionary
         std::unordered_map<std::string, int> m_queueIDDictionary; // Symbol - Queue ID dictionary
-        bool doesOrderBookExist (const std::string& symbol) const ;
+        bool isSymbolSupported (const std::string& symbol) const ;
 
+        bool m_isMatchingMultithreaded;
+        std::vector<std::string> m_symbols;
         OutgoingMessageQueue m_outgoingMessages;
         concurrent::ThreadPool m_orderBookThreadPool;
 

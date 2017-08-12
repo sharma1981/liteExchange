@@ -18,7 +18,7 @@ class ServerConfiguration
     public :
 
         ServerConfiguration()
-        : m_singleInstanceTCPPortNumber{ 0 }
+        : m_singleInstanceTCPPortNumber{ 0 }, m_isMatchingMultithreaded{ false }
         {
         }
 
@@ -30,17 +30,18 @@ class ServerConfiguration
             m_singleInstanceTCPPortNumber = configuration.getIntValue(server_constants::CONFIGURATION_FILE_SINGLE_INSTANCE_TCP_PORT);
 
             // Get logging related configurations, the loop is for per logger sink
-            utility::Logger::getInstance()->initialise(configuration.getIntValue(server_constants::CONFIGURATION_FILE_LOG_BUFFER_SIZE));
+            utility::Logger::getInstance()->initialise(configuration.getIntValue(server_constants::CONFIGURATION_FILE_LOGGER_BUFFER_SIZE));
 
             for (auto& sinkName : utility::LOGGER_SINKS)
             {
-                if (configuration.doesAttributeExist(sinkName) == true)
+                std::string configSinkName = "LOGGER_" + std::string(sinkName);
+                if (configuration.doesAttributeExist(configSinkName) == true)
                 {
-                    if (configuration.getBoolValue(sinkName) == true)
+                    if (configuration.getBoolValue(configSinkName) == true)
                     {
                         utility::Logger::getInstance()->setSinkEnabled(sinkName, true);
 
-                        std::string resourceNameAttribute = std::string(sinkName) + "_RESOURCE_NAME";
+                        std::string resourceNameAttribute = "LOGGER_" + std::string(sinkName) + "_RESOURCE_NAME";
                         if (configuration.doesAttributeExist(resourceNameAttribute))
                         {
                             auto resourceName = configuration.getStringValue(resourceNameAttribute);
@@ -50,30 +51,35 @@ class ServerConfiguration
                 }
             }
 
+            // Get symbol configuration
             m_symbols = configuration.getArray(server_constants::CONFIGURATION_FILE_SYMBOL_ARAY);
             if (m_symbols.size() == 0)
             {
                 throw std::runtime_error("No symbol found in the ini file");
             }
 
-            m_threadPoolArguments.m_pinThreadsToCores = configuration.getBoolValue(server_constants::CONFIGURATION_FILE_CENTRAL_ORDER_BOOK_PIN_THREADS_TO_CORES);
-            m_threadPoolArguments.m_hyperThreading = configuration.getBoolValue(server_constants::CONFIGURATION_FILE_HYPER_THREADING);
-            m_threadPoolArguments.m_workQueueSizePerThread = configuration.getIntValue(server_constants::CONFIGURATION_FILE_CENTRAL_ORDER_BOOK_WORK_QUEUE_SIZE_PER_THREAD);
-            m_threadPoolArguments.m_threadStackSize = configuration.getIntValue(server_constants::CONFIGURATION_FILE_CENTRAL_ORDER_BOOK_THREAD_STACK_SIZE);
-            m_threadPoolArguments.m_threadPriority = concurrent::getThreadPriorityFromString(configuration.getStringValue(server_constants::CONFIGURATION_FILE_CENTRAL_ORDER_BOOK_THREAD_PRIORITY));
+            // Get matching multithreading mode
+            m_isMatchingMultithreaded = configuration.getBoolValue(server_constants::CONFIGURATION_FILE_CENTRAL_ORDER_BOOK_MULTITHREADED_ORDER_MATCHING);
+
+            // Get multithreading configuration
+            if (m_isMatchingMultithreaded)
+            {
+                m_threadPoolArguments.m_pinThreadsToCores = configuration.getBoolValue(server_constants::CONFIGURATION_FILE_CENTRAL_ORDER_BOOK_PIN_THREADS_TO_CORES);
+                m_threadPoolArguments.m_hyperThreading = configuration.getBoolValue(server_constants::CONFIGURATION_FILE_CENTRAL_ORDER_BOOK_HYPER_THREADING);
+                m_threadPoolArguments.m_workQueueSizePerThread = configuration.getIntValue(server_constants::CONFIGURATION_FILE_CENTRAL_ORDER_BOOK_WORK_QUEUE_SIZE_PER_THREAD);
+                m_threadPoolArguments.m_threadStackSize = configuration.getIntValue(server_constants::CONFIGURATION_FILE_CENTRAL_ORDER_BOOK_THREAD_STACK_SIZE);
+                m_threadPoolArguments.m_threadPriority = concurrent::getThreadPriorityFromString(configuration.getStringValue(server_constants::CONFIGURATION_FILE_CENTRAL_ORDER_BOOK_THREAD_PRIORITY));
+            }
         }
 
-        void setSingleInstancePortNumber(int singleInstancePortNumber) { m_singleInstanceTCPPortNumber = singleInstancePortNumber; }
         int getSingleInstancePortNumber() const{ return m_singleInstanceTCPPortNumber; }
-
-        void setThreadPoolArguments(const concurrent::ThreadPoolArguments& threadPoolArguments) { m_threadPoolArguments = threadPoolArguments; }
+        bool getMatchingMultithreadingMode() const { return m_isMatchingMultithreaded; }
         concurrent::ThreadPoolArguments getThreadPoolArguments() const { return m_threadPoolArguments; }
-
-        void setSymbols(const std::vector<std::string>& symbols) { m_symbols = symbols; }
         std::vector<std::string> getSymbols() const { return m_symbols;  }
 
     private :
         int m_singleInstanceTCPPortNumber;
+        bool m_isMatchingMultithreaded;
         concurrent::ThreadPoolArguments m_threadPoolArguments;
         std::vector<std::string> m_symbols;
 };

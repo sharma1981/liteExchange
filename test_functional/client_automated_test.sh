@@ -5,7 +5,6 @@ NUMBER_OF_CLIENTS=$3
 TEMPLATE_FILE="template.cfg"
 CLIENT_DIRECTORY="./client_executable"
 CLIENTS=
-#CLIENTS=('TEST_CLIENT1' 'TEST_CLIENT2' 'TEST_CLIENT3' 'TEST_CLIENT4' 'TEST_CLIENT5' 'TEST_CLIENT6' 'TEST_CLIENT7' 'TEST_CLIENT8');
 
 #Sudoable test
 sudo ifconfig
@@ -29,7 +28,7 @@ function run_client()
 if [[ $initrv > 0 ]]
 then
     echo "Current user needs to have root rights in order to execute OME"
-    display_usage  
+    display_usage
     exit 1
 fi
 
@@ -44,7 +43,7 @@ start=$(($(date +%s%N)/1000000))
 i=1
 while [ "$i" -le "$NUMBER_OF_CLIENTS" ]; do
   CLIENTS[$i]="TEST_CLIENT$i"
-  i=$(($i + 1))  
+  i=$(($i + 1))
 done
 
 for i in "${CLIENTS[@]}"

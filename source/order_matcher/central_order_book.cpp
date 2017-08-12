@@ -1,10 +1,10 @@
 #include "central_order_book.h"
 #include <queue>
+#include <algorithm>
 #include <boost/format.hpp>
 using namespace std;
 
-//#define SINGLE_THREADED
-
+#include <compiler_portability/branch_predictor_hint.h>
 #include <utility/stopwatch.h>
 using namespace utility;
 
@@ -19,9 +19,16 @@ void CentralOrderBook::accept(Visitor<Order>& v)
     }
 }
 
-void CentralOrderBook::initialise(concurrent::ThreadPoolArguments& args)
+void CentralOrderBook::setSymbols(const std::vector<std::string>symbols)
+{
+    m_symbols = symbols;
+}
+
+void CentralOrderBook::initialiseMultithreadedMatching(concurrent::ThreadPoolArguments& args)
 {
     notify(boost::str(boost::format("Initialising thread pool, work queue size per thread %d")  %args.m_workQueueSizePerThread) );
+
+    m_isMatchingMultithreaded = true;
 
     int queueID = -1;
 
@@ -39,43 +46,44 @@ void CentralOrderBook::initialise(concurrent::ThreadPoolArguments& args)
     m_orderBookThreadPool.initialise(args);
 }
 
-bool CentralOrderBook::doesOrderBookExist(const string& symbol) const
+bool CentralOrderBook::isSymbolSupported(const string& symbol) const
 {
-    if (m_orderBookDictionary.find(symbol) == m_orderBookDictionary.end())
+    if (std::find(m_symbols.begin(), m_symbols.end(), symbol) != m_symbols.end())
     {
-        return false;
+        return true;
     }
-
-    return true;
+    return false;
 }
 
 bool CentralOrderBook::addOrder(const Order& order)
 {
     auto symbol = order.getSymbol();
 
-    if (doesOrderBookExist(symbol) == false)
+    if (isSymbolSupported(symbol) == false)
     {
         // SEND REJECTED MESSAGE TO THE CLIENT
         rejectOrder(order, "Symbol not supported");
-
         return false;
     }
 
     int queueID = m_queueIDDictionary[symbol];
 
     // SEND ACCEPTED MESSAGE TO THE CLIENT
-    notify(boost::str(boost::format("New order accepted, client %s, client order ID %d ")  %order.getOwner() % order.getClientID() ));
+    notify(boost::str(boost::format("New order accepted, client %s, client order ID %d ") % order.getOwner() % order.getClientID()));
     OutgoingMessage message(order, OutgoingMessageType::ACCEPTED);
     m_outgoingMessages.enqueue(message);
 
-#ifndef SINGLE_THREADED
-    // MULTITHREADED MODE : SUBMIT NEW ORDER TASK TO THE THREAD POOL
-    concurrent::Task newOrderTask(&CentralOrderBook::taskNewOrder, this, order );
-    m_orderBookThreadPool.submitTask(newOrderTask, queueID);
-#else
-    // SINGLE THREADED MODE : EXECUTE NEW ORDER SYNCHRONOUSLY
-    taskNewOrder(order);
-#endif
+    if (likely(m_isMatchingMultithreaded))
+    {
+        // MULTITHREADED MODE : SUBMIT NEW ORDER TASK TO THE THREAD POOL
+        concurrent::Task newOrderTask(&CentralOrderBook::taskNewOrder, this, order);
+        m_orderBookThreadPool.submitTask(newOrderTask, queueID);
+    }
+    else
+    {
+        // SINGLE THREADED MODE : EXECUTE NEW ORDER SYNCHRONOUSLY
+        taskNewOrder(order);
+    }
     return true;
 }
 
@@ -127,13 +135,16 @@ void CentralOrderBook::cancelOrder(const Order& order, const std::string& origCl
     int queueID = m_queueIDDictionary[symbol];
     concurrent::Task cancelOrderTask(&CentralOrderBook::taskCancelOrder, this, order, origClientOrderID);
 
-#ifndef SINGLE_THREADED
-    // MULTITHREADED MODE :SUBMIT CANCEL TASK TO THE THREADPOOL
-    m_orderBookThreadPool.submitTask(cancelOrderTask, queueID);
-#else
-    // SINGLE THREADED MODE : CANCEL SYNCHRONOUSLY
-    taskCancelOrder(order, origClientOrderID);
-#endif
+    if (m_isMatchingMultithreaded)
+    {
+        // MULTITHREADED MODE :SUBMIT CANCEL TASK TO THE THREADPOOL
+        m_orderBookThreadPool.submitTask(cancelOrderTask, queueID);
+    }
+    else
+    {
+        // SINGLE THREADED MODE : CANCEL SYNCHRONOUSLY
+        taskCancelOrder(order, origClientOrderID);
+    }
 }
 
 void* CentralOrderBook::taskCancelOrder(const Order& order, const std::string& origClientOrderID)

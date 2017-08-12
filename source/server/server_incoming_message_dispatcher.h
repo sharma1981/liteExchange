@@ -51,7 +51,7 @@ class IncomingMessageDispatcher : public Actor
             DECLARE_THREAD_PROFILER;
             THREAD_PROFILER_START;
 
-            LOG_INFO("Incoming message dispatcher", "Thread starting")
+            LOG_INFO("Incoming message dispatcher", "Incoming message processor thread starting")
             // Let`s wait until central order book initialisation
             while (true)
             {
@@ -113,7 +113,7 @@ class IncomingMessageDispatcher : public Actor
             THREAD_PROFILER_END;
             THREAD_PROFILER_TRACE;
 
-            LOG_INFO("Incoming message dispatcher", "Thread exiting")
+            LOG_INFO("Incoming message dispatcher", "Incoming message processor thread exiting")
             return nullptr;
         }
 

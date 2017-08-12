@@ -41,7 +41,7 @@ class OutgoingMessageProcessor : public Actor
             DECLARE_THREAD_PROFILER;
             THREAD_PROFILER_START;
 
-            LOG_INFO("Outgoing message processor", "Thread starting")
+            LOG_INFO("Outgoing message processor", "Outgoing message processor thread starting")
 
             // Let`s wait until message queue initialisation
             while (true)
@@ -121,7 +121,7 @@ class OutgoingMessageProcessor : public Actor
 
             }// while
 
-            LOG_INFO("Outgoing message processor", "Thread exiting")
+            LOG_INFO("Outgoing message processor", "Outgoing message processor thread exiting")
 
             THREAD_PROFILER_END;
             THREAD_PROFILER_TRACE;
