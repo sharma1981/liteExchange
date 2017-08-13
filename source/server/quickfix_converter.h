@@ -3,8 +3,8 @@
 
 #include <utility/pretty_exception.h>
 
-#include "outgoing_message.h"
-#include "order.h"
+#include <order_matcher/outgoing_message.h>
+#include <order_matcher/order.h>
 
 #include <quickfix/Session.h>
 #include <quickfix/Values.h>

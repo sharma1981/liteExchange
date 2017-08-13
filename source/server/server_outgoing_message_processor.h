@@ -10,13 +10,11 @@
 #include <quickfix/fix42/ExecutionReport.h>
 
 #include <order_matcher/central_order_book.h>
-#include <order_matcher/quickfix_converter.h>
+#include <server/quickfix_converter.h>
 #include <concurrent/actor.h>
 #include <utility/logger/logger.h>
 
 #include <server/server_constants.h>
-
-#include <concurrent/profiling/thread_profiler.h>
 
 using namespace concurrent;
 using namespace order_matcher;
@@ -38,9 +36,6 @@ class OutgoingMessageProcessor : public Actor
 
         void* run() override
         {
-            DECLARE_THREAD_PROFILER;
-            THREAD_PROFILER_START;
-
             LOG_INFO("Outgoing message processor", "Outgoing message processor thread starting")
 
             // Let`s wait until message queue initialisation
@@ -122,9 +117,6 @@ class OutgoingMessageProcessor : public Actor
             }// while
 
             LOG_INFO("Outgoing message processor", "Outgoing message processor thread exiting")
-
-            THREAD_PROFILER_END;
-            THREAD_PROFILER_TRACE;
 
             return nullptr;
         }

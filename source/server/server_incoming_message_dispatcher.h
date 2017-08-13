@@ -13,8 +13,6 @@
 #include <concurrent/actor.h>
 #include <concurrent/queue_mpsc.hpp>
 
-#include <concurrent/profiling/thread_profiler.h>
-
 #include <utility/logger/logger.h>
 
 #include <server/server_constants.h>
@@ -48,9 +46,6 @@ class IncomingMessageDispatcher : public Actor
 
         void* run() override
         {
-            DECLARE_THREAD_PROFILER;
-            THREAD_PROFILER_START;
-
             LOG_INFO("Incoming message dispatcher", "Incoming message processor thread starting")
             // Let`s wait until central order book initialisation
             while (true)
@@ -109,9 +104,6 @@ class IncomingMessageDispatcher : public Actor
                     concurrent::Thread::yield();
                 }
             }
-
-            THREAD_PROFILER_END;
-            THREAD_PROFILER_TRACE;
 
             LOG_INFO("Incoming message dispatcher", "Incoming message processor thread exiting")
             return nullptr;

@@ -3,9 +3,9 @@
 
 #include <cstddef>
 #include <compiler_portability/noexcept.h>
-#include "cpu_cache_line.h"
-#include "memory_utilities.h"
 #include "aligned_memory.h"
+
+#define IS_POWER_OF_TWO(n) ( n && ((n & (n - 1)) == 0) ? true : false )
 
 namespace memory
 {
@@ -17,7 +17,7 @@ class Aligned
 
         Aligned()
         {
-            static_assert(is_power_of_two(alignment), "Template argument must be a power of two.");
+			static_assert(IS_POWER_OF_TWO(alignment), "Template argument must be a power of two.");
         }
 
         /*

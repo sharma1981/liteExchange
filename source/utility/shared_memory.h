@@ -1,7 +1,7 @@
 #ifndef _SHARED_MEMORY_H_
 #define _SHARED_MEMORY_H_
 
-#include "virtual_memory.h"
+#include <memory/virtual_memory.h>
 
 #ifdef __linux__
 #elif _WIN32
@@ -12,7 +12,7 @@
 #include <cstddef>
 
 
-namespace memory
+namespace utility
 {
 
     class SharedMemory

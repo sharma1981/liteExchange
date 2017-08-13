@@ -12,7 +12,7 @@
 #include <stdlib.h>
 using namespace std;
 
-namespace memory
+namespace utility
 {
     SharedMemory::SharedMemory() : m_buffer(nullptr), m_size(0), m_writtenSize(0)
     {
@@ -64,7 +64,7 @@ namespace memory
     bool SharedMemory::open(string name, size_t maxSize, bool createFile, bool ipc, bool buffered)
     {
         bool ret = true;
-        m_size = VirtualMemory::adjustSizeToPageSize(maxSize);
+        m_size = memory::VirtualMemory::adjustSizeToPageSize(maxSize);
 #ifdef __linux__
         UNUSED(buffered); // Not using O_DIRECT due to alignment requirements
         UNUSED(ipc);

@@ -1,5 +1,5 @@
 #include "aligned_memory.h"
-#include "cpu_cache_line.h"
+#include "cpu_memory.h"
 
 #ifdef __linux__
 #include <cstdlib>

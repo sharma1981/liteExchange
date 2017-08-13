@@ -4,7 +4,7 @@
 #include <compiler_portability/os_version_check.h>  // Linux and Windows supported
 
 // RUNTIME CHECKS
-#include <memory/cpu_cache_line.h>                      // To see if cache line we are running on
+#include <memory/cpu_memory.h>                      // To see if cache line we are running on
                                                     // matches the compiled one
 #include <utility/os_utility.h>                     // To check whether we are root/admin or not
 
@@ -26,11 +26,11 @@ using namespace std;
 int main ()
 {
     // Initial checks
-    if (memory::getCacheLineSize() != CACHE_LINE_SIZE)
+    if (memory::getCPUCacheLineSize() != CACHE_LINE_SIZE)
     {
         auto message = boost::str(boost::format("This executable compiled for cache line size %d ,\
                                                  but you are running on a CPU with a cache line of %d")
-                                                 % CACHE_LINE_SIZE % memory::getCacheLineSize()
+												 % CACHE_LINE_SIZE % memory::getCPUCacheLineSize()
                                                 );
         Server::onError(message, ServerError::NON_SUPPORTED_EXECUTION);
     }

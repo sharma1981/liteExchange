@@ -1,7 +1,7 @@
 #ifndef _ALIGNED_MEMORY_H_
 #define _ALIGNED_MEMORY_H_
 
-#include "cpu_cache_line.h"
+#include "cpu_memory.h"
 #include <compiler_portability/noexcept.h>
 #include <cstddef>
 #include <new>

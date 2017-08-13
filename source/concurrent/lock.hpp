@@ -31,7 +31,6 @@
 // But this does not apply to all distributions
 
 #include <concurrent/base_lock.h>
-#include <concurrent/profiling/lock_profiler.h>
 
 namespace concurrent
 {
@@ -74,7 +73,6 @@ class Lock : public BaseLock
 
         void lock() override
         {
-            LOCK_PROFILER_START;
 #ifdef __linux__
             pthread_mutex_lock(&m_mutex);
 #elif _WIN32
@@ -96,10 +94,6 @@ class Lock : public BaseLock
                 ret = true;
             }
 #endif
-            if(ret == true)
-            {
-                LOCK_PROFILER_START;
-            }
             return ret;
         }
 
@@ -110,8 +104,6 @@ class Lock : public BaseLock
 #elif _WIN32
             LeaveCriticalSection(&m_criticalSection);
 #endif
-            LOCK_PROFILER_END;
-            LOCK_PROFILER_TRACE;
         }
 
         unsigned long getSpinCount() const
@@ -198,8 +190,6 @@ class Lock : public BaseLock
         unsigned long m_spinCount;      // Only Windows
         LockType m_lockType;            // Applies to Linux, always on Windows
         bool m_robustness;              // Applies to Linux , if a thread dies the robust mutex it was holding will be unlocked
-
-        DECLARE_LOCK_PROFILER;
 
         // Move ctor deletion
         Lock(Lock&& other) = delete;

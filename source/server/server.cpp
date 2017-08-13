@@ -23,7 +23,7 @@
 
 #include <order_matcher/central_order_book_visitor.h>
 #include <order_matcher/order.h>
-#include <order_matcher/quickfix_converter.h>
+#include <server/quickfix_converter.h>
 using namespace order_matcher;
 
 #include <utility/file_utility.h>
