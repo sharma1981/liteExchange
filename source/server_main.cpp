@@ -1,7 +1,7 @@
-#include <compiler_portability/ignored_warnings.h>
+#include <compiler/ignored_warnings.h>
 // COMPILE TIME CHECKS
-#include <compiler_portability/cpp_version_check.h> // C++11 and later supported
-#include <compiler_portability/os_version_check.h>  // Linux and Windows supported
+#include <compiler/cpp_version_check.h> // C++11 and later supported
+#include <compiler/os_version_check.h>  // Linux and Windows supported
 
 // RUNTIME CHECKS
 #include <memory/cpu_memory.h>                      // To see if cache line we are running on

@@ -4,7 +4,7 @@
 #include <cstddef>
 #include <type_traits>
 
-#include <compiler_portability/alignas.h>
+#include <compiler/alignas.h>
 
 #ifdef __linux__
 #include <unistd.h>

@@ -4,7 +4,7 @@
 #include <boost/format.hpp>
 using namespace std;
 
-#include <compiler_portability/likely.h>
+#include <compiler/likely.h>
 #include <utility/stopwatch.h>
 using namespace utility;
 

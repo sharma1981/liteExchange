@@ -109,18 +109,18 @@
     <ClCompile Include="..\..\source\utility\stopwatch.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\source\compiler_portability\alignas.h" />
-    <ClInclude Include="..\..\source\compiler_portability\cpp_version_check.h" />
-    <ClInclude Include="..\..\source\compiler_portability\fastcall.h" />
-    <ClInclude Include="..\..\source\compiler_portability\force_inline.h" />
-    <ClInclude Include="..\..\source\compiler_portability\ignored_warnings.h" />
-    <ClInclude Include="..\..\source\compiler_portability\likely.h" />
-    <ClInclude Include="..\..\source\compiler_portability\noexcept.h" />
-    <ClInclude Include="..\..\source\compiler_portability\no_inline.h" />
-    <ClInclude Include="..\..\source\compiler_portability\os_version_check.h" />
-    <ClInclude Include="..\..\source\compiler_portability\preprocessor.h" />
-    <ClInclude Include="..\..\source\compiler_portability\thread_local.h" />
-    <ClInclude Include="..\..\source\compiler_portability\unused.h" />
+    <ClInclude Include="..\..\source\compiler\alignas.h" />
+    <ClInclude Include="..\..\source\compiler\cpp_version_check.h" />
+    <ClInclude Include="..\..\source\compiler\fastcall.h" />
+    <ClInclude Include="..\..\source\compiler\force_inline.h" />
+    <ClInclude Include="..\..\source\compiler\ignored_warnings.h" />
+    <ClInclude Include="..\..\source\compiler\likely.h" />
+    <ClInclude Include="..\..\source\compiler\noexcept.h" />
+    <ClInclude Include="..\..\source\compiler\no_inline.h" />
+    <ClInclude Include="..\..\source\compiler\os_version_check.h" />
+    <ClInclude Include="..\..\source\compiler\preprocessor.h" />
+    <ClInclude Include="..\..\source\compiler\thread_local.h" />
+    <ClInclude Include="..\..\source\compiler\unused.h" />
     <ClInclude Include="..\..\source\concurrent\base_lock.h" />
     <ClInclude Include="..\..\source\concurrent\lock.hpp" />
     <ClInclude Include="..\..\source\concurrent\queue_mpmc.hpp" />

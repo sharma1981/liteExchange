@@ -2,7 +2,7 @@
 #define _ALIGNED_MEMORY_H_
 
 #include "cpu_memory.h"
-#include <compiler_portability/noexcept.h>
+#include <compiler/noexcept.h>
 #include <cstddef>
 #include <new>
 

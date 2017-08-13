@@ -2,7 +2,7 @@
 #define _ALIGNED_H_
 
 #include <cstddef>
-#include <compiler_portability/noexcept.h>
+#include <compiler/noexcept.h>
 #include "aligned_memory.h"
 
 #define IS_POWER_OF_TWO(n) ( n && ((n & (n - 1)) == 0) ? true : false )

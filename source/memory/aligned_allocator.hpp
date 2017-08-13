@@ -6,7 +6,7 @@
 #include <limits>
 #include <stdexcept>
 
-#include <compiler_portability/noexcept.h>
+#include <compiler/noexcept.h>
 #include "memory_utilities.h"
 #include "cpu_cache_line.h"
 #include "aligned_memory.h"

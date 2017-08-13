@@ -111,33 +111,6 @@
     <ClInclude Include="..\..\source\memory\aligned_allocator.hpp">
       <Filter>memory</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\compiler_portability\alignas.h">
-      <Filter>compiler_portability</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\compiler_portability\fastcall.h">
-      <Filter>compiler_portability</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\compiler_portability\noexcept.h">
-      <Filter>compiler_portability</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\compiler_portability\preprocessor.h">
-      <Filter>compiler_portability</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\compiler_portability\thread_local.h">
-      <Filter>compiler_portability</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\compiler_portability\force_inline.h">
-      <Filter>compiler_portability</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\compiler_portability\no_inline.h">
-      <Filter>compiler_portability</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\compiler_portability\unused.h">
-      <Filter>compiler_portability</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\compiler_portability\ignored_warnings.h">
-      <Filter>compiler_portability</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\source\concurrent\thread_priority.h">
       <Filter>concurrent</Filter>
     </ClInclude>
@@ -228,12 +201,6 @@
     <ClInclude Include="..\..\source\concurrent\thread_pool_arguments.h">
       <Filter>concurrent</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\compiler_portability\cpp_version_check.h">
-      <Filter>compiler_portability</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\compiler_portability\os_version_check.h">
-      <Filter>compiler_portability</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\source\server\server_interface.h">
       <Filter>server</Filter>
     </ClInclude>
@@ -246,14 +213,47 @@
     <ClInclude Include="..\..\source\memory\virtual_memory.h">
       <Filter>memory</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\compiler_portability\likely.h">
-      <Filter>compiler_portability</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\source\utility\shared_memory.h">
       <Filter>utility</Filter>
     </ClInclude>
     <ClInclude Include="..\..\source\memory\cpu_memory.h">
       <Filter>memory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\compiler\alignas.h">
+      <Filter>compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\compiler\cpp_version_check.h">
+      <Filter>compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\compiler\fastcall.h">
+      <Filter>compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\compiler\force_inline.h">
+      <Filter>compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\compiler\ignored_warnings.h">
+      <Filter>compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\compiler\likely.h">
+      <Filter>compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\compiler\no_inline.h">
+      <Filter>compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\compiler\noexcept.h">
+      <Filter>compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\compiler\os_version_check.h">
+      <Filter>compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\compiler\preprocessor.h">
+      <Filter>compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\compiler\thread_local.h">
+      <Filter>compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\compiler\unused.h">
+      <Filter>compiler</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -272,14 +272,14 @@
     <Filter Include="server">
       <UniqueIdentifier>{62ea120b-e105-4d83-a731-88417c70fcec}</UniqueIdentifier>
     </Filter>
-    <Filter Include="compiler_portability">
-      <UniqueIdentifier>{5495b43b-3f74-468d-ba77-11a63f6effea}</UniqueIdentifier>
-    </Filter>
     <Filter Include="utility\logger">
       <UniqueIdentifier>{48498b4d-e76e-4770-94b6-4d4f9efc19a9}</UniqueIdentifier>
     </Filter>
     <Filter Include="utility\design_patterns">
       <UniqueIdentifier>{21f68be7-0e5b-4b45-8d09-b0aa488d8ba5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="compiler">
+      <UniqueIdentifier>{5495b43b-3f74-468d-ba77-11a63f6effea}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
