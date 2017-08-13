@@ -1,10 +1,10 @@
-#include <compiler/ignored_warnings.h>
+#include <core/compiler/ignored_warnings.h>
 // COMPILE TIME CHECKS
-#include <compiler/cpp_version_check.h> // C++11 and later supported
-#include <compiler/os_version_check.h>  // Linux and Windows supported
+#include <core/compiler/cpp_version_check.h> // C++11 and later supported
+#include <core/compiler/os_version_check.h>  // Linux and Windows supported
 
 // RUNTIME CHECKS
-#include <memory/cpu_memory.h>                      // To see if cache line we are running on
+#include <core/memory/cpu_memory.h>                      // To see if cache line we are running on
                                                     // matches the compiled one
 #include <core/os_utility.h>                     // To check whether we are root/admin or not
 
@@ -26,11 +26,11 @@ using namespace std;
 int main ()
 {
     // Initial checks
-    if (memory::getCPUCacheLineSize() != CACHE_LINE_SIZE)
+    if (core::getCPUCacheLineSize() != CACHE_LINE_SIZE)
     {
         auto message = boost::str(boost::format("This executable compiled for cache line size %d ,\
                                                  but you are running on a CPU with a cache line of %d")
-												 % CACHE_LINE_SIZE % memory::getCPUCacheLineSize()
+												 % CACHE_LINE_SIZE % core::getCPUCacheLineSize()
                                                 );
         Server::onError(message, ServerError::NON_SUPPORTED_EXECUTION);
     }

@@ -5,10 +5,10 @@
 #include <mutex>
 #include <condition_variable>
 
-#include <concurrent/lock.hpp>
-#include <memory/aligned_container_policy.hpp>
+#include <core/concurrent/lock.hpp>
+#include <core/memory/aligned_container_policy.hpp>
 
-namespace concurrent
+namespace core
 {
 
 // Unbounded multi producer single consumer queue
@@ -47,7 +47,7 @@ class QueueMPSC : public boost::noncopyable, AlignedContainerPolicy<T>
         {
             QueueMPSCNode* newNode = new QueueMPSCNode;
             newNode->m_data = data;
-            std::unique_lock<concurrent::Lock> l(m_mutex);
+            std::unique_lock<core::Lock> l(m_mutex);
             /////////////////////////////
             m_tail->m_next = newNode;
             m_tail = newNode;
@@ -59,7 +59,7 @@ class QueueMPSC : public boost::noncopyable, AlignedContainerPolicy<T>
         bool isEmpty()
         {
             bool retVal = true;
-            std::lock_guard<concurrent::Lock> l(m_mutex);
+            std::lock_guard<core::Lock> l(m_mutex);
             if ( m_head->m_next != nullptr )
             {
                 retVal = false;
@@ -76,7 +76,7 @@ class QueueMPSC : public boost::noncopyable, AlignedContainerPolicy<T>
                 return ret;
             }
 
-            std::unique_lock<concurrent::Lock> l(m_mutex);
+            std::unique_lock<core::Lock> l(m_mutex);
             m_noData.wait(l, [this](){return m_head->m_next != nullptr; });
             /////////////////////////////
             //JUST SWAP THE POINTERS
@@ -90,7 +90,7 @@ class QueueMPSC : public boost::noncopyable, AlignedContainerPolicy<T>
         }
 
     private:
-        concurrent::Lock m_mutex;
+        core::Lock m_mutex;
         std::condition_variable_any m_noData;
 
         QueueMPSCNode* m_head;

@@ -1,7 +1,7 @@
 #ifndef _SHARED_MEMORY_H_
 #define _SHARED_MEMORY_H_
 
-#include <memory/virtual_memory.h>
+#include <core/memory/virtual_memory.h>
 
 #ifdef __linux__
 #elif _WIN32

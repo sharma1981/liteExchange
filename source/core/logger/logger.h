@@ -4,9 +4,9 @@
 #include <cstddef>
 #include <string>
 
-#include <concurrent/lock.hpp>
-#include <concurrent/actor.h>
-#include <concurrent/ring_buffer_mpmc.hpp>
+#include <core/concurrent/lock.hpp>
+#include <core/concurrent/actor.h>
+#include <core/concurrent/ring_buffer_mpmc.hpp>
 
 #include <core/design_patterns/singleton_dclp.hpp>
 
@@ -26,9 +26,9 @@ namespace core
 
 #define DEFAULT_LOGGER_RING_BUFFER_SIZE 819200
 
-using LogBuffer = std::unique_ptr< concurrent::RingBufferMPMC<LogEntry> >;
+using LogBuffer = std::unique_ptr< core::RingBufferMPMC<LogEntry> >;
 
-class Logger : public concurrent::Actor, public SingletonDCLP<Logger>
+class Logger : public core::Actor, public SingletonDCLP<Logger>
 {
     public :
         Logger() : Actor("LoggerThread") {}

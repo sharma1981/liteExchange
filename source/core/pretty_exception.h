@@ -4,7 +4,7 @@
 #include <exception>
 #include <string>
 
-#include <compiler/preprocessor.h>
+#include <core/compiler/preprocessor.h>
 
 #include "console_utility.h"
 #include "callstack.h"

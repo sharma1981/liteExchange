@@ -15,7 +15,7 @@
 
 using namespace std;
 
-namespace concurrent
+namespace core
 {
 
 Thread::Thread(const string& name) : m_task{ nullptr }, m_name(name), m_started{ false }, m_joined{ false }, m_threadID{ 0 }, m_priority{ThreadPriority::NORMAL}

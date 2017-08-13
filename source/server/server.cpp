@@ -19,7 +19,7 @@
 
 #include <boost/format.hpp>
 
-#include <concurrent/thread_priority.h>
+#include <core/concurrent/thread_priority.h>
 
 #include <order_matcher/central_order_book_visitor.h>
 #include <order_matcher/order.h>
@@ -46,7 +46,7 @@ Server::Server(const string& fixEngineConfigFile, const ServerConfiguration& ser
 
     if (serverConfiguration.getMatchingMultithreadingMode() == true)
     {
-        concurrent::ThreadPoolArguments args = serverConfiguration.getThreadPoolArguments();
+        core::ThreadPoolArguments args = serverConfiguration.getThreadPoolArguments();
         args.m_threadNames = serverConfiguration.getSymbols();
         m_centralOrderBook.initialiseMultithreadedMatching(args);
     }

@@ -1,15 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="..\..\source\concurrent\thread.cpp">
-      <Filter>concurrent</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\concurrent\thread_pool.cpp">
-      <Filter>concurrent</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\memory\aligned_memory.cpp">
-      <Filter>memory</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\source\order_matcher\order.cpp">
       <Filter>order_matcher</Filter>
     </ClCompile>
@@ -39,37 +30,25 @@
     <ClCompile Include="..\..\source\core\logger\logger.cpp">
       <Filter>core\logger</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\source\core\concurrent\thread.cpp">
+      <Filter>core\concurrent</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\core\concurrent\thread_pool.cpp">
+      <Filter>core\concurrent</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\core\memory\aligned_memory.cpp">
+      <Filter>core\memory</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\source\concurrent\task.h">
-      <Filter>concurrent</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\concurrent\thread.h">
-      <Filter>concurrent</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\concurrent\thread_pool.h">
-      <Filter>concurrent</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\memory\aligned_memory.h">
-      <Filter>memory</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\source\order_matcher\order.h">
       <Filter>order_matcher</Filter>
     </ClInclude>
     <ClInclude Include="..\..\source\order_matcher\order_book.h">
       <Filter>order_matcher</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\memory\aligned.hpp">
-      <Filter>memory</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\source\order_matcher\central_order_book.h">
       <Filter>order_matcher</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\concurrent\ring_buffer_spsc_lockfree.hpp">
-      <Filter>concurrent</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\concurrent\ring_buffer_mpmc.hpp">
-      <Filter>concurrent</Filter>
     </ClInclude>
     <ClInclude Include="..\..\source\precompiled_header.h" />
     <ClInclude Include="..\..\source\server\server.h">
@@ -84,9 +63,6 @@
     <ClInclude Include="..\..\source\server\server_outgoing_message_processor.h">
       <Filter>server</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\memory\aligned_container_policy.hpp">
-      <Filter>memory</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\source\order_matcher\central_order_book_observer.h">
       <Filter>order_matcher</Filter>
     </ClInclude>
@@ -96,29 +72,8 @@
     <ClInclude Include="..\..\source\server\server_incoming_message_dispatcher.h">
       <Filter>server</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\concurrent\queue_mpsc.hpp">
-      <Filter>concurrent</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\source\order_matcher\incoming_message.h">
       <Filter>order_matcher</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\concurrent\queue_mpmc.hpp">
-      <Filter>concurrent</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\concurrent\actor.h">
-      <Filter>concurrent</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\memory\aligned_allocator.hpp">
-      <Filter>memory</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\concurrent\thread_priority.h">
-      <Filter>concurrent</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\concurrent\lock.hpp">
-      <Filter>concurrent</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\concurrent\base_lock.h">
-      <Filter>concurrent</Filter>
     </ClInclude>
     <ClInclude Include="..\..\source\server\server_error.h">
       <Filter>server</Filter>
@@ -129,56 +84,11 @@
     <ClInclude Include="..\..\source\server\server_configuration.h">
       <Filter>server</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\concurrent\thread_pool_arguments.h">
-      <Filter>concurrent</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\source\server\server_interface.h">
       <Filter>server</Filter>
     </ClInclude>
     <ClInclude Include="..\..\source\server\server_interface_cli.h">
       <Filter>server</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\memory\virtual_memory.h">
-      <Filter>memory</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\memory\cpu_memory.h">
-      <Filter>memory</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\compiler\alignas.h">
-      <Filter>compiler</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\compiler\cpp_version_check.h">
-      <Filter>compiler</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\compiler\fastcall.h">
-      <Filter>compiler</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\compiler\force_inline.h">
-      <Filter>compiler</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\compiler\ignored_warnings.h">
-      <Filter>compiler</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\compiler\likely.h">
-      <Filter>compiler</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\compiler\no_inline.h">
-      <Filter>compiler</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\compiler\noexcept.h">
-      <Filter>compiler</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\compiler\os_version_check.h">
-      <Filter>compiler</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\compiler\preprocessor.h">
-      <Filter>compiler</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\compiler\thread_local.h">
-      <Filter>compiler</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\compiler\unused.h">
-      <Filter>compiler</Filter>
     </ClInclude>
     <ClInclude Include="..\..\source\core\callstack.h">
       <Filter>core</Filter>
@@ -255,22 +165,103 @@
     <ClInclude Include="..\..\source\core\design_patterns\visitor.hpp">
       <Filter>core\design_patterns</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\source\core\concurrent\actor.h">
+      <Filter>core\concurrent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\concurrent\base_lock.h">
+      <Filter>core\concurrent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\concurrent\lock.hpp">
+      <Filter>core\concurrent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\concurrent\queue_mpmc.hpp">
+      <Filter>core\concurrent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\concurrent\queue_mpsc.hpp">
+      <Filter>core\concurrent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\concurrent\ring_buffer_mpmc.hpp">
+      <Filter>core\concurrent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\concurrent\ring_buffer_spsc_lockfree.hpp">
+      <Filter>core\concurrent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\concurrent\task.h">
+      <Filter>core\concurrent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\concurrent\thread.h">
+      <Filter>core\concurrent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\concurrent\thread_pool.h">
+      <Filter>core\concurrent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\concurrent\thread_pool_arguments.h">
+      <Filter>core\concurrent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\concurrent\thread_priority.h">
+      <Filter>core\concurrent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\compiler\alignas.h">
+      <Filter>core\compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\compiler\cpp_version_check.h">
+      <Filter>core\compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\compiler\fastcall.h">
+      <Filter>core\compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\compiler\force_inline.h">
+      <Filter>core\compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\compiler\ignored_warnings.h">
+      <Filter>core\compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\compiler\likely.h">
+      <Filter>core\compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\compiler\no_inline.h">
+      <Filter>core\compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\compiler\noexcept.h">
+      <Filter>core\compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\compiler\os_version_check.h">
+      <Filter>core\compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\compiler\preprocessor.h">
+      <Filter>core\compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\compiler\thread_local.h">
+      <Filter>core\compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\compiler\unused.h">
+      <Filter>core\compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\memory\aligned.hpp">
+      <Filter>core\memory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\memory\aligned_allocator.hpp">
+      <Filter>core\memory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\memory\aligned_container_policy.hpp">
+      <Filter>core\memory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\memory\aligned_memory.h">
+      <Filter>core\memory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\memory\cpu_memory.h">
+      <Filter>core\memory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\memory\virtual_memory.h">
+      <Filter>core\memory</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="concurrent">
-      <UniqueIdentifier>{27fdd7d8-93fe-440f-8a1f-b3ddad981d87}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="memory">
-      <UniqueIdentifier>{bf092d7e-419c-4ebe-bd14-b699b6827fe0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="order_matcher">
       <UniqueIdentifier>{058c8716-bca9-4e48-877f-a656fa9fddf2}</UniqueIdentifier>
     </Filter>
     <Filter Include="server">
       <UniqueIdentifier>{62ea120b-e105-4d83-a731-88417c70fcec}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="compiler">
-      <UniqueIdentifier>{5495b43b-3f74-468d-ba77-11a63f6effea}</UniqueIdentifier>
     </Filter>
     <Filter Include="core">
       <UniqueIdentifier>{dce9f842-8372-471f-b368-c48fa25fb85a}</UniqueIdentifier>
@@ -280,6 +271,15 @@
     </Filter>
     <Filter Include="core\design_patterns">
       <UniqueIdentifier>{18b8a0c7-f1d1-4e94-ae91-b1da81cff11e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="core\concurrent">
+      <UniqueIdentifier>{09befdce-9098-4869-b853-4fa003799909}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="core\compiler">
+      <UniqueIdentifier>{ccefa686-4571-47a9-b73c-ed5e21ade1ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="core\memory">
+      <UniqueIdentifier>{1e8f2e81-370f-49de-a4a4-771ed19819da}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

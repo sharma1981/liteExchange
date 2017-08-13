@@ -6,14 +6,14 @@
 #include <string>
 #include <boost/optional.hpp>
 #include <boost/any.hpp>
-#include <memory/aligned.hpp>
+#include <core/memory/aligned.hpp>
 
-namespace concurrent
+namespace core
 {
 
 using ReturnType = boost::optional<boost::any>;
 
-class Task : public memory::Aligned<>
+class Task : public core::Aligned<>
 {
     public :
         // Constructor

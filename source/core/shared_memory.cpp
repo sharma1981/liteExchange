@@ -1,4 +1,4 @@
-#include <compiler/unused.h>
+#include <core/compiler/unused.h>
 #include "shared_memory.h"
 
 #ifdef __linux__
@@ -64,7 +64,7 @@ namespace core
     bool SharedMemory::open(string name, size_t maxSize, bool createFile, bool ipc, bool buffered)
     {
         bool ret = true;
-        m_size = memory::VirtualMemory::adjustSizeToPageSize(maxSize);
+        m_size = core::VirtualMemory::adjustSizeToPageSize(maxSize);
 #ifdef __linux__
         UNUSED(buffered); // Not using O_DIRECT due to alignment requirements
         UNUSED(ipc);

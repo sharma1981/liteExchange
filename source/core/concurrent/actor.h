@@ -7,7 +7,7 @@
 #include <atomic>
 #include "thread.h"
 
-namespace concurrent
+namespace core
 {
 
 class Actor : public Thread

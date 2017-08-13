@@ -4,7 +4,7 @@
 #include <cstddef>
 #include <type_traits>
 
-#include <compiler/alignas.h>
+#include <core/compiler/alignas.h>
 
 #ifdef __linux__
 #include <unistd.h>
@@ -17,7 +17,7 @@
 #define CACHE_LINE_SIZE 64
 #define CACHE_ALIGNED alignas(CACHE_LINE_SIZE)
 
-namespace memory
+namespace core
 {
 
 	inline std::size_t getCPUCacheLineSize()

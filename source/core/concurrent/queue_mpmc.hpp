@@ -4,10 +4,10 @@
 #include <boost/noncopyable.hpp>
 #include <mutex>
 
-#include <concurrent/lock.hpp>
-#include <memory/aligned_container_policy.hpp>
+#include <core/concurrent/lock.hpp>
+#include <core/memory/aligned_container_policy.hpp>
 
-namespace concurrent
+namespace core
 {
 
 // Unbounded , multiproducer multiconsumer queue implementation
@@ -42,7 +42,7 @@ class QueueMPMC : public boost::noncopyable, AlignedContainerPolicy<T>
             Node* newNode =  new Node;
             newNode->m_data = data;
 
-            std::lock_guard<concurrent::Lock> tailLock(m_tailMutex);
+            std::lock_guard<core::Lock> tailLock(m_tailMutex);
             m_tail->m_next = newNode;
             m_tail = newNode;
          }
@@ -79,8 +79,8 @@ class QueueMPMC : public boost::noncopyable, AlignedContainerPolicy<T>
             Node() : m_next(nullptr){}
         };
 
-        concurrent::Lock m_headMutex;
-        concurrent::Lock m_tailMutex;
+        core::Lock m_headMutex;
+        core::Lock m_tailMutex;
 
         Node* m_head;
         Node* m_tail;

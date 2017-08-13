@@ -4,7 +4,7 @@
 #include <boost/noncopyable.hpp>
 #include <string>
 
-namespace concurrent
+namespace core
 {
 
 class BaseLock : public boost::noncopyable

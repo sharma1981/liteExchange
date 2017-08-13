@@ -30,9 +30,9 @@
 // In HP`s systems, there is : pthread_mutexattr_setspin_np : http://h20564.www2.hpe.com/hpsc/doc/public/display?docId=emr_na-c02267594&lang=en-us&cc=us
 // But this does not apply to all distributions
 
-#include <concurrent/base_lock.h>
+#include <core/concurrent/base_lock.h>
 
-namespace concurrent
+namespace core
 {
 
 // For lock types, see http://linux.die.net/man/3/pthread_mutex_lock

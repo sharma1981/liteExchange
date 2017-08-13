@@ -7,7 +7,7 @@
 #include <malloc.h>
 #endif
 
-namespace memory
+namespace core
 {
 
 void* alignedMalloc(std::size_t size, std::size_t alignment) throw(std::bad_alloc)
@@ -19,7 +19,7 @@ void* alignedMalloc(std::size_t size, std::size_t alignment) throw(std::bad_allo
     ptr = _aligned_malloc(size, alignment);
 #endif
     //For just C++11 implementation with std::align
-    //See http://en.cppreference.com/w/cpp/memory/align
+    //See http://en.cppreference.com/w/cpp/core/memory/align
 
     if (ptr == nullptr)
     {

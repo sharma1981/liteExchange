@@ -4,7 +4,7 @@
 #include <boost/format.hpp>
 using namespace std;
 
-#include <compiler/likely.h>
+#include <core/compiler/likely.h>
 #include <core/stopwatch.h>
 using namespace core;
 
@@ -24,7 +24,7 @@ void CentralOrderBook::setSymbols(const std::vector<std::string>symbols)
     m_symbols = symbols;
 }
 
-void CentralOrderBook::initialiseMultithreadedMatching(concurrent::ThreadPoolArguments& args)
+void CentralOrderBook::initialiseMultithreadedMatching(core::ThreadPoolArguments& args)
 {
     notify(boost::str(boost::format("Initialising thread pool, work queue size per thread %d")  %args.m_workQueueSizePerThread) );
 
@@ -76,7 +76,7 @@ bool CentralOrderBook::addOrder(const Order& order)
     if (likely(m_isMatchingMultithreaded))
     {
         // MULTITHREADED MODE : SUBMIT NEW ORDER TASK TO THE THREAD POOL
-        concurrent::Task newOrderTask(&CentralOrderBook::taskNewOrder, this, order);
+        core::Task newOrderTask(&CentralOrderBook::taskNewOrder, this, order);
         m_orderBookThreadPool.submitTask(newOrderTask, queueID);
     }
     else
@@ -133,7 +133,7 @@ void CentralOrderBook::cancelOrder(const Order& order, const std::string& origCl
     notify(boost::str(boost::format("Order being canceled, client %s, client ID %d") % owner % origClientOrderID));
 
     int queueID = m_queueIDDictionary[symbol];
-    concurrent::Task cancelOrderTask(&CentralOrderBook::taskCancelOrder, this, order, origClientOrderID);
+    core::Task cancelOrderTask(&CentralOrderBook::taskCancelOrder, this, order, origClientOrderID);
 
     if (m_isMatchingMultithreaded)
     {

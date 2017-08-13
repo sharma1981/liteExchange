@@ -2,12 +2,12 @@
 #define _ALIGNED_H_
 
 #include <cstddef>
-#include <compiler/noexcept.h>
+#include <core/compiler/noexcept.h>
 #include "aligned_memory.h"
 
 #define IS_POWER_OF_TWO(n) ( n && ((n & (n - 1)) == 0) ? true : false )
 
-namespace memory
+namespace core
 {
 
 template<std::size_t alignment = CACHE_LINE_SIZE>

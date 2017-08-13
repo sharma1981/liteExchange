@@ -7,7 +7,7 @@ namespace core
 void Logger::initialise(size_t bufferSize)
 {
     assert(bufferSize>0);
-    m_buffer.reset(new concurrent::RingBufferMPMC<LogEntry>(bufferSize));
+    m_buffer.reset(new core::RingBufferMPMC<LogEntry>(bufferSize));
 }
 
 void Logger::log(const LogLevel level, const string& sender, const string& message)
@@ -58,7 +58,7 @@ void* Logger::run()
         }
         else
         {
-            concurrent::Thread::yield();
+            core::Thread::yield();
         }
     }
 

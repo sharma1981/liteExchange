@@ -9,7 +9,7 @@
 #include <windows.h>
 #endif
 
-namespace memory
+namespace core
 {
 
 #define DEFAULT_VIRTUAL_MEMORY_PAGE_SIZE 4096

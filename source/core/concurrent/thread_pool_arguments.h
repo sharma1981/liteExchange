@@ -4,9 +4,9 @@
 #include <string>
 #include <vector>
 
-#include <concurrent/thread_priority.h>
+#include <core/concurrent/thread_priority.h>
 
-namespace concurrent
+namespace core
 {
 
 #define DEFAULT_WORK_QUEUE_SIZE 128

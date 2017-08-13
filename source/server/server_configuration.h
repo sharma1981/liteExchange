@@ -10,8 +10,8 @@
 #include <core/logger/logger_sink_factory.hpp>
 #include <core/os_utility.h>
 
-#include <concurrent/thread_pool_arguments.h>
-#include <concurrent/thread_priority.h>
+#include <core/concurrent/thread_pool_arguments.h>
+#include <core/concurrent/thread_priority.h>
 
 class ServerConfiguration
 {
@@ -68,19 +68,19 @@ class ServerConfiguration
                 m_threadPoolArguments.m_hyperThreading = configuration.getBoolValue(server_constants::CONFIGURATION_FILE_CENTRAL_ORDER_BOOK_HYPER_THREADING);
                 m_threadPoolArguments.m_workQueueSizePerThread = configuration.getIntValue(server_constants::CONFIGURATION_FILE_CENTRAL_ORDER_BOOK_WORK_QUEUE_SIZE_PER_THREAD);
                 m_threadPoolArguments.m_threadStackSize = configuration.getIntValue(server_constants::CONFIGURATION_FILE_CENTRAL_ORDER_BOOK_THREAD_STACK_SIZE);
-                m_threadPoolArguments.m_threadPriority = concurrent::getThreadPriorityFromString(configuration.getStringValue(server_constants::CONFIGURATION_FILE_CENTRAL_ORDER_BOOK_THREAD_PRIORITY));
+                m_threadPoolArguments.m_threadPriority = core::getThreadPriorityFromString(configuration.getStringValue(server_constants::CONFIGURATION_FILE_CENTRAL_ORDER_BOOK_THREAD_PRIORITY));
             }
         }
 
         int getSingleInstancePortNumber() const{ return m_singleInstanceTCPPortNumber; }
         bool getMatchingMultithreadingMode() const { return m_isMatchingMultithreaded; }
-        concurrent::ThreadPoolArguments getThreadPoolArguments() const { return m_threadPoolArguments; }
+        core::ThreadPoolArguments getThreadPoolArguments() const { return m_threadPoolArguments; }
         std::vector<std::string> getSymbols() const { return m_symbols;  }
 
     private :
         int m_singleInstanceTCPPortNumber;
         bool m_isMatchingMultithreaded;
-        concurrent::ThreadPoolArguments m_threadPoolArguments;
+        core::ThreadPoolArguments m_threadPoolArguments;
         std::vector<std::string> m_symbols;
 };
 

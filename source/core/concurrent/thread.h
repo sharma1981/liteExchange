@@ -17,7 +17,7 @@
 #include "thread_priority.h"
 #include "task.h"
 
-namespace concurrent
+namespace core
 {
 
 #define MAX_THREAD_NAME_LENGTH 16

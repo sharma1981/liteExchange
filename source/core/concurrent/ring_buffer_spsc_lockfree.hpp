@@ -7,7 +7,7 @@
 #include <memory>
 #include <boost/noncopyable.hpp>
 
-namespace concurrent
+namespace core
 {
 
 // Bounded queue ( ring buffer ) single producer single consumer queue

@@ -6,7 +6,7 @@ using namespace std;
 #include "thread_pool.h"
 #include <core/logger/logger.h>
 
-namespace concurrent
+namespace core
 {
 
 void ThreadPool::initialise(const ThreadPoolArguments& args)
@@ -111,7 +111,7 @@ void* ThreadPool::workerThreadFunction(void* argument)
         }
         else
         {
-            concurrent::Thread::yield();
+            core::Thread::yield();
         }
     }
 

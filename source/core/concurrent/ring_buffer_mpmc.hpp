@@ -8,9 +8,9 @@
 #include <utility>
 #include <boost/noncopyable.hpp>
 
-#include <concurrent/lock.hpp>
+#include <core/concurrent/lock.hpp>
 
-namespace concurrent
+namespace core
 {
 
 // Bounded queue ( ring buffer ) multi producer multi consumer
@@ -34,13 +34,13 @@ class RingBufferMPMC : public boost::noncopyable
 
         std::size_t count()
         {
-            std::unique_lock<concurrent::Lock> l(m_lock);
+            std::unique_lock<core::Lock> l(m_lock);
             return m_count;
         }
 
         void push(T data)
         {
-            std::unique_lock<concurrent::Lock> l(m_lock);
+            std::unique_lock<core::Lock> l(m_lock);
 
             m_notFull.wait(l, [this](){return m_count != m_capacity; });
 
@@ -54,7 +54,7 @@ class RingBufferMPMC : public boost::noncopyable
 
         T pop()
         {
-            std::unique_lock<concurrent::Lock> l(m_lock);
+            std::unique_lock<core::Lock> l(m_lock);
 
             m_notEmpty.wait(l, [this](){return m_count != 0; });
 
@@ -76,7 +76,7 @@ class RingBufferMPMC : public boost::noncopyable
         int m_rear;
         std::size_t m_count;
 
-        concurrent::Lock m_lock;
+        core::Lock m_lock;
         std::condition_variable_any m_notFull;
         std::condition_variable_any m_notEmpty;
 

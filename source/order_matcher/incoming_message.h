@@ -3,7 +3,7 @@
 
 #include <string>
 #include "order.h"
-#include <memory/aligned.hpp>
+#include <core/memory/aligned.hpp>
 #include <core/pretty_exception.h>
 
 namespace order_matcher
@@ -11,7 +11,7 @@ namespace order_matcher
 
 enum class IncomingMessageType { NEW_ORDER, CANCEL_ORDER };
 
-class IncomingMessage : public memory::Aligned<>
+class IncomingMessage : public core::Aligned<>
 {
     public:
 

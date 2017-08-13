@@ -11,12 +11,12 @@
 
 #include <order_matcher/central_order_book.h>
 #include <server/quickfix_converter.h>
-#include <concurrent/actor.h>
+#include <core/concurrent/actor.h>
 #include <core/logger/logger.h>
 
 #include <server/server_constants.h>
 
-using namespace concurrent;
+using namespace core;
 using namespace order_matcher;
 
 class OutgoingMessageProcessor : public Actor
@@ -48,7 +48,7 @@ class OutgoingMessageProcessor : public Actor
 
                 if (m_messageQueue == nullptr)
                 {
-                    concurrent::Thread::sleep(server_constants::SERVER_THREAD_SLEEP_DURATION);
+                    core::Thread::sleep(server_constants::SERVER_THREAD_SLEEP_DURATION);
                 }
                 else
                 {
@@ -109,7 +109,7 @@ class OutgoingMessageProcessor : public Actor
                     }
                     else
                     {
-                        concurrent::Thread::yield();
+                        core::Thread::yield();
                     }
                 }//Scope for the smart pointer
 

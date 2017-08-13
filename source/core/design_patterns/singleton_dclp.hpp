@@ -2,7 +2,7 @@
 #define _SINGLETON_DCLP_H_
 
 #include <boost/noncopyable.hpp>
-#include <concurrent/lock.hpp>
+#include <core/concurrent/lock.hpp>
 #include <atomic>
 
 /*
@@ -23,7 +23,7 @@ class SingletonDCLP : public boost::noncopyable
             std::atomic_thread_fence(std::memory_order_acquire);    // MEMORY-BARRIER SYNC BEGINS
             if (tmp == nullptr)
             {
-                std::lock_guard<concurrent::Lock> lock(m_lock);
+                std::lock_guard<core::Lock> lock(m_lock);
                 tmp = m_instance.load(std::memory_order_relaxed);
                 if (tmp == nullptr)
                 {
@@ -35,7 +35,7 @@ class SingletonDCLP : public boost::noncopyable
             return tmp;
         }
     private:
-        static concurrent::Lock m_lock;
+        static core::Lock m_lock;
         static std::atomic<T*> m_instance;
 };
 
@@ -48,7 +48,7 @@ std::atomic<T*> SingletonDCLP<T>::m_instance{0}; // Atomic types don`t have copy
 
 
 template <class T>
-concurrent::Lock SingletonDCLP<T>::m_lock;
+core::Lock SingletonDCLP<T>::m_lock;
 
 } //namespace
 

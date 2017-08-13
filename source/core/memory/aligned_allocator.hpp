@@ -6,12 +6,12 @@
 #include <limits>
 #include <stdexcept>
 
-#include <compiler/noexcept.h>
+#include <core/compiler/noexcept.h>
 #include "memory_utilities.h"
 #include "cpu_cache_line.h"
 #include "aligned_memory.h"
 
-namespace memory
+namespace core
 {
 
 template <typename T, std::size_t alignment = CACHE_LINE_SIZE>

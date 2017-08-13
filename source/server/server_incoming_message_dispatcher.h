@@ -9,15 +9,15 @@
 #include <order_matcher/incoming_message.h>
 #include <order_matcher/central_order_book.h>
 
-#include <concurrent/thread.h>
-#include <concurrent/actor.h>
-#include <concurrent/queue_mpsc.hpp>
+#include <core/concurrent/thread.h>
+#include <core/concurrent/actor.h>
+#include <core/concurrent/queue_mpsc.hpp>
 
 #include <core/logger/logger.h>
 
 #include <server/server_constants.h>
 
-using namespace concurrent;
+using namespace core;
 using namespace order_matcher;
 
 
@@ -25,8 +25,8 @@ class IncomingMessageDispatcher : public Actor
 {
     public:
 
-        using IncomingMessageQueue = concurrent::QueueMPSC<IncomingMessage>;
-        using IncomingMessageQueueNode = concurrent::QueueMPSC<IncomingMessage>::QueueMPSCNode;
+        using IncomingMessageQueue = core::QueueMPSC<IncomingMessage>;
+        using IncomingMessageQueueNode = core::QueueMPSC<IncomingMessage>::QueueMPSCNode;
 
         IncomingMessageDispatcher() : Actor("IncomingWorker"), m_centralOrderBook{nullptr}
         // We can`t have more than 16 characters in Linux for a pthread name ,that is why compacted the thread name...
@@ -57,7 +57,7 @@ class IncomingMessageDispatcher : public Actor
 
                 if (m_centralOrderBook == nullptr)
                 {
-                    concurrent::Thread::sleep(server_constants::SERVER_THREAD_SLEEP_DURATION);
+                    core::Thread::sleep(server_constants::SERVER_THREAD_SLEEP_DURATION);
                 }
                 else
                 {
@@ -101,7 +101,7 @@ class IncomingMessageDispatcher : public Actor
                 }
                 else
                 {
-                    concurrent::Thread::yield();
+                    core::Thread::yield();
                 }
             }
 
@@ -111,7 +111,7 @@ class IncomingMessageDispatcher : public Actor
 
     private :
         order_matcher::CentralOrderBook* m_centralOrderBook;
-        concurrent::QueueMPSC<IncomingMessage> m_queue;
+        core::QueueMPSC<IncomingMessage> m_queue;
 
 };
 

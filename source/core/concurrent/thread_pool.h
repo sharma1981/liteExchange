@@ -10,16 +10,16 @@
 
 #include <boost/noncopyable.hpp>
 
-#include <concurrent/task.h>
-#include <concurrent/thread.h>
-#include <concurrent/thread_pool_arguments.h>
-#include <concurrent/thread_priority.h>
-#include <concurrent/ring_buffer_spsc_lockfree.hpp>
+#include <core/concurrent/task.h>
+#include <core/concurrent/thread.h>
+#include <core/concurrent/thread_pool_arguments.h>
+#include <core/concurrent/thread_priority.h>
+#include <core/concurrent/ring_buffer_spsc_lockfree.hpp>
 
-namespace concurrent
+namespace core
 {
 
-using ThreadPoolQueue = concurrent::RingBufferSPSCLockFree<concurrent::Task>;
+using ThreadPoolQueue = core::RingBufferSPSCLockFree<core::Task>;
 using ThreadPoolQueuePtr = std::unique_ptr<ThreadPoolQueue>;
 
 class ThreadPool : public boost::noncopyable

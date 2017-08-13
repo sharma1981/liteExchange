@@ -12,9 +12,9 @@
 
 #include <boost/noncopyable.hpp>
 
-#include <concurrent/thread.h>
-#include <concurrent/queue_mpmc.hpp>
-#include <concurrent/thread_pool.h>
+#include <core/concurrent/thread.h>
+#include <core/concurrent/queue_mpmc.hpp>
+#include <core/concurrent/thread_pool.h>
 
 #include <core/design_patterns/visitor.hpp>
 #include <core/design_patterns/observer.hpp>
@@ -22,7 +22,7 @@
 namespace order_matcher
 {
 
-using OutgoingMessageQueue = concurrent::QueueMPMC<OutgoingMessage>;
+using OutgoingMessageQueue = core::QueueMPMC<OutgoingMessage>;
 
 class CentralOrderBook : public boost::noncopyable, public core::Visitable<Order>, public core::Observable<CentralOrderBook>
 {
@@ -36,7 +36,7 @@ class CentralOrderBook : public boost::noncopyable, public core::Visitable<Order
 
         void setSymbols(const std::vector<std::string>symbols);
         void accept(core::Visitor<Order>& v) override;
-        void initialiseMultithreadedMatching(concurrent::ThreadPoolArguments& args);
+        void initialiseMultithreadedMatching(core::ThreadPoolArguments& args);
 
         bool addOrder(const Order& order);
         void rejectOrder(const Order& order, const std::string& message);
@@ -54,7 +54,7 @@ class CentralOrderBook : public boost::noncopyable, public core::Visitable<Order
         bool m_isMatchingMultithreaded;
         std::vector<std::string> m_symbols;
         OutgoingMessageQueue m_outgoingMessages;
-        concurrent::ThreadPool m_orderBookThreadPool;
+        core::ThreadPool m_orderBookThreadPool;
 
         void* taskNewOrder(const Order& order);
         void* taskCancelOrder(const Order& order, const std::string& origClientOrderID);

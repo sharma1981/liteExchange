@@ -14,7 +14,7 @@
 #include <windows.h>
 #endif
 
-namespace concurrent
+namespace core
 {
 
 // For Linux we are using nice values rather than scheduler priorities
