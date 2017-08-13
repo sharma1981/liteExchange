@@ -5,23 +5,23 @@
 Sections :
 
     1. Introduction and features
-    4. Overview of the system
-    5. Build dependencies
-    6. Runtime dependencies
-    7. How to build
-    8. Server parameters and running the server
-    9. Example log messages with FIX 
-    10. Functional testing
-    11. Unit testing with GoogleTest
-    12. Utility scripts
-    13. Coding and other guidelines
-	14. Continous integration
+    2. Overview of the system
+    3. Build dependencies
+    4. Runtime dependencies
+    5. How to build
+    6. Server parameters and running the server
+    7. Example log messages with FIX 
+    8. Functional testing
+    9. Unit testing with GoogleTest
+    10. Utility scripts
+    11. Coding and other guidelines
+	12. Continous integration
             
 **1. Introduction :** A multithreaded order matching engine written in C++11 using FIX protocol. For limit orders and matching engines , see :
 
 https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/documentation/README_Orders_MatchingEngines.md
 
-For FIX protocol , see : https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/documentation/README_Fix.md
+For FIX protocol , see : https://en.wikipedia.org/wiki/Financial_Information_eXchange .
 
 Features can be seen in the table below :
 
@@ -81,7 +81,7 @@ c) Each thread in the thread pool will get message from their SPSC queue in the 
 
 d) Outgoing message processor which is a fine grained MPMC queue will process the outgoing messages and send responses back to the clients.
 
-For more implementation details please see https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/documentation/README_CodeDetails.md
+For more implementation details please see https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/documentation/README_MultithreadingImplementationDetails.md
 
 **3. Build dependencies :** For Linux , the project is built and tested with GCC4.8 only on CentOS7. 
 
