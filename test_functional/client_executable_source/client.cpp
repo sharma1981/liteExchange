@@ -10,10 +10,10 @@ using namespace std;
 
 #include <boost/format.hpp>
 
-#include <utility/file_utility.h>
-#include <utility/string_utility.h>
-#include <utility/datetime_utility.h>
-#include <utility/pretty_exception.h>
+#include <core/file_utility.h>
+#include <core/string_utility.h>
+#include <core/datetime_utility.h>
+#include <core/pretty_exception.h>
 
 namespace program_errors
 {
@@ -45,7 +45,7 @@ int main(int argc, char** argv)
         string csvTestFile = argv[4];
 
 		// Set current working directory as current executable`s directory
-		utility::setCurrentWorkingDirectory(utility::getCurrentExecutableDirectory());
+		core::setCurrentWorkingDirectory(core::getCurrentExecutableDirectory());
 
         string quickFixConfigFile = clientName + ".cfg";
         createQuickFixConfigFile(quickFixTemplateFile, targetServer, clientName, quickFixConfigFile);
@@ -53,14 +53,14 @@ int main(int argc, char** argv)
         if (quickFixConfigFile.length() < 5) { throw std::invalid_argument("Invalid FIX engine config file"); }
 
         // Backup FIX engine logs if exists
-        utility::createDirectory("old_quickfix_log");
-        utility::backupDirectory("quickfix_log", "quickfix_log_" + utility::getCurrentDateTime("%d_%m_%Y_%H_%M_%S"), "old_quickfix_log");
+        core::createDirectory("old_quickfix_log");
+        core::backupDirectory("quickfix_log", "quickfix_log_" + core::getCurrentDateTime("%d_%m_%Y_%H_%M_%S"), "old_quickfix_log");
 
         // Run the application
         ClientApplication application(csvTestFile, quickFixConfigFile);
         application.run();
 
-        utility::deleteFile(quickFixConfigFile);
+        core::deleteFile(quickFixConfigFile);
     }
     catch (std::invalid_argument & e)
     {
@@ -91,16 +91,16 @@ void onError(const string& message, int exit_code)
 void createQuickFixConfigFile(const string& templateFile, const string& server, const string &clientName, const string &outputFileName)
 {
     // Delete out file if already exists
-    if( utility::doesFileExist(outputFileName))
+    if( core::doesFileExist(outputFileName))
     {
-        utility::deleteFile(outputFileName);
+        core::deleteFile(outputFileName);
     }
     // Get template file contents as string
     ifstream templateFileStream(templateFile);
     string templateFileData( (istreambuf_iterator<char>(templateFileStream)), istreambuf_iterator<char>());
     // Inject server and client name into it
-    utility::replaceInString(templateFileData, "%CLIENT%", clientName);
-    utility::replaceInString(templateFileData, "%SERVER%", server);
+    core::replaceInString(templateFileData, "%CLIENT%", clientName);
+    core::replaceInString(templateFileData, "%SERVER%", server);
     // Output
     ofstream outFile;
     outFile.open (outputFileName);

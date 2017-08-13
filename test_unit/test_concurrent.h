@@ -1,11 +1,11 @@
-#include<concurrent/task.h>
-#include<concurrent/actor.h>
-#include<concurrent/thread.h>
-#include<concurrent/thread_pool.h>
-#include<concurrent/ring_buffer_spsc_lockfree.hpp>
-#include<concurrent/queue_mpmc.hpp>
-#include<concurrent/queue_mpsc.hpp>
-#include<concurrent/ring_buffer_mpmc.hpp>
+#include<core/concurrent/task.h>
+#include<core/concurrent/actor.h>
+#include<core/concurrent/thread.h>
+#include<core/concurrent/thread_pool.h>
+#include<core/concurrent/ring_buffer_spsc_lockfree.hpp>
+#include<core/concurrent/queue_mpmc.hpp>
+#include<core/concurrent/queue_mpsc.hpp>
+#include<core/concurrent/ring_buffer_mpmc.hpp>
 
 #include <cstddef>
 #include <algorithm>
@@ -13,7 +13,7 @@
 #include <vector>
 #include <thread>
 using namespace std;
-using namespace concurrent;
+using namespace core;
 
 class worker
 {
@@ -26,7 +26,7 @@ class worker
         }
 };
 
-class fred : public concurrent::Actor
+class fred : public core::Actor
 {
     int foo = 0;
     public:
@@ -48,7 +48,7 @@ TEST(Concurrent, Thread)
 
     // Building thread
     TaskPtr task(new Task(&worker::run, &w, static_cast<void *>(&testVal)));
-    concurrent::Thread t1;
+	core::Thread t1;
     t1.setTask(std::move(task));
 
     t1.start();
@@ -68,7 +68,7 @@ TEST(Concurrent, Actor)
 
 TEST(Concurrent, RingBufferSPSCLockFree)
 {
-    concurrent::RingBufferSPSCLockFree<int> queue(19);
+	core::RingBufferSPSCLockFree<int> queue(19);
     std::vector<std::thread> threads;
     vector<int> testVector = {4,5,7,2};
     int sum = 0;
@@ -97,7 +97,7 @@ TEST(Concurrent, RingBufferSPSCLockFree)
 
 TEST(Concurrent, QueueMPMC)
 {
-    concurrent::QueueMPMC<int> mqueue;
+	core::QueueMPMC<int> mqueue;
     std::vector<std::thread> threads;
     vector<int> testVector = { 4, 5, 7, 2 };
     int sum = 0;
@@ -124,7 +124,7 @@ TEST(Concurrent, QueueMPMC)
 
 TEST(Concurrent, QueueMPSC)
 {
-    concurrent::QueueMPSC<int> mqueue;
+	core::QueueMPSC<int> mqueue;
     std::vector<std::thread> threads;
     vector<int> testVector = { 4, 5, 7, 2 };
     int sum = 0;
@@ -138,7 +138,7 @@ TEST(Concurrent, QueueMPSC)
 
     std::thread readThread([&]()
                     {
-                        concurrent::QueueMPSC<int>::QueueMPSCNode* node = nullptr;
+						core::QueueMPSC<int>::QueueMPSCNode* node = nullptr;
                         node = mqueue.flush();
                         while (node)
                         {
@@ -160,7 +160,7 @@ TEST(Concurrent, QueueMPSC)
 
 TEST(Concurrent, RingBufferMPMC)
 {
-    concurrent::RingBufferMPMC<int> ringBuffer(10);
+	core::RingBufferMPMC<int> ringBuffer(10);
     std::vector<std::thread> threads;
     vector<int> testVector = { 4, 5, 7, 2};
     int sum = 0;
@@ -205,12 +205,12 @@ TEST(Concurrent, ThreadPool)
 {
     vector<string> threadNames = { "a", "b", "c", "d" };
 
-    concurrent::ThreadPoolArguments args;
+	core::ThreadPoolArguments args;
     args.m_hyperThreading = true;
     args.m_pinThreadsToCores = true;
     args.m_threadNames = threadNames;
     args.m_workQueueSizePerThread = 1024;
-    concurrent::ThreadPool pool;
+	core::ThreadPool pool;
 
     pool.initialise(args);
 
@@ -226,9 +226,9 @@ TEST(Concurrent, ThreadPool)
     {
         job_args.index = i;
         expectedSum += i;
-        concurrent::Task task(&ThreadPoolJob::run, &job, job_args);
+		core::Task task(&ThreadPoolJob::run, &job, job_args);
         pool.submitTask(task, i);
-        concurrent::Thread::sleep(1000);
+		core::Thread::sleep(1000);
     }
 
     pool.shutdown();

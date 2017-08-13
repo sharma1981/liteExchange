@@ -11,10 +11,10 @@
 #include <fstream>
 using namespace std;
 
-#include <utility/pretty_exception.h>
-#include <utility/datetime_utility.h>
-#include <utility/file_utility.h>
-#include <concurrent/thread.h>
+#include <core/pretty_exception.h>
+#include <core/datetime_utility.h>
+#include <core/file_utility.h>
+#include <core/concurrent/thread.h>
 
 #include <boost/format.hpp>
 
@@ -28,13 +28,13 @@ ClientApplication::ClientApplication(const string& csvTestFile, const string& fi
     //////////////////////////////////////////
     // Check if config and test files exist
 
-    if (!utility::doesFileExist(m_fixEngineConfigFile))
+    if (!core::doesFileExist(m_fixEngineConfigFile))
     {
         auto exceptionMessage = boost::str(boost::format("FIX configuration file %s does not exist") % m_fixEngineConfigFile);
         THROW_PRETTY_RUNTIME_EXCEPTION(exceptionMessage)
     }
 
-    if (!utility::doesFileExist(csvTestFile))
+    if (!core::doesFileExist(csvTestFile))
     {
         auto exceptionMessage = boost::str(boost::format("Test file %s does not exist") % csvTestFile);
         THROW_PRETTY_RUNTIME_EXCEPTION(exceptionMessage)
@@ -45,9 +45,9 @@ ClientApplication::ClientApplication(const string& csvTestFile, const string& fi
 
     //  Create a log file
     m_outputFileName = m_ClientID + ".txt";
-    if (utility::doesFileExist(m_outputFileName))
+    if (core::doesFileExist(m_outputFileName))
     {
-        utility::deleteFile(m_outputFileName);
+        core::deleteFile(m_outputFileName);
     }
     m_outputFile.open(m_outputFileName);
 
@@ -82,7 +82,7 @@ void ClientApplication::consoleOutputThread()
             {
                 std::cout << message << endl;
 
-                m_fileOutputMessageBuffer << utility::getCurrentDateTime();
+                m_fileOutputMessageBuffer << core::getCurrentDateTime();
                 m_fileOutputMessageBuffer << " : "<< message << endl;
 
                 m_outputFile << message << endl;
@@ -91,7 +91,7 @@ void ClientApplication::consoleOutputThread()
             m_consoleMessages.clear();
 
         }
-        concurrent::Thread::sleep(50);
+        core::Thread::sleep(50);
 
     }
 }
@@ -140,9 +140,9 @@ void ClientApplication::run()
 void ClientApplication::dumpMessageBufferToFile()
 {
     string logName = m_ClientID + ".txt";
-    if ( utility::doesFileExist(logName))
+    if ( core::doesFileExist(logName))
     {
-        utility::deleteFile(logName);
+        core::deleteFile(logName);
     }
 
     ofstream logFile(logName);
@@ -164,7 +164,7 @@ void ClientApplication::waitTillAllRequestsComplete()
 
     while (allRequestsSent() == false)
     {
-        concurrent::Thread::sleep(ONE_SECOND);
+        core::Thread::sleep(ONE_SECOND);
         ++secondsWaited;
 
         if (secondsWaited >= SERVER_PROCESS_TIMEOUT)
@@ -180,7 +180,7 @@ void ClientApplication::waitTillSessionStarts()
 
     while (sessionAlive() == false)
     {
-        concurrent::Thread::sleep(ONE_SECOND);
+        core::Thread::sleep(ONE_SECOND);
         ++secondsWaited;
 
         if (secondsWaited >= SESSION_TIMEOUT)

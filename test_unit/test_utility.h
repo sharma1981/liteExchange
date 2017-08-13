@@ -1,11 +1,11 @@
-#include <utility/config_file.h>
-#include <utility/single_instance.h>
-#include <utility/string_utility.h>
+#include <core/config_file.h>
+#include <core/single_instance.h>
+#include <core/string_utility.h>
 #include <string>
 
 TEST(Utility, SingleInstance)
 {
-    utility::SingleInstance singleton;
+	core::SingleInstance singleton;
 
     bool b = singleton();
 
@@ -14,7 +14,7 @@ TEST(Utility, SingleInstance)
 
 TEST(Utility, ConfigFile)
 {
-    utility::ConfigFile x;
+	core::ConfigFile x;
     x.loadFromFile("./test_config.txt");
 
     string val;
@@ -34,6 +34,6 @@ TEST(Utility, ConfigFile)
 TEST(Utility, ReplaceInString)
 {
     std::string orig = "xxxyyxx";
-    utility::replaceInString(orig, "yy", "jjj");
+	core::replaceInString(orig, "yy", "jjj");
     EXPECT_STREQ("xxxjjjxx", orig.c_str()); // string equal
 }
