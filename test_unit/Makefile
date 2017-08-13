@@ -2,22 +2,20 @@
 CXX=g++
 #Sources
 SOURCE_DIR=../source
-SOURCE_DIR_MEMORY= $(SOURCE_DIR)/memory
-SOURCE_DIR_CONCURRENT= $(SOURCE_DIR)/concurrent
-SOURCE_DIR_CONCURRENT_PROFILING= $(SOURCE_DIR)/concurrent/profiling
+SOURCE_DIR_CORE= $(SOURCE_DIR)/core
+SOURCE_DIR_CORE_LOGGER= $(SOURCE_DIR_CORE)/logger
+SOURCE_DIR_CORE_MEMORY= $(SOURCE_DIR_CORE)/memory
+SOURCE_DIR_CORE_CONCURRENT= $(SOURCE_DIR_CORE)/concurrent
 SOURCE_DIR_ORDER_MATCHER= $(SOURCE_DIR)/order_matcher
-SOURCE_DIR_UTILITY= $(SOURCE_DIR)/utility
-SOURCE_DIR_UTILITY_LOGGER= $(SOURCE_DIR)/utility/logger
+
 SOURCES =  test.cpp \
-	   $(SOURCE_DIR_MEMORY)/aligned_memory.cpp \
-	   $(SOURCE_DIR_CONCURRENT)/thread.cpp \
-	   $(SOURCE_DIR_CONCURRENT)/thread_pool.cpp \
-	   $(SOURCE_DIR_CONCURRENT_PROFILING)/lock_profiler.cpp \
-	   $(SOURCE_DIR_CONCURRENT_PROFILING)/thread_profiler.cpp \
-	   $(SOURCE_DIR_UTILITY)/config_file.cpp \
-	   $(SOURCE_DIR_UTILITY)/stopwatch.cpp \
-	   $(SOURCE_DIR_UTILITY_LOGGER)/logger.cpp \
-	   $(SOURCE_DIR_UTILITY)/single_instance.cpp \
+	   $(SOURCE_DIR_CORE_MEMORY)/aligned_memory.cpp \
+	   $(SOURCE_DIR_CORE_CONCURRENT)/thread.cpp \
+	   $(SOURCE_DIR_CORE_CONCURRENT)/thread_pool.cpp \
+	   $(SOURCE_DIR_CORE)/config_file.cpp \
+	   $(SOURCE_DIR_CORE)/stopwatch.cpp \
+	   $(SOURCE_DIR_CORE_LOGGER)/logger.cpp \
+	   $(SOURCE_DIR_CORE)/single_instance.cpp \
 	   $(SOURCE_DIR_ORDER_MATCHER)/order.cpp \
 	   $(SOURCE_DIR_ORDER_MATCHER)/order_book.cpp \
 	   $(SOURCE_DIR_ORDER_MATCHER)/central_order_book.cpp 

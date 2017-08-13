@@ -3,6 +3,24 @@
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <df root="." name="0">
       <df name="bin">
+        <df name="quickfix_log">
+          <df name="TEST_CLIENT1">
+          </df>
+          <df name="TEST_CLIENT2">
+          </df>
+          <df name="TEST_CLIENT3">
+          </df>
+          <df name="TEST_CLIENT4">
+          </df>
+          <df name="TEST_CLIENT5">
+          </df>
+          <df name="TEST_CLIENT6">
+          </df>
+          <df name="TEST_CLIENT7">
+          </df>
+          <df name="TEST_CLIENT8">
+          </df>
+        </df>
       </df>
       <df name="build">
         <df name="linux_gcc">
@@ -3534,80 +3552,37 @@
       <df name="documentation">
       </df>
       <df name="source">
-        <df name="compiler_portability">
-          <in>alignas.h</in>
-          <in>branch_predictor_hint.h</in>
-          <in>cpp_version_check.h</in>
-          <in>cpu_architecture.h</in>
-          <in>fastcall.h</in>
-          <in>force_inline.h</in>
-          <in>ignored_warnings.h</in>
-          <in>no_inline.h</in>
-          <in>noexcept.h</in>
-          <in>os_version_check.h</in>
-          <in>preprocessor.h</in>
-          <in>thread_local.h</in>
-          <in>unused.h</in>
-        </df>
-        <df name="concurrent">
-          <df name="profiling">
-            <in>lock_profiler.cpp</in>
-            <in>lock_profiler.h</in>
-            <in>thread_profiler.cpp</in>
-            <in>thread_profiler.h</in>
+        <df name="core">
+          <df name="compiler">
+            <in>alignas.h</in>
+            <in>cpp_version_check.h</in>
+            <in>fastcall.h</in>
+            <in>force_inline.h</in>
+            <in>ignored_warnings.h</in>
+            <in>likely.h</in>
+            <in>no_inline.h</in>
+            <in>noexcept.h</in>
+            <in>os_version_check.h</in>
+            <in>preprocessor.h</in>
+            <in>thread_local.h</in>
+            <in>unused.h</in>
           </df>
-          <in>actor.h</in>
-          <in>base_lock.h</in>
-          <in>lock.hpp</in>
-          <in>queue_mpmc.hpp</in>
-          <in>queue_mpsc.hpp</in>
-          <in>ring_buffer_mpmc.hpp</in>
-          <in>ring_buffer_spsc_lockfree.hpp</in>
-          <in>task.h</in>
-          <in>thread.cpp</in>
-          <in>thread.h</in>
-          <in>thread_pool.cpp</in>
-          <in>thread_pool.h</in>
-          <in>thread_pool_arguments.h</in>
-          <in>thread_priority.h</in>
-        </df>
-        <df name="memory">
-          <in>aligned.hpp</in>
-          <in>aligned_allocator.hpp</in>
-          <in>aligned_container_policy.hpp</in>
-          <in>aligned_memory.cpp</in>
-          <in>aligned_memory.h</in>
-          <in>cpu_cache_line.h</in>
-          <in>memory_utilities.h</in>
-          <in>shared_memory.cpp</in>
-          <in>shared_memory.h</in>
-          <in>virtual_memory.h</in>
-        </df>
-        <df name="order_matcher">
-          <in>central_order_book.cpp</in>
-          <in>central_order_book.h</in>
-          <in>central_order_book_observer.h</in>
-          <in>central_order_book_visitor.h</in>
-          <in>incoming_message.h</in>
-          <in>order.cpp</in>
-          <in>order.h</in>
-          <in>order_book.cpp</in>
-          <in>order_book.h</in>
-          <in>outgoing_message.h</in>
-          <in>quickfix_converter.h</in>
-        </df>
-        <df name="server">
-          <in>server.cpp</in>
-          <in>server.h</in>
-          <in>server_configuration.h</in>
-          <in>server_constants.h</in>
-          <in>server_error.h</in>
-          <in>server_incoming_message_dispatcher.h</in>
-          <in>server_interface.h</in>
-          <in>server_interface_cli.h</in>
-          <in>server_outgoing_message_processor.h</in>
-        </df>
-        <df name="utility">
+          <df name="concurrent">
+            <in>actor.h</in>
+            <in>base_lock.h</in>
+            <in>lock.hpp</in>
+            <in>queue_mpmc.hpp</in>
+            <in>queue_mpsc.hpp</in>
+            <in>ring_buffer_mpmc.hpp</in>
+            <in>ring_buffer_spsc_lockfree.hpp</in>
+            <in>task.h</in>
+            <in>thread.cpp</in>
+            <in>thread.h</in>
+            <in>thread_pool.cpp</in>
+            <in>thread_pool.h</in>
+            <in>thread_pool_arguments.h</in>
+            <in>thread_priority.h</in>
+          </df>
           <df name="design_patterns">
             <in>factory.hpp</in>
             <in>observer.hpp</in>
@@ -3626,15 +3601,25 @@
             <in>logger_sink_factory.hpp</in>
             <in>logger_sinks.hpp</in>
           </df>
+          <df name="memory">
+            <in>aligned.hpp</in>
+            <in>aligned_allocator.hpp</in>
+            <in>aligned_container_policy.hpp</in>
+            <in>aligned_memory.cpp</in>
+            <in>aligned_memory.h</in>
+            <in>cpu_memory.h</in>
+            <in>virtual_memory.h</in>
+          </df>
           <in>callstack.h</in>
           <in>config_file.cpp</in>
           <in>config_file.h</in>
           <in>console_utility.h</in>
           <in>datetime_utility.h</in>
           <in>file_utility.h</in>
-          <in>logger.cpp</in>
           <in>os_utility.h</in>
           <in>pretty_exception.h</in>
+          <in>shared_memory.cpp</in>
+          <in>shared_memory.h</in>
           <in>single_instance.cpp</in>
           <in>single_instance.h</in>
           <in>stopwatch.cpp</in>
@@ -3642,12 +3627,46 @@
           <in>string_utility.h</in>
           <in>trace.h</in>
         </df>
+        <df name="order_matcher">
+          <in>central_order_book.cpp</in>
+          <in>central_order_book.h</in>
+          <in>central_order_book_observer.h</in>
+          <in>central_order_book_visitor.h</in>
+          <in>incoming_message.h</in>
+          <in>order.cpp</in>
+          <in>order.h</in>
+          <in>order_book.cpp</in>
+          <in>order_book.h</in>
+          <in>outgoing_message.h</in>
+        </df>
+        <df name="server">
+          <in>quickfix_converter.h</in>
+          <in>server.cpp</in>
+          <in>server.h</in>
+          <in>server_configuration.h</in>
+          <in>server_constants.h</in>
+          <in>server_error.h</in>
+          <in>server_incoming_message_dispatcher.h</in>
+          <in>server_interface.h</in>
+          <in>server_interface_cli.h</in>
+          <in>server_outgoing_message_processor.h</in>
+        </df>
         <in>precompiled_header.cpp</in>
         <in>precompiled_header.h</in>
         <in>server_main.cpp</in>
       </df>
       <df name="test_functional">
         <df name="client_executable">
+          <df name="old_quickfix_log">
+            <df name="quickfix_log_12_08_2017_22_49_20">
+            </df>
+            <df name="quickfix_log_12_08_2017_22_49_21">
+            </df>
+            <df name="quickfix_log_12_08_2017_22_49_32">
+            </df>
+          </df>
+          <df name="quickfix_log">
+          </df>
         </df>
         <df name="client_executable_source">
           <in>client.cpp</in>

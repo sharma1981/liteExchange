@@ -29,21 +29,21 @@ namespace core
 #include <Dbghelp.h>
 #pragma comment(lib, "Dbghelp.lib")
 
-	class SymbolHandler
-	{
-	private:
-		HANDLE m_process;
-	public:
-		explicit SymbolHandler(HANDLE process) : m_process{ process }
-		{
-			SymInitialize(m_process, nullptr, TRUE);
-		}
+    class SymbolHandler
+    {
+    private:
+        HANDLE m_process;
+    public:
+        explicit SymbolHandler(HANDLE process) : m_process{ process }
+        {
+            SymInitialize(m_process, nullptr, TRUE);
+        }
 
-		~SymbolHandler()
-		{
-			SymCleanup(m_process);
-		}
-	};
+        ~SymbolHandler()
+        {
+            SymCleanup(m_process);
+        }
+    };
 #endif
 
 #define MAX_FRAME_NUMBER 128

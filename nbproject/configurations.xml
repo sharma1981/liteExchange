@@ -3,17 +3,21 @@
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <df root="." name="0">
       <df name="source">
-        <df name="concurrent">
-          <df name="profiling">
-            <in>lock_profiler.cpp</in>
-            <in>thread_profiler.cpp</in>
+        <df name="core">
+          <df name="concurrent">
+            <in>thread.cpp</in>
+            <in>thread_pool.cpp</in>
           </df>
-          <in>thread.cpp</in>
-          <in>thread_pool.cpp</in>
-        </df>
-        <df name="memory">
-          <in>aligned_memory.cpp</in>
+          <df name="logger">
+            <in>logger.cpp</in>
+          </df>
+          <df name="memory">
+            <in>aligned_memory.cpp</in>
+          </df>
+          <in>config_file.cpp</in>
           <in>shared_memory.cpp</in>
+          <in>single_instance.cpp</in>
+          <in>stopwatch.cpp</in>
         </df>
         <df name="order_matcher">
           <in>central_order_book.cpp</in>
@@ -22,15 +26,6 @@
         </df>
         <df name="server">
           <in>server.cpp</in>
-        </df>
-        <df name="utility">
-          <df name="logger">
-            <in>logger.cpp</in>
-          </df>
-          <in>config_file.cpp</in>
-          <in>logger.cpp</in>
-          <in>single_instance.cpp</in>
-          <in>stopwatch.cpp</in>
         </df>
         <in>server_main.cpp</in>
       </df>
@@ -70,6 +65,7 @@
               <pElem>source</pElem>
               <pElem>dependencies</pElem>
               <pElem>dependencies/quickfix/include</pElem>
+              <pElem>build/linux_gcc</pElem>
             </incDir>
             <preprocessorList>
               <Elem>DEBUG</Elem>
@@ -81,68 +77,41 @@
           <preBuildCommand></preBuildCommand>
         </preBuild>
       </makefileType>
-      <folder path="0/source/concurrent">
-        <ccTool>
-          <incDir>
-            <pElem>build/linux_gcc</pElem>
-          </incDir>
+      <item path="source/core/concurrent/thread.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
         </ccTool>
-      </folder>
-      <folder path="0/source/memory">
-        <ccTool>
-          <incDir>
-            <pElem>build/linux_gcc</pElem>
-          </incDir>
-        </ccTool>
-      </folder>
-      <folder path="0/source/order_matcher">
-        <ccTool>
-          <incDir>
-            <pElem>build/linux_gcc</pElem>
-          </incDir>
-        </ccTool>
-      </folder>
-      <folder path="0/source/server">
-        <ccTool>
-          <incDir>
-            <pElem>build/linux_gcc</pElem>
-          </incDir>
-        </ccTool>
-      </folder>
-      <folder path="0/source/utility/logger">
-        <ccTool>
-          <incDir>
-            <pElem>build/linux_gcc</pElem>
-          </incDir>
-        </ccTool>
-      </folder>
-      <item path="source/concurrent/profiling/lock_profiler.cpp"
+      </item>
+      <item path="source/core/concurrent/thread_pool.cpp"
             ex="false"
             tool="1"
             flavor2="8">
         <ccTool flags="0">
         </ccTool>
       </item>
-      <item path="source/concurrent/profiling/thread_profiler.cpp"
+      <item path="source/core/config_file.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="source/core/logger/logger.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="source/core/memory/aligned_memory.cpp"
             ex="false"
             tool="1"
             flavor2="8">
         <ccTool flags="0">
         </ccTool>
       </item>
-      <item path="source/concurrent/thread.cpp" ex="false" tool="1" flavor2="8">
+      <item path="source/core/shared_memory.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
         </ccTool>
       </item>
-      <item path="source/concurrent/thread_pool.cpp" ex="false" tool="1" flavor2="8">
+      <item path="source/core/single_instance.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
         </ccTool>
       </item>
-      <item path="source/memory/aligned_memory.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="0">
-        </ccTool>
-      </item>
-      <item path="source/memory/shared_memory.cpp" ex="false" tool="1" flavor2="8">
+      <item path="source/core/stopwatch.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
         </ccTool>
       </item>
@@ -170,41 +139,6 @@
       </item>
       <item path="source/server_main.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
-          <incDir>
-            <pElem>build/linux_gcc</pElem>
-          </incDir>
-        </ccTool>
-      </item>
-      <item path="source/utility/config_file.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="0">
-          <incDir>
-            <pElem>build/linux_gcc</pElem>
-          </incDir>
-        </ccTool>
-      </item>
-      <item path="source/utility/logger.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="0">
-          <incDir>
-            <pElem>build/linux</pElem>
-          </incDir>
-        </ccTool>
-      </item>
-      <item path="source/utility/logger/logger.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="0">
-        </ccTool>
-      </item>
-      <item path="source/utility/single_instance.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="0">
-          <incDir>
-            <pElem>build/linux_gcc</pElem>
-          </incDir>
-        </ccTool>
-      </item>
-      <item path="source/utility/stopwatch.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="0">
-          <incDir>
-            <pElem>build/linux_gcc</pElem>
-          </incDir>
         </ccTool>
       </item>
     </conf>

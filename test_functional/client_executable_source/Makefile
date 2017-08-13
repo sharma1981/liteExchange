@@ -2,7 +2,6 @@
 CXX=g++
 #Source Directories
 SOURCE_DIR=../../source
-SOURCE_DIR_UTILITY= $(SOURCE_DIR)/utility
 SOURCES = client.cpp \
 			client_application.cpp \
 			client_request.cpp

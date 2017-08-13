@@ -2,22 +2,21 @@
 CXX=g++
 #Source Directories
 SOURCE_DIR=../../source
-SOURCE_DIR_MEMORY= $(SOURCE_DIR)/memory
-SOURCE_DIR_MEMORY_DEBUGGING= $(SOURCE_DIR)/memory/debugging
-SOURCE_DIR_CONCURRENT= $(SOURCE_DIR)/concurrent
+SOURCE_DIR_CORE= $(SOURCE_DIR)/core
+SOURCE_DIR_CORE_MEMORY= $(SOURCE_DIR_CORE)/memory
+SOURCE_DIR_CORE_CONCURRENT= $(SOURCE_DIR_CORE)/concurrent
+SOURCE_DIR_CORE_LOGGER= $(SOURCE_DIR_CORE)/logger
+SOURCE_DIR_CORE_DESIGN_PATTERNS= $(SOURCE_DIR_CORE)/design_patterns
 SOURCE_DIR_ORDER_MATCHER= $(SOURCE_DIR)/order_matcher
-SOURCE_DIR_UTILITY= $(SOURCE_DIR)/utility
-SOURCE_DIR_UTILITY_LOGGER= $(SOURCE_DIR)/utility/logger
-SOURCE_DIR_UTILITY_DESIGN_PATTERNS= $(SOURCE_DIR)/utility/design_patterns
 SOURCE_DIR_SERVER= $(SOURCE_DIR)/server
-SOURCES =  $(SOURCE_DIR_MEMORY)/aligned_memory.cpp \
-		$(SOURCE_DIR_CONCURRENT)/thread.cpp \
-		$(SOURCE_DIR_CONCURRENT)/thread_pool.cpp \
-		$(SOURCE_DIR_UTILITY)/config_file.cpp \
-		$(SOURCE_DIR_UTILITY)/stopwatch.cpp \
-		$(SOURCE_DIR_UTILITY)/single_instance.cpp \
-		$(SOURCE_DIR_UTILITY_LOGGER)/logger.cpp \
-		$(SOURCE_DIR_UTILITY)/shared_memory.cpp \
+SOURCES =  $(SOURCE_DIR_CORE_MEMORY)/aligned_memory.cpp \
+		$(SOURCE_DIR_CORE_CONCURRENT)/thread.cpp \
+		$(SOURCE_DIR_CORE_CONCURRENT)/thread_pool.cpp \
+		$(SOURCE_DIR_CORE)/config_file.cpp \
+		$(SOURCE_DIR_CORE)/stopwatch.cpp \
+		$(SOURCE_DIR_CORE)/single_instance.cpp \
+		$(SOURCE_DIR_CORE_LOGGER)/logger.cpp \
+		$(SOURCE_DIR_CORE)/shared_memory.cpp \
 		$(SOURCE_DIR_ORDER_MATCHER)/order.cpp \
 		$(SOURCE_DIR_ORDER_MATCHER)/order_book.cpp \
 		$(SOURCE_DIR_ORDER_MATCHER)/central_order_book.cpp \

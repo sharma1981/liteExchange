@@ -17,7 +17,7 @@ class Aligned
 
         Aligned()
         {
-			static_assert(IS_POWER_OF_TWO(alignment), "Template argument must be a power of two.");
+            static_assert(IS_POWER_OF_TWO(alignment), "Template argument must be a power of two.");
         }
 
         /*

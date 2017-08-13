@@ -5,7 +5,6 @@
 #include <sys/mman.h>
 #include <fcntl.h>
 #include <unistd.h>
-#include "aligned_memory.h"
 #endif
 
 #include <cstring>
