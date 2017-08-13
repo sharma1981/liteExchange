@@ -20,9 +20,9 @@ As for Windows side, you can see both names of threads and different thread affi
 
 <img src="https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/documentation/thread_names_affinities.png">
 
-Thread class header : https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/source/concurrent/thread.h
+Thread class header : https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/source/core/concurrent/thread.h
 
-Thread class source : https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/source/concurrent/thread.cpp
+Thread class source : https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/source/core/concurrent/thread.cpp
 
 I particularly find setting names for threads very useful for debugging. A note here is that in Linux you can only use maximum 16 characters for thread names. In Windows side, the name support for threads in kernel doesn`t exist , it is a mechanism provided by Windows debuggers.
 
@@ -36,9 +36,9 @@ I find this approach very convenient when designing mutithreaded objects that wi
 
 If you look at their code, you will notice that what you do is basically deriving from concurrent::Actor class and then override virtual run method :
 
-Actor base class : https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/source/concurrent/actor.h
+Actor base class : https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/source/core/concurrent/actor.h
 
-Logger : https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/source/utility/logger.cpp
+Logger : https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/source/core/logger.cpp
 
 Incoming message dispatcher : https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/source/server/server_incoming_message_dispatcher.h
 
@@ -58,17 +58,17 @@ https://nativecoding.wordpress.com/2015/08/30/multithreading-lock-contention-and
 
 Finally the incoming message dispatcher demultiplexes messages coming from multithreaded FIX server. For the time being it is not lockless , however the main consideration in its implementation is that it provides a method called "flush" rather than pop or dequeue. The reason being is since it will be consumed by only one consumer , there is no need to copy all nodes in the internal linked list but actually we can flush all incoming messages with a basic pointer swap :
 
-https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/source/concurrent/queue_mpsc.hpp
+https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/source/core/concurrent/queue_mpsc.hpp
 
 **Task, Thread pool, CPU pinning and hyperthreading considerations  :** The task class packages all kind of tasks and return values. For flexibility it uses C++11 variadic templates and std::function and std::bind , and as for flexibility for the return values it uses both boost::optional and boost::any :
 
-https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/source/concurrent/task.h
+https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/source/core/concurrent/task.h
 
 One of the main considerations of this project was seeing how we can gain performance by pinning each thread to CPU cores and also experiments affects of hyperthreading. Therefore the thread pool class is able to pin threads to CPU cores and if it is told that to avoid hyperthreading , it will pin threads to cores with only even indexes. ( Odd indexed CPU cores will be logical processors ).
 
 Thread pool is not applying anything like work stealing and work load balancing. The main reason for that , each worker thread is already assigned to a specific security symbol. Therefore work items of worker threads can`t be shared. Here you can see the thread pool`s source :
 
-https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/source/concurrent/thread_pool.cpp
+https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/source/core/concurrent/thread_pool.cpp
 
 **CPU-CacheLine Aligned Memory allocations :** The main consideration for concurrency performance was avoiding the false sharing issue , which you can read about here :
 
@@ -84,13 +84,13 @@ As for the use aligned container policy, the unbounded queue based thread safe c
 
 <img src="https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/documentation/class_diagram_aligned_container_policy.png">
 
-Cross platform aligned memory allocations: https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/source/memory/aligned_memory.cpp
+Cross platform aligned memory allocations: https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/source/core/memory/aligned_memory.cpp
 
-Aligned base class : https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/source/memory/aligned.hpp
+Aligned base class : https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/source/core/memory/aligned.hpp
 
-Aligned container policy : https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/source/memory/aligned_container_policy.hpp
+Aligned container policy : https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/source/core/memory/aligned_container_policy.hpp
 
-An aligned STL allocator : https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/source/memory/aligned_allocator.hpp
+An aligned STL allocator : https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/source/core/memory/aligned_allocator.hpp
 
 **Logging in multithreaded environment & thread safe singleton :** As for the design of the logger , it uses a thread safe ring buffer. When you call the log methods, the log message is being pushed on that queue , but they are not directly being written to a log file or std::out. As for logging to file and std::outconsole , the logger uses actor model and its threads dumps all messages at once.
 
@@ -104,13 +104,13 @@ https://blogs.msdn.microsoft.com/oldnewthing/20040308-00/?p=40363/
 
 Further more, the order of initialisation of static variables might still be problematic.
 
-DCLP Thread safe singleton : https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/source/utility/design_patterns/singleton_dclp.hpp
+DCLP Thread safe singleton : https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/source/core/design_patterns/singleton_dclp.hpp
 
-Meyers singleton : https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/source/utility/design_patterns/singleton_static.hpp
+Meyers singleton : https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/source/core/design_patterns/singleton_static.hpp
 
-Logger header : https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/source/utility/logger/logger.h
+Logger header : https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/source/core/logger/logger.h
 
-Logger source : https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/source/utility/logger/logger.cpp
+Logger source : https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/source/core/logger/logger.cpp
 
 **Variable synchronisation with atomic variables:** I have previously written about atomics in C++11 :
 
@@ -120,12 +120,12 @@ Basically atomic variables guarantees you safety. In the article above , you can
 
 "Is shutting down" flag in the thread pool as the thread pool itself should be thread safe :
 
-https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/source/concurrent/thread_pool.h
+https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/source/core/concurrent/thread_pool.h
 
 "Is finishing" flag in actor class :
 
-https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/source/concurrent/actor.h
+https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/source/core/concurrent/actor.h
 
 2 flags in the logger ( file_logging_enabled and console_loging_enabled ) are atomics :
 
-https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/source/utility/logger.h
+https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/source/core/logger.h

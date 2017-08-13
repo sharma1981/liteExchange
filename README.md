@@ -5,8 +5,6 @@
 Sections :
 
     1. Introduction and features
-    2. Limit orders and order matching engines
-    3. FIX ( Financial Information Exchange ) protocol
     4. Overview of the system
     5. Build dependencies
     6. Runtime dependencies
@@ -18,9 +16,14 @@ Sections :
     12. Utility scripts
     13. Coding and other guidelines
 	14. Continous integration
-	15. Code details
             
-**1. Introduction :** A multithreaded order matching engine written in C++11 using FIX protocol. Features can be seen in the table below :
+**1. Introduction :** A multithreaded order matching engine written in C++11 using FIX protocol. For limit orders and matching engines , see :
+
+https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/documentation/README_Orders_MatchingEngines.md
+
+For FIX protocol , see : https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/documentation/README_Fix.md
+
+Features can be seen in the table below :
 
 | Feature       				| Details       										|
 | ----------------------------- |:-----------------------------------------------------:|
@@ -49,40 +52,18 @@ Client test automation when working :
 
 <a href="https://asciinema.org/a/29km7ksm8ylrne24zkv9ripxu" target="_blank"><img src="https://asciinema.org/a/29km7ksm8ylrne24zkv9ripxu.png" width="589"/></a>
                         
-**2. Limit orders and order matching engines :** For limit orders please see : https://en.wikipedia.org/wiki/Order_%28exchange%29#Limit_order
 
-Basically a limit order is an order which you specify a maximum price for the security you want to buy. 
-As for the terminology a limit order to buy is called a "bid" and a limit order to sell is called an "ask".
-
-An order matching engine matches the ask orders and the bid orders. This implementation places the highest bid order on
-top of bids table and places the lowest ask order on top of asks table. Then it checks the bids and asks and tries to 
-match the orders. And then it sends status reports back to the owners of the orders. A status of an order can be :
-
-- "accepted" : the server accepted the order and it will be processed
-- "filled" : the order matched
-- "partially filled" , meaning that some trading happened , but still more to process
-- "rejected" , if order type is not supported.
-- "canceled" , if a client wants to cancel an order ,and if the order is canceled , the server informs the client
-
-For general information about the trading systems and the order types , please see :
-http://www.investopedia.com/university/intro-to-order-types/
-
-**3. FIX ( Financial information exchange ) protocol :** It is a session based TCP protocol that carries financial security transcation data.
-
-For more information , please see https://en.wikipedia.org/wiki/Financial_Information_eXchange .
-
-For the time being, this projectis using opensource QuickFix engine and FIX specification 4.2.
-            
-**4. Overview of multithreading system :** If you look at the source , the concurrency layer ( https://github.com/akhin/cpp_multithreaded_order_matching_engine/tree/master/source/concurrent , using concurrent word since MS using concurrency for their own libraries ) , 
+**2. Overview of multithreading system :** If you look at the source , the concurrency layer ( https://github.com/akhin/cpp_multithreaded_order_matching_engine/tree/master/source/core/concurrent , using concurrent word since MS using concurrency for their own libraries ) , 
 the engine currently is using :
 
     - A thread class which you can set stack size and set names for debugging
+	- A thread pool with ability to pin threads to CPU cores and avoid hyperthreading
     - 1 lock free SPSC ring buffer
     - Other fine grained lock based ring buffer and queues
     - Actor pattern
-    - A thread pool with ability to pin threads to CPU cores and avoid hyperthreading
+
     - Also the engine currently makes use of a set of CPU cache aligned allocators for memory allocations in order to avoid false sharing :
-    https://github.com/akhin/cpp_multithreaded_order_matching_engine/tree/master/source/memory
+    https://github.com/akhin/cpp_multithreaded_order_matching_engine/tree/master/source/core/memory
 
 Mainly, the engine consists of 2 parts : FIX server/engine and the order matching layer. The core of order matching layer is called a central order book, which keeps order books per security symbol. Each order book has a table for bids and another table for asks. Briefly the multithreaded system works as below :
 
@@ -100,7 +81,9 @@ c) Each thread in the thread pool will get message from their SPSC queue in the 
 
 d) Outgoing message processor which is a fine grained MPMC queue will process the outgoing messages and send responses back to the clients.
 
-**5. Build dependencies :** For Linux , the project is built and tested with GCC4.8 only on CentOS7. 
+For more implementation details please see https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/documentation/README_CodeDetails.md
+
+**3. Build dependencies :** For Linux , the project is built and tested with GCC4.8 only on CentOS7. 
 
 As for Windows it is using MSVC1200(VS2013). An important note about VS2013 , its version shouldn`t be later then Update2 as the project is using C++11 curly brace initialisation in MILs and MSVC rollbacked that feature starting from Update3 :
 
@@ -114,7 +97,7 @@ In the libraries side :
                         
 - QuickFix & its requirements : For Windows you don`t need to do anything as the static library for Windows is already in dependencies directory. For Linux you need to apply the steps on http://www.quickfixengine.org/quickfix/doc/html/install.html
 
-**6. Runtime dependencies :** For Windows, you have to install MSVC120 runtime : https://www.microsoft.com/en-gb/download/details.aspx?id=40784
+**4. Runtime dependencies :** For Windows, you have to install MSVC120 runtime : https://www.microsoft.com/en-gb/download/details.aspx?id=40784
 
 For Linux, you need GNU Libstd C++ 6 runtime and QuickFIX runtime.
 
@@ -126,7 +109,7 @@ How to install Quickfix runtime on Linux ( tested on Ubuntu ) :
         
 Note : This script will copy shared object to library path, create soft links, will add library path to /etc/ld.so.conf and finally execute ldconfig.
 
-**7. How to build :**
+**5. How to build :**
             
 How to build the project on Linux :
     
@@ -156,7 +139,7 @@ How to build the project on Windows with Visual Studio in command line :
     Go to "build/windows_msvc_command_line" directory
     Execute one of batch files : build_debug.bat or build_release.bat
 
-**8. Server parameters and running the matching engine :** The engine executable looks for "ome.ini" file. Here is the list of things you can set :
+**6. Server parameters and running the matching engine :** The engine executable looks for "ome.ini" file. Here is the list of things you can set :
 
         FILE_LOGGING_ENABLED                        enables/disables logging
         CONSOLE_OUTPUT_ENABLED                      enables/disables output to stdout
@@ -203,7 +186,7 @@ Once you start the ome executable , initially you will see a screen like this :
                 display : Shows all order books in the central order book
                 quit : Shutdowns the server
                 
-**9. Example log message from the engine :** The engine produces log messages below when it receives 1 buy order with quantity 1 and 1 sell order with quantity 1 for the same symbol :
+**7. Example log message from the engine :** The engine produces log messages below when it receives 1 buy order with quantity 1 and 1 sell order with quantity 1 for the same symbol :
 
     06-02-2016 20:16:09 : INFO , FIX Engine , New logon , session ID : FIX.4.2:OME->TEST_CLIENT1
     06-02-2016 20:16:09 : INFO , FIX Engine , Sending fix message : 8=FIX.4.29=15435=834=543=Y49=OME52=20160206-20:16:09.29556=TEST_CLIENT1122=20160206-20:15:03.9556=011=414=017=1820=037=438=139=054=155=MSFT150=0151=110=000
@@ -237,21 +220,7 @@ Once you start the ome executable , initially you will see a screen like this :
     06-02-2016 20:16:09 : INFO , FIX Engine , Sending fix message : 8=FIX.4.29=13535=834=2649=OME52=20160206-20:16:09.34256=TEST_CLIENT16=111=114=117=11620=031=132=137=138=139=254=255=MSFT150=2151=010=002
     06-02-2016 20:16:11 : INFO , FIX Engine , Logout , session ID : FIX.4.2:OME->TEST_CLIENT1
 
-Note 1: To parse the fix message which can be seen above , you can use one of the online FIX parsers :
-
-http://fixdecoder.com/fix_decoder.html
-        
-http://fixparser.targetcompid.com/
-    
-http://fix.aprics.net/
-
-Note 2: The executables and scripts help you to send orders to the engine , however if you want to send custom FIX messages, you can use :
-
-MiniFIX , http://elato.se/minifix/download.html , Windows only with a GUI
-
-QuickFixMessanger , https://github.com/jramoyo/quickfix-messenger
-
-**10. Functional testing :** There is a prebuilt executable for both Linux and Windows which can send specified ask/bid orders to the order matching engine.
+**8. Functional testing :** There is a prebuilt executable for both Linux and Windows which can send specified ask/bid orders to the order matching engine.
    
 Under "test_functional" directory :
    
@@ -292,7 +261,7 @@ Alternatively on Linux , there is a GUI script as in Windows one :
 <img src="https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/documentation/testfunctional_gui_linux.png">
 </p>
     
-**11. Unit testing with GoogleTest :** The project uses GoogleTest 1.7. You can find a makefile and vcproj under "test_unit" directory.
+**9. Unit testing with GoogleTest :** The project uses GoogleTest 1.7. You can find a makefile and vcproj under "test_unit" directory.
 
     
 Building and running unit test on Linux : You have to build and install Google Test 1.7 first , the instructions for CentOS and Ubuntu :
@@ -314,7 +283,7 @@ Building and running unit test on Linux : You have to build and install Google T
 
 Building and running unit test on Windows : You can use VisualStudio solution in "test_unit" directory.
 
-**12. Utility scripts :**
+**10. Utility scripts :**
 
 You can find them under "utility_scripts" directory :
     
@@ -326,7 +295,7 @@ You can find them under "utility_scripts" directory :
     profiler_windows_visual_studio      profile with Visual Studio`s vsperf
     leak_detector_windows_drmemory.bat  memory leak detection with Dr.Memory
 
-**13. Coding and other guidelines :**
+**11. Coding and other guidelines :**
 
 Source code and file/directory naming conventions :
     
@@ -353,7 +322,7 @@ utility/source_code_formatter.sh : It is a Bash script that scans all cpp,h,hpp 
     
 Inclusions : Using forward slash as it works for both Linux and Windows :
 
-        #include <concurrent/thread.h>
+        #include <core/concurrent/thread.h>
     
 Warning level used for GCC : -Wall
 
@@ -368,10 +337,6 @@ For MSVC 120 see https://msdn.microsoft.com/en-us/library/8c5ztk84(v=vs.120).asp
 
 MSVC120 C++11 Limitations : Curly brace initialisation at MILs and noexcept is not supported. For noexcept usage please see compiler_portability/noexcept.h .
 
-**14. Continous integration :**
+**12. Continous integration :**
 
 For the time being , online CI has been setup for only MSVC using Appveyor. Planning to add GCC based online CI with TravisCI.
-
-**15. Code details :**
-
-For source code implementation details : https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/documentation/README_CodeDetails.md
