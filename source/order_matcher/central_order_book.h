@@ -16,15 +16,15 @@
 #include <concurrent/queue_mpmc.hpp>
 #include <concurrent/thread_pool.h>
 
-#include <utility/design_patterns/visitor.hpp>
-#include <utility/design_patterns/observer.hpp>
+#include <core/design_patterns/visitor.hpp>
+#include <core/design_patterns/observer.hpp>
 
 namespace order_matcher
 {
 
 using OutgoingMessageQueue = concurrent::QueueMPMC<OutgoingMessage>;
 
-class CentralOrderBook : public boost::noncopyable, public utility::Visitable<Order>, public utility::Observable<CentralOrderBook>
+class CentralOrderBook : public boost::noncopyable, public core::Visitable<Order>, public core::Observable<CentralOrderBook>
 {
     public:
         CentralOrderBook() : m_isMatchingMultithreaded{ false } {}
@@ -35,7 +35,7 @@ class CentralOrderBook : public boost::noncopyable, public utility::Visitable<Or
         }
 
         void setSymbols(const std::vector<std::string>symbols);
-        void accept(utility::Visitor<Order>& v) override;
+        void accept(core::Visitor<Order>& v) override;
         void initialiseMultithreadedMatching(concurrent::ThreadPoolArguments& args);
 
         bool addOrder(const Order& order);

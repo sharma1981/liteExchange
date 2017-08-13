@@ -1,7 +1,7 @@
 #ifndef _QUICK_FIX_CONVERTER_H_
 #define _QUICK_FIX_CONVERTER_H_
 
-#include <utility/pretty_exception.h>
+#include <core/pretty_exception.h>
 
 #include <order_matcher/outgoing_message.h>
 #include <order_matcher/order.h>

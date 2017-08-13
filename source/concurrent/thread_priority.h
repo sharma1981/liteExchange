@@ -4,7 +4,7 @@
 #include <array>
 #include <string>
 
-#include <utility/pretty_exception.h>
+#include <core/pretty_exception.h>
 
 #ifdef __linux__
 #include <sys/time.h>

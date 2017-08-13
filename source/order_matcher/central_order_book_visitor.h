@@ -6,12 +6,12 @@
 #include <iostream>
 
 #include "order.h"
-#include <utility/design_patterns/visitor.hpp>
+#include <core/design_patterns/visitor.hpp>
 
 namespace order_matcher
 {
 
-class CentralOrderBookVisitor : public utility::Visitor<Order>
+class CentralOrderBookVisitor : public core::Visitor<Order>
 {
     public:
         void visit(Order& element) override

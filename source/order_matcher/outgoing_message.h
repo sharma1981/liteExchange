@@ -4,7 +4,7 @@
 #include <string>
 #include "order.h"
 #include <memory/aligned.hpp>
-#include <utility/pretty_exception.h>
+#include <core/pretty_exception.h>
 
 namespace order_matcher
 {

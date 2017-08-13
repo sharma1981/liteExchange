@@ -92,6 +92,11 @@
   <ItemGroup>
     <ClCompile Include="..\..\source\concurrent\thread.cpp" />
     <ClCompile Include="..\..\source\concurrent\thread_pool.cpp" />
+    <ClCompile Include="..\..\source\core\config_file.cpp" />
+    <ClCompile Include="..\..\source\core\logger\logger.cpp" />
+    <ClCompile Include="..\..\source\core\shared_memory.cpp" />
+    <ClCompile Include="..\..\source\core\single_instance.cpp" />
+    <ClCompile Include="..\..\source\core\stopwatch.cpp" />
     <ClCompile Include="..\..\source\memory\aligned_memory.cpp" />
     <ClCompile Include="..\..\source\order_matcher\central_order_book.cpp" />
     <ClCompile Include="..\..\source\order_matcher\order.cpp" />
@@ -102,11 +107,6 @@
     </ClCompile>
     <ClCompile Include="..\..\source\server\server.cpp" />
     <ClCompile Include="..\..\source\server_main.cpp" />
-    <ClCompile Include="..\..\source\utility\config_file.cpp" />
-    <ClCompile Include="..\..\source\utility\logger\logger.cpp" />
-    <ClCompile Include="..\..\source\utility\shared_memory.cpp" />
-    <ClCompile Include="..\..\source\utility\single_instance.cpp" />
-    <ClCompile Include="..\..\source\utility\stopwatch.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\source\compiler\alignas.h" />
@@ -133,6 +133,31 @@
     <ClInclude Include="..\..\source\concurrent\thread_pool.h" />
     <ClInclude Include="..\..\source\concurrent\thread_pool_arguments.h" />
     <ClInclude Include="..\..\source\concurrent\thread_priority.h" />
+    <ClInclude Include="..\..\source\core\callstack.h" />
+    <ClInclude Include="..\..\source\core\config_file.h" />
+    <ClInclude Include="..\..\source\core\console_utility.h" />
+    <ClInclude Include="..\..\source\core\datetime_utility.h" />
+    <ClInclude Include="..\..\source\core\design_patterns\factory.hpp" />
+    <ClInclude Include="..\..\source\core\design_patterns\observer.hpp" />
+    <ClInclude Include="..\..\source\core\design_patterns\singleton_dclp.hpp" />
+    <ClInclude Include="..\..\source\core\design_patterns\singleton_static.hpp" />
+    <ClInclude Include="..\..\source\core\design_patterns\visitor.hpp" />
+    <ClInclude Include="..\..\source\core\file_utility.h" />
+    <ClInclude Include="..\..\source\core\logger\base_logger_sink.hpp" />
+    <ClInclude Include="..\..\source\core\logger\console_sink.hpp" />
+    <ClInclude Include="..\..\source\core\logger\file_sink.hpp" />
+    <ClInclude Include="..\..\source\core\logger\logger.h" />
+    <ClInclude Include="..\..\source\core\logger\logger_sinks.hpp" />
+    <ClInclude Include="..\..\source\core\logger\logger_sink_factory.hpp" />
+    <ClInclude Include="..\..\source\core\logger\log_entry.hpp" />
+    <ClInclude Include="..\..\source\core\logger\log_levels.h" />
+    <ClInclude Include="..\..\source\core\os_utility.h" />
+    <ClInclude Include="..\..\source\core\pretty_exception.h" />
+    <ClInclude Include="..\..\source\core\shared_memory.h" />
+    <ClInclude Include="..\..\source\core\single_instance.h" />
+    <ClInclude Include="..\..\source\core\stopwatch.h" />
+    <ClInclude Include="..\..\source\core\string_utility.h" />
+    <ClInclude Include="..\..\source\core\trace.h" />
     <ClInclude Include="..\..\source\memory\aligned.hpp" />
     <ClInclude Include="..\..\source\memory\aligned_allocator.hpp" />
     <ClInclude Include="..\..\source\memory\aligned_container_policy.hpp" />
@@ -156,31 +181,6 @@
     <ClInclude Include="..\..\source\server\server_interface.h" />
     <ClInclude Include="..\..\source\server\server_interface_cli.h" />
     <ClInclude Include="..\..\source\server\server_outgoing_message_processor.h" />
-    <ClInclude Include="..\..\source\utility\callstack.h" />
-    <ClInclude Include="..\..\source\utility\config_file.h" />
-    <ClInclude Include="..\..\source\utility\console_utility.h" />
-    <ClInclude Include="..\..\source\utility\datetime_utility.h" />
-    <ClInclude Include="..\..\source\utility\design_patterns\factory.hpp" />
-    <ClInclude Include="..\..\source\utility\design_patterns\observer.hpp" />
-    <ClInclude Include="..\..\source\utility\design_patterns\singleton_dclp.hpp" />
-    <ClInclude Include="..\..\source\utility\design_patterns\singleton_static.hpp" />
-    <ClInclude Include="..\..\source\utility\design_patterns\visitor.hpp" />
-    <ClInclude Include="..\..\source\utility\file_utility.h" />
-    <ClInclude Include="..\..\source\utility\logger\base_logger_sink.hpp" />
-    <ClInclude Include="..\..\source\utility\logger\console_sink.hpp" />
-    <ClInclude Include="..\..\source\utility\logger\file_sink.hpp" />
-    <ClInclude Include="..\..\source\utility\logger\logger.h" />
-    <ClInclude Include="..\..\source\utility\logger\logger_sinks.hpp" />
-    <ClInclude Include="..\..\source\utility\logger\logger_sink_factory.hpp" />
-    <ClInclude Include="..\..\source\utility\logger\log_entry.hpp" />
-    <ClInclude Include="..\..\source\utility\logger\log_levels.h" />
-    <ClInclude Include="..\..\source\utility\os_utility.h" />
-    <ClInclude Include="..\..\source\utility\pretty_exception.h" />
-    <ClInclude Include="..\..\source\utility\shared_memory.h" />
-    <ClInclude Include="..\..\source\utility\single_instance.h" />
-    <ClInclude Include="..\..\source\utility\stopwatch.h" />
-    <ClInclude Include="..\..\source\utility\string_utility.h" />
-    <ClInclude Include="..\..\source\utility\trace.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

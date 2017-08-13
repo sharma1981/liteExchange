@@ -6,15 +6,15 @@
 // RUNTIME CHECKS
 #include <memory/cpu_memory.h>                      // To see if cache line we are running on
                                                     // matches the compiled one
-#include <utility/os_utility.h>                     // To check whether we are root/admin or not
+#include <core/os_utility.h>                     // To check whether we are root/admin or not
 
 #include <iostream>
 
 #include <boost/format.hpp>
 
-#include <utility/single_instance.h>
-#include <utility/logger/logger.h>
-#include <utility/file_utility.h>
+#include <core/single_instance.h>
+#include <core/logger/logger.h>
+#include <core/file_utility.h>
 
 #include <server/server.h>
 #include <server/server_configuration.h>
@@ -35,15 +35,15 @@ int main ()
         Server::onError(message, ServerError::NON_SUPPORTED_EXECUTION);
     }
 
-    if (utility::amIAdmin() == false)
+    if (core::amIAdmin() == false)
     {
         // Mainly needed for ability to set thread priorities
-        utility::consoleOutputWithColor(utility::ConsoleColor::FG_RED, " WARNING : Program didn`t start with admin/root rights. Therefore will not be able to modify thread priorities.\n");
+        core::consoleOutputWithColor(core::ConsoleColor::FG_RED, " WARNING : Program didn`t start with admin/root rights. Therefore will not be able to modify thread priorities.\n");
         cin;
     }
 
     // Set current working directory as current executable`s directory
-    utility::setCurrentWorkingDirectory( utility::getCurrentExecutableDirectory() );
+    core::setCurrentWorkingDirectory( core::getCurrentExecutableDirectory() );
 
     // Load configuration file
     ServerConfiguration serverConfiguration;
@@ -69,7 +69,7 @@ int main ()
     }
 
     // Single instance protection
-    utility::SingleInstance singleton(serverConfiguration.getSingleInstancePortNumber());
+    core::SingleInstance singleton(serverConfiguration.getSingleInstancePortNumber());
 
     if ( !singleton() )
     {
@@ -77,14 +77,14 @@ int main ()
     }
 
     // Backup FIX engine logs if exists
-    utility::backupDirectory(server_constants::FIX_ENGINE_LOG_DIRECTORY, server_constants::FIX_ENGINE_LOG_DIRECTORY + string("_") + utility::getCurrentDateTime("%d_%m_%Y_%H_%M_%S"), server_constants::FIX_ENGINE_LOG_BACKUP_DIRECTORY);
-    utility::createDirectory(server_constants::FIX_ENGINE_LOG_DIRECTORY);
+    core::backupDirectory(server_constants::FIX_ENGINE_LOG_DIRECTORY, server_constants::FIX_ENGINE_LOG_DIRECTORY + string("_") + core::getCurrentDateTime("%d_%m_%Y_%H_%M_%S"), server_constants::FIX_ENGINE_LOG_BACKUP_DIRECTORY);
+    core::createDirectory(server_constants::FIX_ENGINE_LOG_DIRECTORY);
 
     // Start and run the server
     try
     {
         // Start logger
-        utility::Logger::getInstance()->start();
+        core::Logger::getInstance()->start();
         LOG_INFO("Main thread", "starting")
 
         Server application(server_constants::FIX_ENGINE_CONFIG_FILE, serverConfiguration);
@@ -111,6 +111,6 @@ int main ()
     //////////////////////////////////////////
     // Application exit
     LOG_INFO("Main thread", "Ending")
-    utility::Logger::getInstance()->shutdown();
+    core::Logger::getInstance()->shutdown();
     return 0;
 }

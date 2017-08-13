@@ -6,9 +6,9 @@
 
 #include <server/server_constants.h>
 
-#include <utility/config_file.h>
-#include <utility/logger/logger_sink_factory.hpp>
-#include <utility/os_utility.h>
+#include <core/config_file.h>
+#include <core/logger/logger_sink_factory.hpp>
+#include <core/os_utility.h>
 
 #include <concurrent/thread_pool_arguments.h>
 #include <concurrent/thread_priority.h>
@@ -24,28 +24,28 @@ class ServerConfiguration
 
         void load(const std::string& configurationFile)
         {
-            utility::ConfigFile configuration;
+            core::ConfigFile configuration;
             configuration.loadFromFile(configurationFile);
 
             m_singleInstanceTCPPortNumber = configuration.getIntValue(server_constants::CONFIGURATION_FILE_SINGLE_INSTANCE_TCP_PORT);
 
             // Get logging related configurations, the loop is for per logger sink
-            utility::Logger::getInstance()->initialise(configuration.getIntValue(server_constants::CONFIGURATION_FILE_LOGGER_BUFFER_SIZE));
+            core::Logger::getInstance()->initialise(configuration.getIntValue(server_constants::CONFIGURATION_FILE_LOGGER_BUFFER_SIZE));
 
-            for (auto& sinkName : utility::LOGGER_SINKS)
+            for (auto& sinkName : core::LOGGER_SINKS)
             {
                 std::string configSinkName = "LOGGER_" + std::string(sinkName);
                 if (configuration.doesAttributeExist(configSinkName) == true)
                 {
                     if (configuration.getBoolValue(configSinkName) == true)
                     {
-                        utility::Logger::getInstance()->setSinkEnabled(sinkName, true);
+                        core::Logger::getInstance()->setSinkEnabled(sinkName, true);
 
                         std::string resourceNameAttribute = "LOGGER_" + std::string(sinkName) + "_RESOURCE_NAME";
                         if (configuration.doesAttributeExist(resourceNameAttribute))
                         {
                             auto resourceName = configuration.getStringValue(resourceNameAttribute);
-                            utility::Logger::getInstance()->setSinkResourceName(sinkName, resourceName);
+                            core::Logger::getInstance()->setSinkResourceName(sinkName, resourceName);
                         }
                     }
                 }

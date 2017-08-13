@@ -23,21 +23,21 @@
     <ClCompile Include="..\..\source\server\server.cpp">
       <Filter>server</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\utility\config_file.cpp">
-      <Filter>utility</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\utility\single_instance.cpp">
-      <Filter>utility</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\utility\stopwatch.cpp">
-      <Filter>utility</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\utility\logger\logger.cpp">
-      <Filter>utility\logger</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\source\precompiled_header.cpp" />
-    <ClCompile Include="..\..\source\utility\shared_memory.cpp">
-      <Filter>utility</Filter>
+    <ClCompile Include="..\..\source\core\config_file.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\core\shared_memory.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\core\single_instance.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\core\stopwatch.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\core\logger\logger.cpp">
+      <Filter>core\logger</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -114,36 +114,6 @@
     <ClInclude Include="..\..\source\concurrent\thread_priority.h">
       <Filter>concurrent</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\utility\callstack.h">
-      <Filter>utility</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\utility\config_file.h">
-      <Filter>utility</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\utility\datetime_utility.h">
-      <Filter>utility</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\utility\file_utility.h">
-      <Filter>utility</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\utility\os_utility.h">
-      <Filter>utility</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\utility\pretty_exception.h">
-      <Filter>utility</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\utility\single_instance.h">
-      <Filter>utility</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\utility\stopwatch.h">
-      <Filter>utility</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\utility\string_utility.h">
-      <Filter>utility</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\utility\trace.h">
-      <Filter>utility</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\source\concurrent\lock.hpp">
       <Filter>concurrent</Filter>
     </ClInclude>
@@ -155,45 +125,6 @@
     </ClInclude>
     <ClInclude Include="..\..\source\server\server_constants.h">
       <Filter>server</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\utility\logger\base_logger_sink.hpp">
-      <Filter>utility\logger</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\utility\logger\console_sink.hpp">
-      <Filter>utility\logger</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\utility\logger\file_sink.hpp">
-      <Filter>utility\logger</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\utility\logger\log_entry.hpp">
-      <Filter>utility\logger</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\utility\logger\logger.h">
-      <Filter>utility\logger</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\utility\logger\logger_sink_factory.hpp">
-      <Filter>utility\logger</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\utility\logger\logger_sinks.hpp">
-      <Filter>utility\logger</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\utility\logger\log_levels.h">
-      <Filter>utility\logger</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\utility\design_patterns\observer.hpp">
-      <Filter>utility\design_patterns</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\utility\design_patterns\singleton_static.hpp">
-      <Filter>utility\design_patterns</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\utility\design_patterns\visitor.hpp">
-      <Filter>utility\design_patterns</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\utility\design_patterns\factory.hpp">
-      <Filter>utility\design_patterns</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\utility\console_utility.h">
-      <Filter>utility</Filter>
     </ClInclude>
     <ClInclude Include="..\..\source\server\server_configuration.h">
       <Filter>server</Filter>
@@ -207,14 +138,8 @@
     <ClInclude Include="..\..\source\server\server_interface_cli.h">
       <Filter>server</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\utility\design_patterns\singleton_dclp.hpp">
-      <Filter>utility\design_patterns</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\source\memory\virtual_memory.h">
       <Filter>memory</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\utility\shared_memory.h">
-      <Filter>utility</Filter>
     </ClInclude>
     <ClInclude Include="..\..\source\memory\cpu_memory.h">
       <Filter>memory</Filter>
@@ -255,13 +180,85 @@
     <ClInclude Include="..\..\source\compiler\unused.h">
       <Filter>compiler</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\source\core\callstack.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\config_file.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\console_utility.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\datetime_utility.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\file_utility.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\os_utility.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\pretty_exception.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\shared_memory.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\single_instance.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\stopwatch.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\string_utility.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\trace.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\logger\base_logger_sink.hpp">
+      <Filter>core\logger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\logger\console_sink.hpp">
+      <Filter>core\logger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\logger\file_sink.hpp">
+      <Filter>core\logger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\logger\log_entry.hpp">
+      <Filter>core\logger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\logger\log_levels.h">
+      <Filter>core\logger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\logger\logger.h">
+      <Filter>core\logger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\logger\logger_sink_factory.hpp">
+      <Filter>core\logger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\logger\logger_sinks.hpp">
+      <Filter>core\logger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\design_patterns\factory.hpp">
+      <Filter>core\design_patterns</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\design_patterns\observer.hpp">
+      <Filter>core\design_patterns</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\design_patterns\singleton_dclp.hpp">
+      <Filter>core\design_patterns</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\design_patterns\singleton_static.hpp">
+      <Filter>core\design_patterns</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\design_patterns\visitor.hpp">
+      <Filter>core\design_patterns</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="concurrent">
       <UniqueIdentifier>{27fdd7d8-93fe-440f-8a1f-b3ddad981d87}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="utility">
-      <UniqueIdentifier>{6dafee8d-76db-411e-87bc-eace7aa8a36c}</UniqueIdentifier>
     </Filter>
     <Filter Include="memory">
       <UniqueIdentifier>{bf092d7e-419c-4ebe-bd14-b699b6827fe0}</UniqueIdentifier>
@@ -272,14 +269,17 @@
     <Filter Include="server">
       <UniqueIdentifier>{62ea120b-e105-4d83-a731-88417c70fcec}</UniqueIdentifier>
     </Filter>
-    <Filter Include="utility\logger">
-      <UniqueIdentifier>{48498b4d-e76e-4770-94b6-4d4f9efc19a9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="utility\design_patterns">
-      <UniqueIdentifier>{21f68be7-0e5b-4b45-8d09-b0aa488d8ba5}</UniqueIdentifier>
-    </Filter>
     <Filter Include="compiler">
       <UniqueIdentifier>{5495b43b-3f74-468d-ba77-11a63f6effea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="core">
+      <UniqueIdentifier>{dce9f842-8372-471f-b368-c48fa25fb85a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="core\logger">
+      <UniqueIdentifier>{507ed549-0964-46a7-aeec-7def67431234}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="core\design_patterns">
+      <UniqueIdentifier>{18b8a0c7-f1d1-4e94-ae91-b1da81cff11e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

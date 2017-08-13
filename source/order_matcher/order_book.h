@@ -9,18 +9,18 @@
 #include <functional>
 #include <memory>
 
-#include <utility/design_patterns/visitor.hpp>
+#include <core/design_patterns/visitor.hpp>
 
 namespace order_matcher
 {
 
-class OrderBook : public utility::Visitable<Order>
+class OrderBook : public core::Visitable<Order>
 {
     public :
         OrderBook() = default;
         explicit OrderBook(const std::string& symbol);
 
-        void accept(utility::Visitor<Order>& v) override;
+        void accept(core::Visitor<Order>& v) override;
 
         void insert(const Order& order);
         bool find(Order** order, const std::string& owner, const std::string& clientID, OrderSide side);

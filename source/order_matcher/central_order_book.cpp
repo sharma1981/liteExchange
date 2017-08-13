@@ -5,8 +5,8 @@
 using namespace std;
 
 #include <compiler/likely.h>
-#include <utility/stopwatch.h>
-using namespace utility;
+#include <core/stopwatch.h>
+using namespace core;
 
 namespace order_matcher
 {

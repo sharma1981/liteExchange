@@ -2,13 +2,13 @@
 #define _CENTRAL_ORDER_BOOK_OBSERVER_H_
 
 #include "central_order_book.h"
-#include <utility/design_patterns/observer.hpp>
-#include <utility/logger/logger.h>
+#include <core/design_patterns/observer.hpp>
+#include <core/logger/logger.h>
 
 namespace order_matcher
 {
 
-class CentralOrderBookObserver : public utility::Observer<CentralOrderBook>
+class CentralOrderBookObserver : public core::Observer<CentralOrderBook>
 {
     public:
 

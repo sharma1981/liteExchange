@@ -26,16 +26,16 @@
 #include <server/quickfix_converter.h>
 using namespace order_matcher;
 
-#include <utility/file_utility.h>
-#include <utility/pretty_exception.h>
-#include <utility/logger/logger.h>
+#include <core/file_utility.h>
+#include <core/pretty_exception.h>
+#include <core/logger/logger.h>
 
 using namespace std;
 
 Server::Server(const string& fixEngineConfigFile, const ServerConfiguration& serverConfiguration)
 : m_serverInterface{ nullptr }, m_fixEngineConfigFile( fixEngineConfigFile )
 {
-    if (!utility::doesFileExist(m_fixEngineConfigFile))
+    if (!core::doesFileExist(m_fixEngineConfigFile))
     {
         auto exceptionMessage = boost::str(boost::format("FIX configuration file %s does not exist") % m_fixEngineConfigFile);
         THROW_PRETTY_RUNTIME_EXCEPTION(exceptionMessage)
@@ -103,10 +103,10 @@ void Server::onError(const string& message, ServerError error)
     std::cerr << message << std::endl;
     auto exit_code = static_cast<std::underlying_type<ServerError>::type >(error);
 
-    if (utility::Logger::getInstance()->isAlive())
+    if (core::Logger::getInstance()->isAlive())
     {
         LOG_ERROR("Main thread", "Ending")
-        utility::Logger::getInstance()->shutdown();
+        core::Logger::getInstance()->shutdown();
     }
     std::exit(exit_code);
 }
