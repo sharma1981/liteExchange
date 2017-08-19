@@ -2,15 +2,12 @@
 #define _ORDER_H_
 
 #include <string>
-#include <boost/flyweight.hpp>
 
 namespace order_matcher
 {
 
 enum class OrderSide { NON_SUPPORTED, BUY, SELL };
 enum class OrderType { NON_SUPPORTED, LIMIT  };
-
-using FlyweightStdString = boost::flyweights::flyweight<std::string>;
 
 class Order
 {
@@ -44,9 +41,9 @@ class Order
     private:
 
         std::string m_clientOrderID;
-        FlyweightStdString m_symbol;
+		std::string m_symbol;
         std::string m_owner;
-        FlyweightStdString m_target;
+		std::string m_target;
         OrderSide m_side;
         OrderType m_orderType;
         double m_price;

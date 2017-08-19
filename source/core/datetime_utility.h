@@ -7,6 +7,7 @@
 #include <ctime>
 #include <cstddef>
 #include <iomanip>
+#include "string_utility.h"
 
 namespace core
 {
@@ -15,13 +16,30 @@ namespace core
 // Even though functions here don`t operate on static data
 // preferred inline to avoid code bloat
 
-inline std::string getCurrentDateTime(const char* format = "%d-%m-%Y %H:%M:%S")
+inline std::string getCurrentDateTime(const char* format = "%d-%m-%Y %H:%M:%S:%%06u")
 {
 #if defined( _MSC_VER ) || ( __GNUC__ > 4 )
     auto now = std::chrono::system_clock::now();
     auto inTimeT = std::chrono::system_clock::to_time_t(now);
     std::stringstream ss;
-    ss << std::put_time(std::localtime(&inTimeT), format);
+	if (core::contains(format, "%S:%%03u") == true )
+	{
+		// Add milliseconds
+		auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()) % 1000;
+		ss << std::put_time(std::localtime(&inTimeT), "%d-%m-%Y %H:%M:%S");
+		ss << '.' << std::setfill('0') << std::setw(3) << ms.count();
+	}
+	else if (core::contains(format, "%S:%%06u") == true)
+	{
+		// Add microseconds
+		auto ms = std::chrono::duration_cast<std::chrono::microseconds>(now.time_since_epoch()) % 1000000;
+		ss << std::put_time(std::localtime(&inTimeT), "%d-%m-%Y %H:%M:%S");
+		ss << '.' << std::setfill('0') << std::setw(6) << ms.count();
+	}
+	else
+	{
+		ss << std::put_time(std::localtime(&inTimeT), format);
+	}
     return ss.str();
 #else
     // In C++11 std::put_time does this more easily, but in my tests

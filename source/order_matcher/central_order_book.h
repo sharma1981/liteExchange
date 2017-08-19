@@ -1,5 +1,5 @@
-#ifndef _ORDER_QUEUE_H_
-#define _ORDER_QUEUE_H_
+#ifndef _CENTRAL_ORDER_BOOK_H_
+#define _CENTRAL_ORDER_BOOK_H_
 
 #include "order.h"
 #include "order_book.h"
@@ -15,9 +15,10 @@
 #include <core/concurrent/thread.h>
 #include <core/concurrent/queue_mpmc.hpp>
 #include <core/concurrent/thread_pool.h>
-
 #include <core/design_patterns/visitor.hpp>
 #include <core/design_patterns/observer.hpp>
+
+#include <core/concurrent/thread_pool_observer.h>
 
 namespace order_matcher
 {
@@ -34,17 +35,17 @@ class CentralOrderBook : public boost::noncopyable, public core::Visitable<Order
             m_orderBookThreadPool.shutdown();
         }
 
-        void setSymbols(const std::vector<std::string>symbols);
+        void setSymbols(const std::vector<std::string> symbols);
         void accept(core::Visitor<Order>& v) override;
-        void initialiseMultithreadedMatching(core::ThreadPoolArguments& args);
+        
+		void initialiseMultithreadedMatching(core::ThreadPoolArguments& args);
+		bool isMatchingMultithreaded() const { return m_isMatchingMultithreaded; }
 
         bool addOrder(const Order& order);
         void rejectOrder(const Order& order, const std::string& message);
         void cancelOrder(const Order& order, const std::string& origClientOrderID);
 
         OutgoingMessageQueue* getOutgoingMessageQueue() { return &m_outgoingMessages; }
-
-        bool isMatchingMultithreaded() const { return m_isMatchingMultithreaded; }
 
     private:
         std::unordered_map<std::string, OrderBook> m_orderBookDictionary; // Symbol - OrderBook dictionary
@@ -54,7 +55,9 @@ class CentralOrderBook : public boost::noncopyable, public core::Visitable<Order
         bool m_isMatchingMultithreaded;
         std::vector<std::string> m_symbols;
         OutgoingMessageQueue m_outgoingMessages;
-        core::ThreadPool m_orderBookThreadPool;
+        
+		core::ThreadPool m_orderBookThreadPool;
+		core::ThreadPoolObserver m_threadPoolObserver;
 
         void* taskNewOrder(const Order& order);
         void* taskCancelOrder(const Order& order, const std::string& origClientOrderID);

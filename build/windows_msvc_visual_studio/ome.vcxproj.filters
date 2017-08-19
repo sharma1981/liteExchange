@@ -255,6 +255,9 @@
     <ClInclude Include="..\..\source\core\memory\virtual_memory.h">
       <Filter>core\memory</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\source\core\concurrent\thread_pool_observer.h">
+      <Filter>core\concurrent</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="order_matcher">

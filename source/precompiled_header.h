@@ -50,7 +50,6 @@
 #include <boost/noncopyable.hpp>
 #include <boost/tokenizer.hpp>
 #include <boost/format.hpp>
-#include <boost/flyweight.hpp>
 // LINUX
 #ifdef __linux__
 #include <string.h>
@@ -69,6 +68,7 @@
 #include <pthread.h>
 #include <netinet/in.h>
 #include <sys/stat.h>
+#include <sys/mman.h>
 #endif
 // WINDOWS
 #ifdef _WIN32

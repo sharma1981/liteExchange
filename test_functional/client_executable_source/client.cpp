@@ -52,10 +52,6 @@ int main(int argc, char** argv)
 
         if (quickFixConfigFile.length() < 5) { throw std::invalid_argument("Invalid FIX engine config file"); }
 
-        // Backup FIX engine logs if exists
-        core::createDirectory("old_quickfix_log");
-        core::backupDirectory("quickfix_log", "quickfix_log_" + core::getCurrentDateTime("%d_%m_%Y_%H_%M_%S"), "old_quickfix_log");
-
         // Run the application
         ClientApplication application(csvTestFile, quickFixConfigFile);
         application.run();

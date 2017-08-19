@@ -26,6 +26,7 @@ void CentralOrderBook::setSymbols(const std::vector<std::string>symbols)
 
 void CentralOrderBook::initialiseMultithreadedMatching(core::ThreadPoolArguments& args)
 {
+	m_orderBookThreadPool.attach(m_threadPoolObserver);
     notify(boost::str(boost::format("Initialising thread pool, work queue size per thread %d")  %args.m_workQueueSizePerThread) );
 
     m_isMatchingMultithreaded = true;
@@ -113,8 +114,8 @@ void* CentralOrderBook::taskNewOrder(const Order& order)
     }
 
     ////////////////////////////////////////////////////////////////
-    watch.stop();
-    notify(boost::str(boost::format("Order processing for symbol %s took %07ld milliseconds , num of processed orders : %d") % symbol % watch.getElapsedTimeMilliseconds() % processedOrderNum));
+	watch.stop();
+    notify(boost::str(boost::format("Order processing for symbol %s took %07ld microseconds , num of processed orders : %d") % symbol % watch.getElapsedTimeMicroseconds() % processedOrderNum));
     return nullptr;
 }
 

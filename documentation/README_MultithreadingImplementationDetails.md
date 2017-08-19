@@ -38,7 +38,7 @@ If you look at their code, you will notice that what you do is basically derivin
 
 Actor base class : https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/source/core/concurrent/actor.h
 
-Logger : https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/source/core/logger.cpp
+Logger : https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/source/core/logger/logger.cpp
 
 Incoming message dispatcher : https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/source/server/server_incoming_message_dispatcher.h
 

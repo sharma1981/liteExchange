@@ -13,7 +13,7 @@
 #include <core/concurrent/task.h>
 #include <core/concurrent/thread.h>
 #include <core/concurrent/thread_pool_arguments.h>
-#include <core/concurrent/thread_priority.h>
+#include <core/design_patterns/observer.hpp>
 #include <core/concurrent/ring_buffer_spsc_lockfree.hpp>
 
 namespace core
@@ -22,7 +22,7 @@ namespace core
 using ThreadPoolQueue = core::RingBufferSPSCLockFree<core::Task>;
 using ThreadPoolQueuePtr = std::unique_ptr<ThreadPoolQueue>;
 
-class ThreadPool : public boost::noncopyable
+class ThreadPool : public boost::noncopyable, public core::Observable<core::ThreadPool>
 {
     public :
         ThreadPool() : m_numOfThreads(0) { m_isShuttingDown.store(false); }

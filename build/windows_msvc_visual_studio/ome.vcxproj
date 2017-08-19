@@ -133,6 +133,7 @@
     <ClInclude Include="..\..\source\core\concurrent\thread.h" />
     <ClInclude Include="..\..\source\core\concurrent\thread_pool.h" />
     <ClInclude Include="..\..\source\core\concurrent\thread_pool_arguments.h" />
+    <ClInclude Include="..\..\source\core\concurrent\thread_pool_observer.h" />
     <ClInclude Include="..\..\source\core\concurrent\thread_priority.h" />
     <ClInclude Include="..\..\source\core\config_file.h" />
     <ClInclude Include="..\..\source\core\console_utility.h" />

@@ -10,15 +10,15 @@ void Logger::initialise(size_t bufferSize)
     m_buffer.reset(new core::RingBufferMPMC<LogEntry>(bufferSize));
 }
 
-void Logger::log(const LogLevel level, const string& sender, const string& message)
+void Logger::log(const LogLevel level, const string& sender, const string& message, const string& sourceCode, const string& sourceCodeLineNumber)
 {
-    LogEntry entry(level, sender, message);
+    LogEntry entry(level, sender, message, sourceCode, sourceCodeLineNumber);
     pushLogToLogBuffer(entry);
 }
 
-void Logger::logForExclusiveSink(const LogLevel level, const std::string& sender, const std::string& message, const std::string& exclusiveSink)
+void Logger::logForExclusiveSink(const LogLevel level, const string& sender, const string& message, const string& sourceCode, const string& sourceCodeLineNumber, const string& exclusiveSink)
 {
-    LogEntry entry(level, sender, message, exclusiveSink);
+    LogEntry entry(level, sender, message, sourceCode,  sourceCodeLineNumber, exclusiveSink);
     pushLogToLogBuffer(entry);
 }
 

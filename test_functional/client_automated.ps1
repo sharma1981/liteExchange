@@ -83,7 +83,7 @@ function start_test()
 	Write-Host "Time : $time_taken milliseconds "
 	# Ending
 	Write-Host ""
-	Write-Host "Client automation finished , close the window to quit." -foregroundcolor "Yellow"
+	Write-Host "Client automation finished , you can press Start button to start another test." -foregroundcolor "Yellow"
 	Write-Host ""
 }
 

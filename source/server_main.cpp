@@ -76,10 +76,6 @@ int main ()
         Server::onError("Ome process is running already.", ServerError::ALREADY_RUNNING);
     }
 
-    // Backup FIX engine logs if exists
-    core::backupDirectory(server_constants::FIX_ENGINE_LOG_DIRECTORY, server_constants::FIX_ENGINE_LOG_DIRECTORY + string("_") + core::getCurrentDateTime("%d_%m_%Y_%H_%M_%S"), server_constants::FIX_ENGINE_LOG_BACKUP_DIRECTORY);
-    core::createDirectory(server_constants::FIX_ENGINE_LOG_DIRECTORY);
-
     // Start and run the server
     try
     {
