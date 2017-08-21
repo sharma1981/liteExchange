@@ -18,7 +18,6 @@ class OrderBook : public core::Visitable<Order>
 {
     public :
         OrderBook() = default;
-        explicit OrderBook(const std::string& symbol);
 
         void accept(core::Visitor<Order>& v) override;
 
@@ -29,7 +28,6 @@ class OrderBook : public core::Visitable<Order>
         bool isEmpty() const { return (m_bidOrders.size() == 0) && (m_askOrders.size() == 0); }
 
     private:
-        std::string m_symbol;
 
         // Bid orders , place the greatest on top
         std::multimap < double, Order, std::greater < double > > m_bidOrders;

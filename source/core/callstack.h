@@ -17,7 +17,7 @@
 #include <memory>
 #include <cstdlib>
 
-#include "os_utility.h"
+#include "environment.h"
 
 namespace core
 {

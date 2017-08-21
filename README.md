@@ -288,12 +288,18 @@ Building and running unit test on Windows : You can use VisualStudio solution in
 You can find them under "utility_scripts" directory :
     
     source_code_formatter.sh            converts EOL to Unix, converts tabs to 4 spaces, removes trailing white space
-    leak_detector_linux_valgrind        memory leak detection with Valgrind
+    leak_detector_valgrind        		memory leak detection with Valgrind
     build_with_thread_sanitizer.sh      build with GCC thread sanitizer
     build_with_address_sanitizer.sh     build with GCC address sanitizer
-    build_for_gprof.sh                  profile wit gprof
+    build_for_gprof.sh                  build for gprof profiling
+	profile_with_gprof.sh				profile with gprof
     profiler_windows_visual_studio      profile with Visual Studio`s vsperf
-    leak_detector_windows_drmemory.bat  memory leak detection with Dr.Memory
+    leak_detector_drmemory.bat  		memory leak detection with Dr.Memory
+	tcpdump_capture.sh					gets a tcpdump capture that you can view with Wireshark
+	
+<p align="center">		
+<img src="https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/documentation/wireshark_fix.png">
+</p>
 
 **11. Coding and other guidelines :**
 

@@ -5,11 +5,13 @@ using namespace std;
 
 #include <boost/format.hpp>
 
+#include "security_manager.h"
+
 namespace order_matcher
 {
 
- Order::Order(string clientOrderID, string symbol, string owner, string target, OrderSide side, OrderType type, double price, long quantity)
-: m_clientOrderID(clientOrderID), m_symbol(symbol), m_owner(owner), m_target(target), m_side(side), m_orderType(type), m_price(price), m_quantity(quantity)
+Order::Order(string clientOrderID, size_t securityId, string owner, string target, OrderSide side, OrderType type, double price, long quantity)
+: m_clientOrderID(clientOrderID), m_securityId(securityId), m_owner(owner), m_target(target), m_side(side), m_orderType(type), m_price(price), m_quantity(quantity)
 {
     m_openQuantity = m_quantity;
     m_executedQuantity = 0;
@@ -34,7 +36,7 @@ void Order::execute(double price, long quantity)
 string Order::toString() const
 {
     string side = m_side == OrderSide::BUY ? "BUY" : "SELL";
-    string ret = boost::str(boost::format("Client %s Client ID %s Symbol %s Side %s") % m_owner % m_clientOrderID % m_symbol % side);
+    string ret = boost::str(boost::format("Client %s Client ID %s Symbol %s Side %s") % m_owner % m_clientOrderID % SecurityManager::getInstance()->getSecurityName(m_securityId) % side);
     return ret;
 }
 

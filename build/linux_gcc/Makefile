@@ -18,6 +18,7 @@ SOURCES =  $(SOURCE_DIR_CORE_MEMORY)/aligned_memory.cpp \
 		$(SOURCE_DIR_CORE_LOGGER)/logger.cpp \
 		$(SOURCE_DIR_CORE)/shared_memory.cpp \
 		$(SOURCE_DIR_ORDER_MATCHER)/order.cpp \
+		$(SOURCE_DIR_ORDER_MATCHER)/security_manager.cpp \
 		$(SOURCE_DIR_ORDER_MATCHER)/order_book.cpp \
 		$(SOURCE_DIR_ORDER_MATCHER)/central_order_book.cpp \
 		$(SOURCE_DIR_SERVER)/server.cpp \

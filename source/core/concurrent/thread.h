@@ -45,7 +45,7 @@ class Thread : public boost::noncopyable
         bool isAlive() const;
         int pinToCPUCore(int coreId);
         bool setPriority(ThreadPriority priority);
-        ThreadPriority getSetPriority() const { return m_priority; }
+        ThreadPriority getAssignedPriority() const { return m_priority; }
         int getRealPriority();
 
         std::string getName() const { return m_name; }

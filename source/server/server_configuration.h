@@ -8,7 +8,6 @@
 
 #include <core/config_file.h>
 #include <core/logger/logger_sink_factory.hpp>
-#include <core/os_utility.h>
 
 #include <core/concurrent/thread_pool_arguments.h>
 #include <core/concurrent/thread_priority.h>
@@ -28,6 +27,7 @@ class ServerConfiguration
             configuration.loadFromFile(configurationFile);
 
             m_singleInstanceTCPPortNumber = configuration.getIntValue(server_constants::CONFIGURATION_FILE_SINGLE_INSTANCE_TCP_PORT);
+            m_processPriority = configuration.getStringValue(server_constants::CONFIGURATION_FILE_PROCESS_PRIORITY);
 
             // Get logging related configurations, the loop is for per logger sink
             core::Logger::getInstance()->initialise(configuration.getIntValue(server_constants::CONFIGURATION_FILE_LOGGER_BUFFER_SIZE));
@@ -52,7 +52,8 @@ class ServerConfiguration
             }
 
             // Get symbol configuration
-            m_symbols = configuration.getArray(server_constants::CONFIGURATION_FILE_SYMBOL_ARAY);
+
+            m_symbols = configuration.getArray(server_constants::CONFIGURATION_FILE_SYMBOL_ARRAY);
             if (m_symbols.size() == 0)
             {
                 throw std::runtime_error("No symbol found in the ini file");
@@ -73,12 +74,14 @@ class ServerConfiguration
         }
 
         int getSingleInstancePortNumber() const{ return m_singleInstanceTCPPortNumber; }
+        std::string getProcessPriority() const { return m_processPriority;  }
         bool getMatchingMultithreadingMode() const { return m_isMatchingMultithreaded; }
         core::ThreadPoolArguments getThreadPoolArguments() const { return m_threadPoolArguments; }
         std::vector<std::string> getSymbols() const { return m_symbols;  }
 
     private :
         int m_singleInstanceTCPPortNumber;
+        std::string m_processPriority;
         bool m_isMatchingMultithreaded;
         core::ThreadPoolArguments m_threadPoolArguments;
         std::vector<std::string> m_symbols;

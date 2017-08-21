@@ -10,6 +10,7 @@
 #include <algorithm>
 #include <ctype.h>
 #include <cstdlib>
+#include <cstddef>
 #include <type_traits>
 
 #include <quickfix/FileStore.h>
@@ -23,6 +24,7 @@
 
 #include <order_matcher/central_order_book_visitor.h>
 #include <order_matcher/order.h>
+#include <order_matcher/security_manager.h>
 #include <server/quickfix_converter.h>
 using namespace order_matcher;
 
@@ -170,17 +172,29 @@ void Server::onMessage(const FIX42::NewOrderSingle& message, const FIX::SessionI
     OrderType newOrderType = order_matcher::convertOrderTypeFromQuickFix(ordType);
     OrderSide newOrderSide = order_matcher::convertOrderSideFromQuickFix(side);
 
+    // Find security id of the symbol in our SecurityManager
+    auto securityId = SecurityManager::getInstance()->getSecurityId(symbol);
+
+    // Check if we support the symbol
+    if (securityId == -1)
+    {
+        // Reject non supported order type or side
+        Order rejectedOrder(clOrdID, securityId, senderCompID, targetCompID, OrderSide::BUY, OrderType::LIMIT, 0, 0);
+        // Rather than pushing on to the dispatcher , directly push to the outgoing message processor via the central order book
+        m_centralOrderBook.rejectOrder(rejectedOrder, "Non supported symbol");
+    }
+
     if (newOrderType == OrderType::NON_SUPPORTED || newOrderSide == OrderSide::NON_SUPPORTED)
     {
         // Reject non supported order type or side
-        Order rejectedOrder(clOrdID, symbol, senderCompID, targetCompID, OrderSide::BUY, OrderType::LIMIT, 0, 0);
+        Order rejectedOrder(clOrdID, securityId, senderCompID, targetCompID, OrderSide::BUY, OrderType::LIMIT, 0, 0);
         // Rather than pushing on to the dispatcher , directly push to the outgoing message processor via the central order book
         m_centralOrderBook.rejectOrder(rejectedOrder, "Non supported order type or order side");
     }
 
     message.get(price);
 
-    Order order(clOrdID, symbol, senderCompID, targetCompID, newOrderSide, newOrderType, price, (long)orderQty);
+    Order order(clOrdID, securityId, senderCompID, targetCompID, newOrderSide, newOrderType, price, (long)orderQty);
     IncomingMessage incomingMessage(order, order_matcher::IncomingMessageType::NEW_ORDER);
     m_dispatcher.pushMessage(incomingMessage);
 }
@@ -201,7 +215,9 @@ void Server::onMessage(const FIX42::OrderCancelRequest& message, const FIX::Sess
     message.get(symbol);
     message.get(side);
 
-    Order order("", symbol, senderCompID, "", order_matcher::convertOrderSideFromQuickFix(side), order_matcher::OrderType::LIMIT, 0, 0);
+    auto securityId = SecurityManager::getInstance()->getSecurityId(symbol);
+
+    Order order("", securityId, senderCompID, "", order_matcher::convertOrderSideFromQuickFix(side), order_matcher::OrderType::LIMIT, 0, 0);
     IncomingMessage incomingMessage(order, order_matcher::IncomingMessageType::CANCEL_ORDER, origClOrdID);
     m_dispatcher.pushMessage(incomingMessage);
 }

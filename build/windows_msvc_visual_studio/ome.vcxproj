@@ -101,6 +101,7 @@
     <ClCompile Include="..\..\source\order_matcher\central_order_book.cpp" />
     <ClCompile Include="..\..\source\order_matcher\order.cpp" />
     <ClCompile Include="..\..\source\order_matcher\order_book.cpp" />
+    <ClCompile Include="..\..\source\order_matcher\security_manager.cpp" />
     <ClCompile Include="..\..\source\precompiled_header.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -143,6 +144,7 @@
     <ClInclude Include="..\..\source\core\design_patterns\singleton_dclp.hpp" />
     <ClInclude Include="..\..\source\core\design_patterns\singleton_static.hpp" />
     <ClInclude Include="..\..\source\core\design_patterns\visitor.hpp" />
+    <ClInclude Include="..\..\source\core\environment.h" />
     <ClInclude Include="..\..\source\core\file_utility.h" />
     <ClInclude Include="..\..\source\core\logger\base_logger_sink.hpp" />
     <ClInclude Include="..\..\source\core\logger\console_sink.hpp" />
@@ -158,8 +160,8 @@
     <ClInclude Include="..\..\source\core\memory\aligned_memory.h" />
     <ClInclude Include="..\..\source\core\memory\cpu_memory.h" />
     <ClInclude Include="..\..\source\core\memory\virtual_memory.h" />
-    <ClInclude Include="..\..\source\core\os_utility.h" />
     <ClInclude Include="..\..\source\core\pretty_exception.h" />
+    <ClInclude Include="..\..\source\core\self_process.h" />
     <ClInclude Include="..\..\source\core\shared_memory.h" />
     <ClInclude Include="..\..\source\core\single_instance.h" />
     <ClInclude Include="..\..\source\core\stopwatch.h" />
@@ -172,8 +174,9 @@
     <ClInclude Include="..\..\source\order_matcher\order.h" />
     <ClInclude Include="..\..\source\order_matcher\order_book.h" />
     <ClInclude Include="..\..\source\order_matcher\outgoing_message.h" />
-    <ClInclude Include="..\..\source\order_matcher\quickfix_converter.h" />
+    <ClInclude Include="..\..\source\order_matcher\security_manager.h" />
     <ClInclude Include="..\..\source\precompiled_header.h" />
+    <ClInclude Include="..\..\source\server\quickfix_converter.h" />
     <ClInclude Include="..\..\source\server\server.h" />
     <ClInclude Include="..\..\source\server\server_configuration.h" />
     <ClInclude Include="..\..\source\server\server_constants.h" />

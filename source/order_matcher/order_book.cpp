@@ -7,11 +7,6 @@ using namespace core;
 namespace order_matcher
 {
 
-OrderBook::OrderBook(const std::string& symbol) : m_symbol(symbol)
-{
-
-}
-
 void OrderBook::accept(Visitor<Order>& v)
 {
     for (auto& element : m_bidOrders)

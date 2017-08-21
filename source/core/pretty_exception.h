@@ -8,6 +8,7 @@
 
 #include "console_utility.h"
 #include "callstack.h"
+#include "environment.h"
 
 #define EXCEPTION_CALLSTACK_DEPTH 16
 #define EXCEPTION_CONSOLE_OUTPUT 1

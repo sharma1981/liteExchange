@@ -20,7 +20,7 @@ class StopWatch
         void start();
         void stop();
         long long getElapsedTimeMilliseconds();
-		long long getElapsedTimeMicroseconds();
+        long long getElapsedTimeMicroseconds();
 
     private:
 
@@ -33,7 +33,7 @@ class StopWatch
         __int64 m_startTime;
         __int64 m_endTime;
         long long m_frequency;
-		LARGE_INTEGER m_startFrequency;
+        LARGE_INTEGER m_startFrequency;
 
         long long doubleToLongLong(double value)
         {

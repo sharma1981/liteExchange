@@ -5,10 +5,10 @@ GPROF_OUTPUT_REPORT="ome_gprof_report.txt"
 #ENTRY POINT
 echo "Profiling with Gprof is starting"
 #REMOVE IF A REPORT EXISTS
-rm -rf ../../bin/${GPROF_OUTPUT_REPORT}
+rm -rf ../bin/${GPROF_OUTPUT_REPORT}
 #COPY GMON.OUT TO SERVER EXECUTABLE DIRECTORY
-cp ./gmon.out ../../bin/
-cd ../../bin
+cp ./gmon.out ../bin/
+cd ../bin
 #FORKING SERVER
 echo "Forking server..."
 {

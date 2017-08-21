@@ -2,6 +2,7 @@
 #define _ORDER_H_
 
 #include <string>
+#include <cstddef>
 
 namespace order_matcher
 {
@@ -14,7 +15,7 @@ class Order
     public:
 
         Order(){}
-        Order(std::string clientOrderID, std::string symbol, std::string owner, std::string target, OrderSide side, OrderType type, double price, long quantity);
+        Order(std::string clientOrderID, std::size_t securityId, std::string owner, std::string target, OrderSide side, OrderType type, double price, long quantity);
         void execute(double price, long quantity);
         void cancel() { m_cancelled = true; }
         std::string toString() const;
@@ -27,7 +28,7 @@ class Order
         long getExecutedQuantity() const { return m_executedQuantity; }
         double getPrice() const { return m_price; }
         const std::string& getClientID() const { return m_clientOrderID; }
-        const std::string& getSymbol() const { return m_symbol; }
+        std::size_t getSecurityId() const { return m_securityId; }
         const std::string& getOwner() const { return m_owner; }
         const std::string& getTarget() const { return m_target; }
         OrderSide getSide() const { return m_side; }
@@ -41,9 +42,9 @@ class Order
     private:
 
         std::string m_clientOrderID;
-		std::string m_symbol;
+        std::size_t m_securityId;
         std::string m_owner;
-		std::string m_target;
+        std::string m_target;
         OrderSide m_side;
         OrderType m_orderType;
         double m_price;

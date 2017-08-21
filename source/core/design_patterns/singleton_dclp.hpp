@@ -4,6 +4,7 @@
 #include <boost/noncopyable.hpp>
 #include <core/concurrent/lock.hpp>
 #include <atomic>
+#include <mutex>
 
 /*
     Meyers/Alexandrescu paper about issues with DLCP without memory fences : http://www.aristeia.com/Papers/DDJ_Jul_Aug_2004_revised.pdf

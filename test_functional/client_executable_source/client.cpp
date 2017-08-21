@@ -14,6 +14,7 @@ using namespace std;
 #include <core/string_utility.h>
 #include <core/datetime_utility.h>
 #include <core/pretty_exception.h>
+#include <core/self_process.h>
 
 namespace program_errors
 {
@@ -44,8 +45,8 @@ int main(int argc, char** argv)
         string clientName = argv[3];
         string csvTestFile = argv[4];
 
-		// Set current working directory as current executable`s directory
-		core::setCurrentWorkingDirectory(core::getCurrentExecutableDirectory());
+        // Set current working directory as current executable`s directory
+        core::SelfProcess::setCurrentWorkingDirectory(core::SelfProcess::getCurrentExecutableDirectory());
 
         string quickFixConfigFile = clientName + ".cfg";
         createQuickFixConfigFile(quickFixTemplateFile, targetServer, clientName, quickFixConfigFile);

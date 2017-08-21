@@ -6,7 +6,7 @@
 // RUNTIME CHECKS
 #include <core/memory/cpu_memory.h>                      // To see if cache line we are running on
                                                     // matches the compiled one
-#include <core/os_utility.h>                     // To check whether we are root/admin or not
+#include <core/self_process.h>                     // To check whether we are root/admin or not
 
 #include <iostream>
 
@@ -35,7 +35,7 @@ int main ()
         Server::onError(message, ServerError::NON_SUPPORTED_EXECUTION);
     }
 
-    if (core::amIAdmin() == false)
+    if (core::SelfProcess::amIAdmin() == false)
     {
         // Mainly needed for ability to set thread priorities
         core::consoleOutputWithColor(core::ConsoleColor::FG_RED, " WARNING : Program didn`t start with admin/root rights. Therefore will not be able to modify thread priorities.\n");
@@ -43,7 +43,7 @@ int main ()
     }
 
     // Set current working directory as current executable`s directory
-    core::setCurrentWorkingDirectory( core::getCurrentExecutableDirectory() );
+    core::SelfProcess::setCurrentWorkingDirectory(core::SelfProcess::getCurrentExecutableDirectory());
 
     // Load configuration file
     ServerConfiguration serverConfiguration;
@@ -75,6 +75,9 @@ int main ()
     {
         Server::onError("Ome process is running already.", ServerError::ALREADY_RUNNING);
     }
+
+    // Set process priority
+    core::SelfProcess::setPriority(core::SelfProcess::getProcessPriorityFromString(serverConfiguration.getProcessPriority()));
 
     // Start and run the server
     try

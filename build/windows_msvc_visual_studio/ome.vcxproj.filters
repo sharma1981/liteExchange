@@ -39,6 +39,9 @@
     <ClCompile Include="..\..\source\core\memory\aligned_memory.cpp">
       <Filter>core\memory</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\source\order_matcher\security_manager.cpp">
+      <Filter>order_matcher</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\source\order_matcher\order.h">
@@ -53,9 +56,6 @@
     <ClInclude Include="..\..\source\precompiled_header.h" />
     <ClInclude Include="..\..\source\server\server.h">
       <Filter>server</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\order_matcher\quickfix_converter.h">
-      <Filter>order_matcher</Filter>
     </ClInclude>
     <ClInclude Include="..\..\source\order_matcher\outgoing_message.h">
       <Filter>order_matcher</Filter>
@@ -103,9 +103,6 @@
       <Filter>core</Filter>
     </ClInclude>
     <ClInclude Include="..\..\source\core\file_utility.h">
-      <Filter>core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\core\os_utility.h">
       <Filter>core</Filter>
     </ClInclude>
     <ClInclude Include="..\..\source\core\pretty_exception.h">
@@ -257,6 +254,18 @@
     </ClInclude>
     <ClInclude Include="..\..\source\core\concurrent\thread_pool_observer.h">
       <Filter>core\concurrent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\self_process.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\environment.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\server\quickfix_converter.h">
+      <Filter>server</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\order_matcher\security_manager.h">
+      <Filter>order_matcher</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -10,6 +10,7 @@
 #include <quickfix/fix42/ExecutionReport.h>
 
 #include <order_matcher/central_order_book.h>
+#include <order_matcher/security_manager.h>
 #include <server/quickfix_converter.h>
 #include <core/concurrent/actor.h>
 #include <core/logger/logger.h>
@@ -81,7 +82,7 @@ class OutgoingMessageProcessor : public Actor
                             FIX::ExecTransType(FIX::ExecTransType_NEW),
                             FIX::ExecType(status),
                             FIX::OrdStatus(status),
-                            FIX::Symbol(order.getSymbol()),
+                            FIX::Symbol(order_matcher::SecurityManager::getInstance()->getSecurityName(order.getSecurityId())),
                             FIX::Side(order_matcher::convertOrderSideToQuickFix(order.getSide())),
                             FIX::LeavesQty(order.getOpenQuantity()),
                             FIX::CumQty(order.getExecutedQuantity()),

@@ -99,14 +99,14 @@ void* ThreadPool::workerThreadFunction(void* argument)
     ThreadPool* pool = threadArgument->m_threadPool;
     auto queueIndex = threadArgument->m_queueIndex;
 
-	pool->notify(boost::str(boost::format("Thread(%d) %s starting") % queueIndex % pool->m_threads[queueIndex]->getThreadName()));
+    pool->notify(boost::str(boost::format("Thread(%d) %s starting") % queueIndex % pool->m_threads[queueIndex]->getThreadName()));
 
     while( ! pool->m_isShuttingDown.load() )
     {
         Task queueTask;
         if ( pool->m_threadQueues[queueIndex]->tryPop(&queueTask) )
         {
-			pool->notify(pool->m_threads[queueIndex]->getThreadName() + " thread got a new task to execute");
+            pool->notify(pool->m_threads[queueIndex]->getThreadName() + " thread got a new task to execute");
             queueTask.execute();
         }
         else
@@ -115,7 +115,7 @@ void* ThreadPool::workerThreadFunction(void* argument)
         }
     }
 
-	pool->notify(boost::str(boost::format("Thread(%d) %s exiting") % queueIndex % pool->m_threads[queueIndex]->getThreadName()));
+    pool->notify(boost::str(boost::format("Thread(%d) %s exiting") % queueIndex % pool->m_threads[queueIndex]->getThreadName()));
     return nullptr;
 }
 

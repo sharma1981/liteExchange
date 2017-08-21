@@ -8,6 +8,7 @@
 #include <vector>
 #include <string>
 #include <queue>
+#include <cstddef>
 #include <unordered_map>
 
 #include <boost/noncopyable.hpp>
@@ -37,9 +38,9 @@ class CentralOrderBook : public boost::noncopyable, public core::Visitable<Order
 
         void setSymbols(const std::vector<std::string> symbols);
         void accept(core::Visitor<Order>& v) override;
-        
-		void initialiseMultithreadedMatching(core::ThreadPoolArguments& args);
-		bool isMatchingMultithreaded() const { return m_isMatchingMultithreaded; }
+
+        void initialiseMultithreadedMatching(core::ThreadPoolArguments& args);
+        bool isMatchingMultithreaded() const { return m_isMatchingMultithreaded; }
 
         bool addOrder(const Order& order);
         void rejectOrder(const Order& order, const std::string& message);
@@ -48,16 +49,15 @@ class CentralOrderBook : public boost::noncopyable, public core::Visitable<Order
         OutgoingMessageQueue* getOutgoingMessageQueue() { return &m_outgoingMessages; }
 
     private:
-        std::unordered_map<std::string, OrderBook> m_orderBookDictionary; // Symbol - OrderBook dictionary
-        std::unordered_map<std::string, int> m_queueIDDictionary; // Symbol - Queue ID dictionary
-        bool isSymbolSupported (const std::string& symbol) const ;
+        std::unordered_map<std::size_t, OrderBook> m_orderBookDictionary; // SecurityId - OrderBook dictionary
+        std::unordered_map<std::size_t, int> m_queueIDDictionary; // SecurityId - Queue ID dictionary
 
         bool m_isMatchingMultithreaded;
-        std::vector<std::string> m_symbols;
+        std::vector<std::size_t> m_securityIds;
         OutgoingMessageQueue m_outgoingMessages;
-        
-		core::ThreadPool m_orderBookThreadPool;
-		core::ThreadPoolObserver m_threadPoolObserver;
+
+        core::ThreadPool m_orderBookThreadPool;
+        core::ThreadPoolObserver m_threadPoolObserver;
 
         void* taskNewOrder(const Order& order);
         void* taskCancelOrder(const Order& order, const std::string& origClientOrderID);

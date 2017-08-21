@@ -49,8 +49,8 @@ class Logger : public core::Actor, public SingletonDCLP<Logger>
             m_sinks.setSinkResourceName(sinkName, resourceName);
         }
 
-		void log(const LogLevel level, const std::string& sender, const std::string& message, const std::string& sourceCode, const std::string& sourceCodeLineNumber);
-		void logForExclusiveSink(const LogLevel level, const std::string& sender, const std::string& message, const std::string& sourceCode, const std::string& sourceCodeLineNumber, const std::string& exclusiveSink);
+        void log(const LogLevel level, const std::string& sender, const std::string& message, const std::string& sourceCode, const std::string& sourceCodeLineNumber);
+        void logForExclusiveSink(const LogLevel level, const std::string& sender, const std::string& message, const std::string& sourceCode, const std::string& sourceCodeLineNumber, const std::string& exclusiveSink);
         void* run() override;
 
     private:

@@ -111,8 +111,8 @@ class ClientApplication : public FIX::Application, public FIX::MessageCracker, p
 
         std::string orderStatusToString(const FIX::OrdStatus& type);
 
-		std::string m_outputFileName;
-		std::ofstream m_outputFile;
+        std::string m_outputFileName;
+        std::ofstream m_outputFile;
 
 };
 
