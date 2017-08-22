@@ -22,7 +22,6 @@ static const char* CONFIGURATION_FILE_SYMBOL_ARRAY = "SYMBOL";
 // Fix engine related
 static const char* FIX_ENGINE_CONFIG_FILE = "quickfix_server.cfg";
 static const char* FIX_ENGINE_LOG_DIRECTORY = "quickfix_log";
-static const char* FIX_ENGINE_LOG_BACKUP_DIRECTORY = "old_quickfix_log";
 // Others
 static const std::size_t SERVER_THREAD_SLEEP_DURATION = 1000;
 }

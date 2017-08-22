@@ -7,7 +7,7 @@
 #include <mutex>
 
 /*
-    Meyers/Alexandrescu paper about issues with DLCP without memory fences : http://www.aristeia.com/Papers/DDJ_Jul_Aug_2004_revised.pdf
+    Meyers/Alexandrescu paper about issues with DCLP without memory fences : http://www.aristeia.com/Papers/DDJ_Jul_Aug_2004_revised.pdf
 
     Implementation reference : http://preshing.com/20130930/double-checked-locking-is-fixed-in-cpp11/
 */

@@ -60,7 +60,11 @@ class SelfProcess
 #if ! defined(UNIT_TEST)
         static void setCurrentWorkingDirectory(const std::string& dir)
         {
-            chdir(dir.c_str()); // Linux from unistd , Windows from windows.h
+#if _WIN32
+			_chdir(dir.c_str());
+#elif __linux__
+            chdir(dir.c_str());
+#endif
         }
 #endif
 

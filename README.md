@@ -15,7 +15,7 @@ Sections :
     9. Unit testing with GoogleTest
     10. Utility scripts
     11. Coding and other guidelines
-	12. Continous integration
+    12. Continous integration
             
 **1. Introduction :** A multithreaded order matching engine written in C++11 using FIX protocol. For limit orders and matching engines , see :
 
@@ -25,24 +25,24 @@ For FIX protocol , see : https://en.wikipedia.org/wiki/Financial_Information_eXc
 
 Features can be seen in the table below :
 
-| Feature       				| Details       										|
+| Feature                       | Details                                               |
 | ----------------------------- |:-----------------------------------------------------:|
-| FIX Version   				| 4.2													|
-| Order types   				| Limit													|
-| Order commands   				| NewOrder, Cancel										|
-| Exec report order statuses	| accepted,filled,partially filled, rejected, canceled	|
-| TIF							| Currently not supported								|
-| Securities					| Shares												|
+| FIX Version                   | 4.2                                                   |
+| Order types                   | Limit                                                 |
+| Order commands                | NewOrder, Cancel                                      |
+| Exec report order statuses    | accepted,filled,partially filled, rejected, canceled  |
+| TIF                           | Currently not supported                               |
+| Securities                    | Shares                                                |
 
 Technical implementation details are as below : 
 
-| Feature       		| Details       												|
+| Feature               | Details                                                       |
 | ----------------------|:-------------------------------------------------------------:|
-| OS 					| Windows ( tested on 8.1), Linux ( tested on Ubuntu and CentOS)|
-| C++   				| C++11															|
-| C++ Compiler Support  | GCC4.8 and MSVC120 (VS2013). See "source/compiler_portability"|														|
-| C++ Platform APIs		| GNU LibC, POSIX, some POSIX NP ,WinAPI, MS CRT				|
-| C++ Libraries			| STL, Boost, QuickFix											|
+| OS                    | Windows ( tested on 8.1), Linux ( tested on Ubuntu and CentOS)|
+| C++                   | C++11                                                         |
+| C++ Compiler Support  | GCC4.8 and MSVC120 (VS2013). See "source/compiler_portability"|                                                       |
+| C++ Platform APIs     | GNU LibC, POSIX, some POSIX NP ,WinAPI, MS CRT                |
+| C++ Libraries         | STL, Boost, QuickFix                                          |
 
 Watch server when working :
 
@@ -57,7 +57,7 @@ Client test automation when working :
 the engine currently is using :
 
     - A thread class which you can set stack size and set names for debugging
-	- A thread pool with ability to pin threads to CPU cores and avoid hyperthreading
+    - A thread pool with ability to pin threads to CPU cores and avoid hyperthreading
     - 1 lock free SPSC ring buffer
     - Other fine grained lock based ring buffer and queues
     - Actor pattern
@@ -116,8 +116,8 @@ How to build the project on Linux :
     cd build/linux_gcc
     make clean
     make debug  OR make release
-	or if you want to make a parallel build :
-	./build_in_parallel.sh release
+    or if you want to make a parallel build :
+    ./build_in_parallel.sh release
 
 How to build the project on Linux using Netbeans 8.0.2 C++ IDE:
 
@@ -233,11 +233,11 @@ For Windows
 3. A GUI will appear. Simply specify target server , number of test clients and the test case file :
 
 4. Press the start button.
-		
-<p align="center">	
-<img src="https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/documentation/testfunctional_gui_windows.png">		
+        
+<p align="center">  
+<img src="https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/documentation/testfunctional_gui_windows.png">       
 </p>
-		
+        
 For Linux with Bash Script
 
 1. Modify test_data.txt which has the orders to send to the engine as you wish.
@@ -245,7 +245,7 @@ For Linux with Bash Script
 2. For firing Linux test client(s), you can use client_automated_test.sh Bash script. You have to pass it 3 arguments :
    server address , the test case file and number of clients. Example :
    
-	.\client_automated_test.sh 127.0.1 test_cases.txt 8
+    .\client_automated_test.sh 127.0.1 test_cases.txt 8
         
 3. After firing the script, it will be executing all orders in test_data.txt file per client that is declared in the script file.
 
@@ -257,7 +257,7 @@ Alternatively on Linux , there is a GUI script as in Windows one :
 
 3. Set the arguments and then press the start button.
 
-<p align="center">		
+<p align="center">      
 <img src="https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/documentation/testfunctional_gui_linux.png">
 </p>
     
@@ -288,16 +288,16 @@ Building and running unit test on Windows : You can use VisualStudio solution in
 You can find them under "utility_scripts" directory :
     
     source_code_formatter.sh            converts EOL to Unix, converts tabs to 4 spaces, removes trailing white space
-    leak_detector_valgrind        		memory leak detection with Valgrind
+    leak_detector_valgrind              memory leak detection with Valgrind
     build_with_thread_sanitizer.sh      build with GCC thread sanitizer
     build_with_address_sanitizer.sh     build with GCC address sanitizer
     build_for_gprof.sh                  build for gprof profiling
-	profile_with_gprof.sh				profile with gprof
+    profile_with_gprof.sh               profile with gprof
     profiler_windows_visual_studio      profile with Visual Studio`s vsperf
-    leak_detector_drmemory.bat  		memory leak detection with Dr.Memory
-	tcpdump_capture.sh					gets a tcpdump capture that you can view with Wireshark
-	
-<p align="center">		
+    leak_detector_drmemory.bat          memory leak detection with Dr.Memory
+    tcpdump_capture.sh                  gets a tcpdump capture that you can view with Wireshark
+    
+<p align="center">      
 <img src="https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/documentation/wireshark_fix.png">
 </p>
 

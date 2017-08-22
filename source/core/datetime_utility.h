@@ -21,34 +21,28 @@ namespace core
 // If format = %d-%m-%Y %H:%M:%S:%%06u    , date time with microseconds
 inline std::string getCurrentDateTime(const char* format = "%d-%m-%Y %H:%M:%S:%%06u")
 {
+	std::stringstream ss;
 #if defined( _MSC_VER ) || ( __GNUC__ > 4 )
     auto now = std::chrono::system_clock::now();
     auto inTimeT = std::chrono::system_clock::to_time_t(now);
-    std::stringstream ss;
+    
     ss << std::put_time(std::localtime(&inTimeT), "%d-%m-%Y %H:%M:%S");
 
     if (core::contains(format, "%S:%%03u") == true )
     {
-            // Add milliseconds
-            auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()) % 1000;
-            ss << '.' << std::setfill('0') << std::setw(3) << ms.count();
+        // Add milliseconds
+        auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()) % 1000;
+        ss << '.' << std::setfill('0') << std::setw(3) << ms.count();
     }
     else if (core::contains(format, "%S:%%06u") == true)
     {
-            // Add microseconds
-            auto ms = std::chrono::duration_cast<std::chrono::microseconds>(now.time_since_epoch()) % 1000000;
-            ss << '.' << std::setfill('0') << std::setw(6) << ms.count();
+        // Add microseconds
+        auto ms = std::chrono::duration_cast<std::chrono::microseconds>(now.time_since_epoch()) % 1000000;
+        ss << '.' << std::setfill('0') << std::setw(6) << ms.count();
     }
-    else
-    {
-            ss << std::put_time(std::localtime(&inTimeT), format);
-    }
-    return ss.str();
 #else
     // In C++11 std::put_time does this more easily, but in my tests
     // you need minimum GCC 5.1 , so using C library in this case
-    std::stringstream ss;
-
     time_t rawTime;
     struct tm * timeInfo;
     const std::size_t buffer_size = 32;
@@ -76,9 +70,8 @@ inline std::string getCurrentDateTime(const char* format = "%d-%m-%Y %H:%M:%S:%%
         int micro = curTime.tv_usec;
         ss << '.' << std::setfill('0') << std::setw(6) << micro;
     }
-
-    return ss.str();
 #endif
+	return ss.str();
 }
 
 }// namespace

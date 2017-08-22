@@ -18,7 +18,7 @@ echo "Forking server..."
 cd ../test_functional/
 echo "Forking client automation..."
 {
-    ./client_automated_test.sh
+    ./client_automated_test.sh 127.0.0.1 test_cases_simple.txt 2
 }&
 # Wait till timeout
 sleep $PROFILING_TIME_OUT_SECONDS
