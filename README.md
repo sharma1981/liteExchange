@@ -29,10 +29,10 @@ Features can be seen in the table below :
 | ----------------------------- |:-----------------------------------------------------:|
 | FIX Version                   | 4.2                                                   |
 | Order types                   | Limit                                                 |
-| Order commands                | NewOrder, Cancel                                      |
-| Exec report order statuses    | accepted,filled,partially filled, rejected, canceled  |
-| TIF                           | Currently not supported                               |
-| Securities                    | Shares                                                |
+| Order types                   | NewOrder, Cancel                                      |
+| Exec report order statuses    | Accepted, Filled, PartiallyFilled, Rejected, Canceled |
+| TIF                           | Not supported       			                        |
+| Securities                    | Shares with RIC code                                  |
 
 Technical implementation details are as below : 
 
@@ -40,7 +40,7 @@ Technical implementation details are as below :
 | ----------------------|:-------------------------------------------------------------:|
 | OS                    | Windows ( tested on 8.1), Linux ( tested on Ubuntu and CentOS)|
 | C++                   | C++11                                                         |
-| C++ Compiler Support  | GCC4.8 and MSVC120 (VS2013). See "source/compiler_portability"|                                                       |
+| C++ Compiler Support  | GCC4.8 and MSVC120 (VS2013)									|                                                       |
 | C++ Platform APIs     | GNU LibC, POSIX, some POSIX NP ,WinAPI, MS CRT                |
 | C++ Libraries         | STL, Boost, QuickFix                                          |
 
@@ -297,6 +297,8 @@ You can find them under "utility_scripts" directory :
     leak_detector_drmemory.bat          memory leak detection with Dr.Memory
     tcpdump_capture.sh                  gets a tcpdump capture that you can view with Wireshark
     
+Viewing tcpdump captures with Wireshark :
+
 <p align="center">      
 <img src="https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/documentation/wireshark_fix.png">
 </p>

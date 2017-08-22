@@ -21,7 +21,7 @@ namespace core
 // If format = %d-%m-%Y %H:%M:%S:%%06u    , date time with microseconds
 inline std::string getCurrentDateTime(const char* format = "%d-%m-%Y %H:%M:%S:%%06u")
 {
-	std::stringstream ss;
+    std::stringstream ss;
 #if defined( _MSC_VER ) || ( __GNUC__ > 4 )
     auto now = std::chrono::system_clock::now();
     auto inTimeT = std::chrono::system_clock::to_time_t(now);
@@ -71,7 +71,7 @@ inline std::string getCurrentDateTime(const char* format = "%d-%m-%Y %H:%M:%S:%%
         ss << '.' << std::setfill('0') << std::setw(6) << micro;
     }
 #endif
-	return ss.str();
+    return ss.str();
 }
 
 }// namespace

@@ -61,7 +61,7 @@ class SelfProcess
         static void setCurrentWorkingDirectory(const std::string& dir)
         {
 #if _WIN32
-			_chdir(dir.c_str());
+            _chdir(dir.c_str());
 #elif __linux__
             chdir(dir.c_str());
 #endif
