@@ -44,6 +44,8 @@ Technical implementation details are as below :
 
 Watch server when working :
 
+![alt text](https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/documentation/ome.gif)
+
 <a href="https://asciinema.org/a/929cs0jcbso3g7v7b3cd6g82f" target="_blank"><img src="https://asciinema.org/a/929cs0jcbso3g7v7b3cd6g82f.png" width="589"/></a>
 
 Client test automation when working :
