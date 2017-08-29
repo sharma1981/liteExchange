@@ -55,14 +55,12 @@ Client test automation when working :
 
 If you look at the source , the concurrency layer ( https://github.com/akhin/cpp_multithreaded_order_matching_engine/tree/master/source/core/concurrent , using concurrent word since MS using concurrency for their own libraries ) , he engine currently is using :
 
-    - A thread class which you can set stack size and set names for debugging
-    - A thread pool with ability to pin threads to CPU cores and avoid hyperthreading
-    - 1 lock free SPSC ring buffer
-    - Other fine grained lock based ring buffer and queues
-    - Actor pattern
-
-    - Also the engine currently makes use of a set of CPU cache aligned allocators for memory allocations in order to avoid false sharing :
-    https://github.com/akhin/cpp_multithreaded_order_matching_engine/tree/master/source/core/memory
+* A thread class which you can set stack size and set names for debugging
+* A thread pool with ability to pin threads to CPU cores and avoid hyperthreading
+* 1 lock free SPSC ring buffer
+* Other fine grained lock based ring buffer and queues
+* Actor pattern
+* Also the engine currently makes use of a set of CPU cache aligned allocators for memory allocations in order to avoid false sharing : https://github.com/akhin/cpp_multithreaded_order_matching_engine/tree/master/source/core/memory
 
 Mainly, the engine consists of 2 parts : FIX server/engine and the order matching layer. The core of order matching layer is called a central order book, which keeps order books per security symbol. Each order book has a table for bids and another table for asks. Briefly the multithreaded system works as below :
 
