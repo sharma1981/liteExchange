@@ -64,19 +64,19 @@ The engine currently is using :
 
 The core of order matching layer is called a central order book, which keeps order books per security symbol. Each order book has a table for bids and another table for asks. Briefly the multithreaded system works as below :
 
-	1. The FIX engine will listen for session requests from the clients, and if a session is established then it listens for incoming ask/bid orders. If the order type is not supported, it sends “rejected” message. Otherwise the message will be submitted to an incoming message dispatcher which is a fine grained MPSC unbounded queue. ( The main reason being for MPSC here is the FIX engine being used is multithreaded and the worker queues in the thread pool are SPSC by design ) The incoming message dispatcher will submit messages to the central order book.
+1. The FIX engine will listen for session requests from the clients, and if a session is established then it listens for incoming ask/bid orders. If the order type is not supported, it sends “rejected” message. Otherwise the message will be submitted to an incoming message dispatcher which is a fine grained MPSC unbounded queue. ( The main reason being for MPSC here is the FIX engine being used is multithreaded and the worker queues in the thread pool are SPSC by design ) The incoming message dispatcher will submit messages to the central order book.
 
-	2. Central Order book has a thread pool :
+2. Central Order book has a thread pool :
 
-		* The thread pool will have N lockfree SPSC queues for N threads ( N = num of symbol ). The thread pool  also has the ability to pin threads to CPU cores. And based on configuration it can also avoid hyperthreading/logical processors by pinning threads only to CPU cores with even indexes.
+	* The thread pool will have N lockfree SPSC queues for N threads ( N = num of symbol ). The thread pool  also has the ability to pin threads to CPU cores. And based on configuration it can also avoid hyperthreading/logical processors by pinning threads only to CPU cores with even indexes.
 
-		* Central Order book also has 1 MPMC queue for outgoing messages.
+	* Central Order book also has 1 MPMC queue for outgoing messages.
 
-		* When a new message arrives ( new order, or cancel ) from the incoming message dispatcher, it will be submitted to corresponding thread`s queue in the thread pool of the central order book.
+	* When a new message arrives ( new order, or cancel ) from the incoming message dispatcher, it will be submitted to corresponding thread`s queue in the thread pool of the central order book.
 
-	3. Each thread in the thread pool will get message from their SPSC queue in the thread pool , and add them to corresponding order queue which is used by only itself and eventually trigger the order matching process for that queue. At the end of the order matching , worker threads will submit messages ( FILLED or PARTIALLY FILLED ) to the outgoing messages queue.
+3. Each thread in the thread pool will get message from their SPSC queue in the thread pool , and add them to corresponding order queue which is used by only itself and eventually trigger the order matching process for that queue. At the end of the order matching , worker threads will submit messages ( FILLED or PARTIALLY FILLED ) to the outgoing messages queue.
 
-	4. Outgoing message processor which is a fine grained MPMC queue will process the outgoing messages and send responses back to the clients.
+4. Outgoing message processor which is a fine grained MPMC queue will process the outgoing messages and send responses back to the clients.
 
 For more implementation details please see https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/documentation/README_MultithreadingImplementationDetails.md
 
