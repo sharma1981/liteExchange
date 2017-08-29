@@ -10,9 +10,15 @@
     Note that , the order of initialisation for statics in different translation units
     is undefined , so this could be problematic if more singletons used in the project
 
-    Note about MSVC : In MSVC using static are not thread safe :
-    https://blogs.msdn.microsoft.com/oldnewthing/20040308-00/?p=40363/
+    Note about MSVC : In MSVC using static is thread safe for only VS2015:
+    https://msdn.microsoft.com/en-us/library/hh567368.aspx?f=255&MSPPError=-2147217396
 */
+
+#if defined(_MSC_VER)
+#if _MSC_VER<1900
+#error "Thread safe initialisation of static variables is not supported by a pre-2015 MSVC compiler."
+#endif
+#endif
 
 namespace core
 {
