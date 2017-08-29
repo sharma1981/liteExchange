@@ -6,7 +6,7 @@
 	* [Thread safe containers](#ThreadSafeContainers)
 	* [Thread pool and CPU pinning](#ThreadPool)
 	* [CPU cache aligned memory allocations ](#Allocator)
-	* [Logging](#Logging)
+	* [Thread safe singleton and logging](#Logging)
 	* [Atomics and variable synchronisation](#Atomics)
 
 ## <a name="MTMode"></a>**Enabling/disabling multithreading :** 
