@@ -2,7 +2,7 @@
 
 [![Build status](https://ci.appveyor.com/api/projects/status/hw8s5o46kcgr388l?svg=true)](https://ci.appveyor.com/project/akhin/cpp-multithreaded-order-matching-engine)
 
-Sections :
+* [Sections]
 	* [1. Introduction and features](#Introduction)
     1. Introduction and features
     2. Overview of multithreading system
@@ -17,8 +17,8 @@ Sections :
     11. Coding and other guidelines
     12. Continous integration
             
-## <a name="Introduction"></a>**1. Introduction:** A multithreaded order matching engine written in C++11 using FIX protocol. 
-For limit orders and matching engines , see https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/documentation/README_Orders_MatchingEngines.md
+## <a name="Introduction"></a>**1. Introduction:** 
+A multithreaded order matching engine written in C++11 using FIX protocol. For limit orders and matching engines , see https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/documentation/README_Orders_MatchingEngines.md
 
 For FIX protocol , see https://en.wikipedia.org/wiki/Financial_Information_eXchange
 
