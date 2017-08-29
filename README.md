@@ -144,12 +144,19 @@ How to build the project on Windows with Visual Studio in command line :
 
 The engine executable looks for "ome.ini" file. Here is the list of things you can set :
 
-        FILE_LOGGING_ENABLED                        enables/disables logging
-        CONSOLE_OUTPUT_ENABLED                      enables/disables output to stdout
-        CENTRAL_ORDER_BOOK_PIN_THREADS_TO_CORES     whether to pin threads of the threadpool to different CPU cores
-        HYPER_THREADING                             if hyperthreading is off and pinning is on ,then it will pin threads to only cores with an even index
-        CENTRAL_ORDER_BOOK_QUEUE_SIZE_PER_THREAD    Queue size per worker thread in the central order book`s thread pool
-        LOG_BUFFER_SIZE                             Maximum buffer size for the logging system as it is built on a ring buffer.
+| Ini setting           							| Functionality                                                 |
+| --------------------------------------------------|:-------------------------------------------------------------:|
+| LOGGER_FILE_SINK      							| Enables/disables logging										|
+| LOGGER_CONSOLE_SINK   							| Enables/disables output to stdout                             |
+| LOGGER_BUFFER_SIZE 								| Maximum buffer size for the logging ring buffer				|
+| SINGLE_INSTANCE_TCP_PORT  						| Port used in single instance check , applies to Linux only    |
+| PROCESS_PRIORITY         							| Sets OS level priority of the main process                    |
+| CENTRAL_ORDER_BOOK_MULTITHREADED_ORDER_MATCHING	| Toggles multithreading for order matching                     |
+| CENTRAL_ORDER_BOOK_PIN_THREADS_TO_CORES	        | Whether to pin threads of the threadpool to CPU cores			|
+| CENTRAL_ORDER_BOOK_HYPER_THREADING         		| If hyperthreading is off it will use cores with an even index |
+| CENTRAL_ORDER_BOOK_WORK_QUEUE_SIZE_PER_THREAD     | Queue size per worker thread in the thread pool               |
+| CENTRAL_ORDER_BOOK_THREAD_PRIORITY         		| OS-level priority of thread pool threads                      |
+| CENTRAL_ORDER_BOOK_THREAD_STACK_SIZE         		| Stack size for thread pool threads                            |
         
 You will also need to specify security symbols. The order matching engine`s thread pool will create a worker thread for each symbol.
 For specifying symbols in ini file, you need to use brackets as  below :
