@@ -62,11 +62,10 @@ The engine currently is using :
 * Actor pattern
 * Also the engine currently makes use of a set of CPU cache aligned allocators for memory allocations in order to avoid false sharing : https://github.com/akhin/cpp_multithreaded_order_matching_engine/tree/master/source/core/memory
 
-The core of order matching layer is called a central order book, which keeps order books per security symbol. Each order book has a table for bids and another table for asks. Briefly the multithreaded system works as below :
+The core of order matching layer is called a central order book, which keeps order books per security symbol. Each order book has a table for bids and another table for asks.
 
-<p align="center">  
-<img src="https://github.com/akhin/multithreaded_order_matching_engine/tree/master/documentation/ome_message_flow.png">       
-</p>
+<img src="https://github.com/akhin/multithreaded_order_matching_engine/tree/master/documentation/ome_message_flow.png">
+
 
 1. The FIX engine will listen for session requests from the clients, and if a session is established then it listens for incoming ask/bid orders. If the order type is not supported, it sends “rejected” message. Otherwise the message will be submitted to an incoming message dispatcher which is a fine grained MPSC unbounded queue. ( The main reason being for MPSC here is the FIX engine being used is multithreaded and the worker queues in the thread pool are SPSC by design ) The incoming message dispatcher will submit messages to the central order book.
 
