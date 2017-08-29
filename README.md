@@ -2,21 +2,20 @@
 
 [![Build status](https://ci.appveyor.com/api/projects/status/hw8s5o46kcgr388l?svg=true)](https://ci.appveyor.com/project/akhin/cpp-multithreaded-order-matching-engine)
 
-* [Sections]
+* Sections
 	* [1. Introduction and features](#Introduction)
-    1. Introduction and features
-    2. Overview of multithreading system
-    3. Build dependencies
-    4. Runtime dependencies
-    5. How to build
-    6. Server parameters and running the server
-    7. Example log messages with FIX 
-    8. Functional testing
-    9. Unit testing with GoogleTest
-    10. Utility scripts
-    11. Coding and other guidelines
-    12. Continous integration
-            
+    * [2. Overview of multithreading system](#Overview)
+    * [3. Build dependencies](#BuildDependencies)
+	* [4. Runtime dependencies](#RuntimeDependencies)
+	* [5. How to build](#HowToBuild)
+	* [6. Server parameters and running the server](#ServerParams)
+	* [7. Example log messages with FIX ](#ExampleLog)
+	* [8. Functional testing](#FunctionalTesting)
+	* [9. Unit testing with GoogleTest](#UnitTesting)
+	* [10. Utility scripts](#UtilityScripts)
+	* [11. Coding and other guidelines](#CodingGuideline)
+	* [12. Continous integration](#ContinousIntegration)
+          
 ## <a name="Introduction"></a>**1. Introduction:** 
 A multithreaded order matching engine written in C++11 using FIX protocol. For limit orders and matching engines , see https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/documentation/README_Orders_MatchingEngines.md
 
@@ -52,8 +51,9 @@ Client test automation when working :
 <a href="https://asciinema.org/a/29km7ksm8ylrne24zkv9ripxu" target="_blank"><img src="https://asciinema.org/a/29km7ksm8ylrne24zkv9ripxu.png" width="589"/></a>
                         
 
-**2. Overview of multithreading system:** If you look at the source , the concurrency layer ( https://github.com/akhin/cpp_multithreaded_order_matching_engine/tree/master/source/core/concurrent , using concurrent word since MS using concurrency for their own libraries ) , 
-the engine currently is using :
+## <a name="Overview">**2. Overview of multithreading system:** 
+
+If you look at the source , the concurrency layer ( https://github.com/akhin/cpp_multithreaded_order_matching_engine/tree/master/source/core/concurrent , using concurrent word since MS using concurrency for their own libraries ) , he engine currently is using :
 
     - A thread class which you can set stack size and set names for debugging
     - A thread pool with ability to pin threads to CPU cores and avoid hyperthreading
@@ -82,7 +82,9 @@ d) Outgoing message processor which is a fine grained MPMC queue will process th
 
 For more implementation details please see https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/documentation/README_MultithreadingImplementationDetails.md
 
-**3. Build dependencies:** For Linux , the project is built and tested with GCC4.8 only on CentOS7. 
+## <a name="BuildDependencies">**3. Build dependencies:** 
+
+For Linux , the project is built and tested with GCC4.8 only on CentOS7. 
 
 As for Windows it is using MSVC1200(VS2013). An important note about VS2013 , its version shouldn`t be later then Update2 as the project is using C++11 curly brace initialisation in MILs and MSVC rollbacked that feature starting from Update3 :
 
@@ -96,7 +98,9 @@ In the libraries side :
                         
 - QuickFix & its requirements : For Windows you don`t need to do anything as the static library for Windows is already in dependencies directory. For Linux you need to apply the steps on http://www.quickfixengine.org/quickfix/doc/html/install.html
 
-**4. Runtime dependencies:** For Windows, you have to install MSVC120 runtime : https://www.microsoft.com/en-gb/download/details.aspx?id=40784
+## <a name="RuntimeDependencies">**4. Runtime dependencies:** 
+
+For Windows, you have to install MSVC120 runtime : https://www.microsoft.com/en-gb/download/details.aspx?id=40784
 
 For Linux, you need GNU Libstd C++ 6 runtime and QuickFIX runtime.
 
@@ -108,7 +112,7 @@ How to install Quickfix runtime on Linux ( tested on Ubuntu ) :
         
 Note : This script will copy shared object to library path, create soft links, will add library path to /etc/ld.so.conf and finally execute ldconfig.
 
-**5. How to build:**
+## <a name="HowToBuild">**5. How to build:**
             
 How to build the project on Linux :
     
@@ -138,7 +142,9 @@ How to build the project on Windows with Visual Studio in command line :
     Go to "build/windows_msvc_command_line" directory
     Execute one of batch files : build_debug.bat or build_release.bat
 
-**6. Server parameters and running the matching engine:** The engine executable looks for "ome.ini" file. Here is the list of things you can set :
+## <a name="ServerParams">**6. Server parameters and running the matching engine:** 
+
+The engine executable looks for "ome.ini" file. Here is the list of things you can set :
 
         FILE_LOGGING_ENABLED                        enables/disables logging
         CONSOLE_OUTPUT_ENABLED                      enables/disables output to stdout
@@ -185,7 +191,9 @@ Once you start the ome executable , initially you will see a screen like this :
                 display : Shows all order books in the central order book
                 quit : Shutdowns the server
                 
-**7. Example log message from the engine:** The engine produces log messages below when it receives 1 buy order with quantity 1 and 1 sell order with quantity 1 for the same symbol :
+## <a name="ExampleLog">**7. Example log message from the engine:** 
+
+The engine produces log messages below when it receives 1 buy order with quantity 1 and 1 sell order with quantity 1 for the same symbol :
 
     06-02-2016 20:16:09 : INFO , FIX Engine , New logon , session ID : FIX.4.2:OME->TEST_CLIENT1
     06-02-2016 20:16:09 : INFO , FIX Engine , Sending fix message : 8=FIX.4.29=15435=834=543=Y49=OME52=20160206-20:16:09.29556=TEST_CLIENT1122=20160206-20:15:03.9556=011=414=017=1820=037=438=139=054=155=MSFT150=0151=110=000
@@ -219,7 +227,9 @@ Once you start the ome executable , initially you will see a screen like this :
     06-02-2016 20:16:09 : INFO , FIX Engine , Sending fix message : 8=FIX.4.29=13535=834=2649=OME52=20160206-20:16:09.34256=TEST_CLIENT16=111=114=117=11620=031=132=137=138=139=254=255=MSFT150=2151=010=002
     06-02-2016 20:16:11 : INFO , FIX Engine , Logout , session ID : FIX.4.2:OME->TEST_CLIENT1
 
-**8. Functional testing:** There is a prebuilt executable for both Linux and Windows which can send specified ask/bid orders to the order matching engine.
+## <a name="FunctionalTesting">**8. Functional testing:** 
+
+There is a prebuilt executable for both Linux and Windows which can send specified ask/bid orders to the order matching engine.
    
 Under "test_functional" directory :
    
@@ -260,8 +270,9 @@ Alternatively on Linux , there is a GUI script as in Windows one :
 <img src="https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/documentation/testfunctional_gui_linux.png">
 </p>
     
-**9. Unit testing with GoogleTest:** The project uses GoogleTest 1.7. You can find a makefile and vcproj under "test_unit" directory.
+## <a name="UnitTesting">**9. Unit testing with GoogleTest:** 
 
+The project uses GoogleTest 1.7. You can find a makefile and vcproj under "test_unit" directory.
     
 Building and running unit test on Linux : You have to build and install Google Test 1.7 first , the instructions for CentOS and Ubuntu :
             
@@ -282,7 +293,7 @@ Building and running unit test on Linux : You have to build and install Google T
 
 Building and running unit test on Windows : You can use VisualStudio solution in "test_unit" directory.
 
-**10. Utility scripts:**
+## <a name="UtilityScripts">**10. Utility scripts:**
 
 You can find them under "utility_scripts" directory :
     
@@ -302,7 +313,7 @@ Viewing tcpdump captures with Wireshark :
 <img src="https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/documentation/wireshark_fix.png">
 </p>
 
-**11. Coding and other guidelines:**
+## <a name="CodingGuideline">**11. Coding and other guidelines:**
 
 Source code and file/directory naming conventions :
     
@@ -344,6 +355,6 @@ For MSVC 120 see https://msdn.microsoft.com/en-us/library/8c5ztk84(v=vs.120).asp
 
 MSVC120 C++11 Limitations : Curly brace initialisation at MILs and noexcept is not supported. For noexcept usage please see compiler_portability/noexcept.h .
 
-**12. Continous integration:**
+## <a name="ContinousIntegration">**12. Continous integration:**
 
 For the time being , online CI has been setup for only MSVC using Appveyor. Planning to add GCC based online CI with TravisCI.

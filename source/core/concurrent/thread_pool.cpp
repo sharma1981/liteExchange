@@ -4,7 +4,6 @@ using namespace std;
 
 #include <boost/format.hpp>
 #include "thread_pool.h"
-#include <core/logger/logger.h>
 
 namespace core
 {
