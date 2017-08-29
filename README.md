@@ -64,6 +64,8 @@ The engine currently is using :
 
 The core of order matching layer is called a central order book, which keeps order books per security symbol. Each order book has a table for bids and another table for asks. Briefly the multithreaded system works as below :
 
+<img src="https://github.com/akhin/multithreaded_order_matching_engine/tree/master/documentation/ome_message_flow.png" align="center">
+
 1. The FIX engine will listen for session requests from the clients, and if a session is established then it listens for incoming ask/bid orders. If the order type is not supported, it sends “rejected” message. Otherwise the message will be submitted to an incoming message dispatcher which is a fine grained MPSC unbounded queue. ( The main reason being for MPSC here is the FIX engine being used is multithreaded and the worker queues in the thread pool are SPSC by design ) The incoming message dispatcher will submit messages to the central order book.
 
 2. Central Order book has a thread pool :
