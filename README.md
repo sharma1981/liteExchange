@@ -38,13 +38,14 @@ Technical implementation details are as below :
 | ----------------------|:-------------------------------------------------------------:|
 | OS                    | Windows ( tested on 8.1), Linux ( tested on Ubuntu and CentOS)|
 | C++                   | C++11                                                         |
-| C++ Compiler Support  | GCC4.8 and MSVC120 (VS2013)									|                                                       |
+| C++ Compiler Support  | GCC4.8 and MSVC120 (VS2013)									|
 | C++ Platform APIs     | GNU LibC, POSIX, some POSIX NP ,WinAPI, MS CRT                |
 | C++ Libraries         | STL, Boost, QuickFix                                          |
 
 Watch server when working :
 
 <a href="https://asciinema.org/a/929cs0jcbso3g7v7b3cd6g82f" target="_blank"><img src="https://asciinema.org/a/929cs0jcbso3g7v7b3cd6g82f.png" width="589"/></a>
+
 
 Client test automation when working :
 
