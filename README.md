@@ -302,16 +302,19 @@ Building and running unit test on Windows : You can use VisualStudio solution in
 ## <a name="UtilityScripts">**10. Utility scripts:**
 
 You can find them under "utility_scripts" directory :
-    
-    source_code_formatter.sh            converts EOL to Unix, converts tabs to 4 spaces, removes trailing white space
-    leak_detector_valgrind              memory leak detection with Valgrind
-    build_with_thread_sanitizer.sh      build with GCC thread sanitizer
-    build_with_address_sanitizer.sh     build with GCC address sanitizer
-    build_for_gprof.sh                  build for gprof profiling
-    profile_with_gprof.sh               profile with gprof
-    profiler_windows_visual_studio      profile with Visual Studio`s vsperf
-    leak_detector_drmemory.bat          memory leak detection with Dr.Memory
-    tcpdump_capture.sh                  gets a tcpdump capture that you can view with Wireshark
+
+
+| Script		           			| Functionality		                                                 			|
+| ----------------------------------|:-----------------------------------------------------------------------------:|
+| source_code_formatter.sh 			| converts EOL to Unix, converts tabs to 4 spaces, removes trailing white space	|
+| leak_detector_valgrind.sh			| memory leak detection with Valgrind                             				|
+| build_with_thread_sanitizer.sh	| build with GCC thread sanitizer												|
+| build_with_address_sanitizer.sh	| build with GCC address sanitizer    											|
+| build_for_gprof.sh       			| build for gprof profiling                    									|
+| profile_with_gprof.sh				| profile with gprof                     										|
+| profiler_windows_visual_studio	| profile with Visual Studio`s vsperf											|
+| leak_detector_drmemory.bat		| memory leak detection with Dr.Memory 											|
+| tcpdump_capture.sh				| gets a tcpdump capture that you can view with Wireshark               		|
     
 Viewing tcpdump captures with Wireshark :
 
@@ -322,31 +325,36 @@ Viewing tcpdump captures with Wireshark :
 ## <a name="CodingGuideline">**11. Coding and other guidelines:**
 
 Source code and file/directory naming conventions :
-    
-    Directory names                 lower_case_word
-    File names                      lower_case_word
-    Include guards                  _HEADER_H_
-    Macros                          UPPER_CASE_WORD
-    Enums                           UPPER_CASE_WORD
-    Namespace names                 lower_case_word
-    Class names                     CamelCase
-    Method names                    pascalCase
-    Variable names                  pascalCase
-    Member variables starts with    m_
-    Directories/Namespaces          As in Boost, there is a namespace per directory
+
+| Category		           		| Naming convention	                               	|
+| ------------------------------|:-------------------------------------------------:|
+| Directory names 				| lower_case_word									|
+| File names					| lower_case_word                             		|
+| Include guards				| _HEADER_H_										|
+| Macros						| UPPER_CASE_WORD    								|
+| Enums       					| UPPER_CASE_WORD                    				|
+| Namespace names				| lower_case_word                     				|
+| Class names					| CamelCase											|
+| Method names					| pascalCase 										|
+| Variable names				| pascalCase               							|
+| Member variables starts with	| m_               									|
+| Directories/Namespaces		| As in Boost, there is a namespace per directory	|
+
 
 Source code indentations and new line usage :
     
-    4 spaces, no tabs ( This needs to be setup in VS )
-    By default Netbeans editor uses spaces for tabs
-    Needs to be set in VS2013 : https://msdn.microsoft.com/en-gb/library/ms165330(v=vs.90).aspx
-    New lines : Unix CR only ( \n ) , VisualStudio can handle it even though Windows is \r\n
+	- 4 spaces, no tabs ( This needs to be setup in VS )
+    - By default Netbeans editor uses spaces for tabs
+    - Needs to be set in VS2013 : https://msdn.microsoft.com/en-gb/library/ms165330(v=vs.90).aspx
+    - New lines : Unix CR only ( \n ) , VisualStudio can handle it even though Windows is \r\n
     
 utility/source_code_formatter.sh : It is a Bash script that scans all cpp,h,hpp files in project directory and converts Windows end of lines to Linux, converts tabs to 4 spaces and removes trailing whitespace. It requires dos2unix.
     
 Inclusions : Using forward slash as it works for both Linux and Windows :
 
-        #include <core/concurrent/thread.h>
+~~~C++
+		#include <core/concurrent/thread.h>
+~~~
     
 Warning level used for GCC : -Wall
 
