@@ -6,7 +6,7 @@
 #include <condition_variable>
 
 #include <core/concurrent/lock.hpp>
-#include <core/memory/aligned_container_policy.hpp>
+#include <core/memory/heap_memory.h>
 
 namespace core
 {
@@ -24,7 +24,7 @@ class QueueMPSC : public boost::noncopyable, AlignedContainerPolicy<T>
             QueueMPSCNode() : m_next{nullptr}{}
         };
 
-        QueueMPSC() : m_mutex("QueueMPSC")
+        QueueMPSC()
         {
             // Create a new empty node so we avoid a lock for accessing head in enqueue
             QueueMPSCNode* dummy = new QueueMPSCNode;
@@ -47,7 +47,7 @@ class QueueMPSC : public boost::noncopyable, AlignedContainerPolicy<T>
         {
             QueueMPSCNode* newNode = new QueueMPSCNode;
             newNode->m_data = data;
-            std::unique_lock<core::Lock> l(m_mutex);
+            std::unique_lock<core::SpinLock> l(m_mutex);
             /////////////////////////////
             m_tail->m_next = newNode;
             m_tail = newNode;
@@ -59,7 +59,7 @@ class QueueMPSC : public boost::noncopyable, AlignedContainerPolicy<T>
         bool isEmpty()
         {
             bool retVal = true;
-            std::lock_guard<core::Lock> l(m_mutex);
+            std::lock_guard<core::SpinLock> l(m_mutex);
             if ( m_head->m_next != nullptr )
             {
                 retVal = false;
@@ -76,7 +76,7 @@ class QueueMPSC : public boost::noncopyable, AlignedContainerPolicy<T>
                 return ret;
             }
 
-            std::unique_lock<core::Lock> l(m_mutex);
+            std::unique_lock<core::SpinLock> l(m_mutex);
             m_noData.wait(l, [this](){return m_head->m_next != nullptr; });
             /////////////////////////////
             //JUST SWAP THE POINTERS
@@ -90,7 +90,7 @@ class QueueMPSC : public boost::noncopyable, AlignedContainerPolicy<T>
         }
 
     private:
-        core::Lock m_mutex;
+        core::SpinLock m_mutex;
         std::condition_variable_any m_noData;
 
         QueueMPSCNode* m_head;

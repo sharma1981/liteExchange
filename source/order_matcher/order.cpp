@@ -36,7 +36,7 @@ void Order::execute(double price, long quantity)
 string Order::toString() const
 {
     string side = m_side == OrderSide::BUY ? "BUY" : "SELL";
-    string ret = boost::str(boost::format("Client %s Client ID %s Symbol %s Side %s") % m_owner % m_clientOrderID % SecurityManager::getInstance()->getSecurityName(m_securityId) % side);
+    string ret = boost::str(boost::format("Client: %s, Client ID: %s, Symbol: %s, Side: %s") % m_owner % m_clientOrderID % SecurityManager::getInstance()->getSecurityName(m_securityId) % side);
     return ret;
 }
 

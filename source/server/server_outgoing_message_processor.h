@@ -12,8 +12,12 @@
 #include <order_matcher/central_order_book.h>
 #include <order_matcher/security_manager.h>
 #include <server/quickfix_converter.h>
+
+#include <core/file_utility.h>
+#include <core/compiler/likely.h>
 #include <core/concurrent/actor.h>
 #include <core/logger/logger.h>
+#include <core/datetime_utility.h>
 
 #include <server/server_constants.h>
 
@@ -24,9 +28,15 @@ class OutgoingMessageProcessor : public Actor
 {
     public:
 
-        OutgoingMessageProcessor() : Actor("OutgoingWorker"), m_messageQueue{nullptr}, m_execID{0}
+        OutgoingMessageProcessor() : Actor("OutgoingWorker"), m_messageQueue{ nullptr }, m_execID{ 0 }, m_offlineMode{false}
         // We can`t have more than 16 characters in Linux for a pthread name ,that is why compacted the thread name...
         {
+        }
+
+        void setOfflineMode(const std::string& offlineModeOutputFile)
+        {
+            m_offlineMode = true;
+            m_offlineModeOutputFile = offlineModeOutputFile;
         }
 
         void setMessageQueue(OutgoingMessageQueue* queue)
@@ -83,7 +93,7 @@ class OutgoingMessageProcessor : public Actor
                             FIX::ExecType(status),
                             FIX::OrdStatus(status),
                             FIX::Symbol(order_matcher::SecurityManager::getInstance()->getSecurityName(order.getSecurityId())),
-                            FIX::Side(order_matcher::convertOrderSideToQuickFix(order.getSide())),
+                            FIX::Side(convertOrderSideToQuickFix(order.getSide())),
                             FIX::LeavesQty(order.getOpenQuantity()),
                             FIX::CumQty(order.getExecutedQuantity()),
                             FIX::AvgPx(order.getAverageExecutedPrice()));
@@ -98,15 +108,25 @@ class OutgoingMessageProcessor : public Actor
                             fixOrder.set(FIX::LastPx(order.getLastExecutedPrice()));
                         }
 
-                        try
+                        if (unlikely(m_offlineMode))
                         {
-                            FIX::Session::sendToTarget(fixOrder, senderCompID, targetCompID);
+                            // OFFLINE ORDER ENTRY MODE
+                            auto executionReportContent = fixOrder.toString();
+                            core::appendTextToFile(m_offlineModeOutputFile, core::getCurrentDateTime() + '\n', true);
+                            core::appendTextToFile(m_offlineModeOutputFile, executionReportContent + '\n', true);
                         }
-                        catch (const FIX::SessionNotFound&)
+                        else
                         {
-                            // TO BE IMPLEMENTED
+                            // FIX ENGINE MODE
+                            try
+                            {
+                                FIX::Session::sendToTarget(fixOrder, senderCompID, targetCompID);
+                            }
+                            catch (const FIX::SessionNotFound&)
+                            {
+                                // TO BE IMPLEMENTED
+                            }
                         }
-
                     }
                     else
                     {
@@ -126,6 +146,8 @@ class OutgoingMessageProcessor : public Actor
 
         OutgoingMessageQueue* m_messageQueue = nullptr;
         int m_execID;
+        bool m_offlineMode;
+        std::string m_offlineModeOutputFile;
 
         std::string genExecID()
         {

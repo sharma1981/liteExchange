@@ -20,7 +20,6 @@ class OrderBook : public core::Visitable<Order>
         OrderBook() = default;
 
         void accept(core::Visitor<Order>& v) override;
-
         void insert(const Order& order);
         bool find(Order** order, const std::string& owner, const std::string& clientID, OrderSide side);
         void erase(const Order& order);

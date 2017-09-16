@@ -29,9 +29,9 @@ inline void replaceCharacterInString(std::string& target, char oldChar, char new
   std::replace(target.begin(), target.end(), oldChar, newChar);
 }
 
-inline bool contains(const std::string& input, const std::string& searchString)
+inline bool contains(const std::string& haystack, const std::string& needle)
 {
-    if (input.find(searchString) != std::string::npos)
+    if (haystack.find(needle) != std::string::npos)
     {
         return true;
     }

@@ -4,8 +4,9 @@
 #include <core/compiler/os_version_check.h>  // Linux and Windows supported
 
 // RUNTIME CHECKS
-#include <core/memory/cpu_memory.h>                      // To see if cache line we are running on
-                                                    // matches the compiled one
+#include <core/memory/cpu_memory.h>                // To see if cache line we are running on
+                                                   // matches the compiled one
+
 #include <core/self_process.h>                     // To check whether we are root/admin or not
 
 #include <iostream>
@@ -15,6 +16,8 @@
 #include <core/single_instance.h>
 #include <core/logger/logger.h>
 #include <core/file_utility.h>
+
+#include <server/offline_order_entry.h>
 
 #include <server/server.h>
 #include <server/server_configuration.h>
@@ -86,10 +89,18 @@ int main ()
         core::Logger::getInstance()->start();
         LOG_INFO("Main thread", "starting")
 
-        Server application(server_constants::FIX_ENGINE_CONFIG_FILE, serverConfiguration);
-
-        // Run the server
-        application.run();
+        if ( serverConfiguration.getOfflineOrderEntryFile().length() == 0)
+        {
+            // FIX SERVER MODE
+            Server application(server_constants::FIX_ENGINE_CONFIG_FILE, serverConfiguration);
+            application.run();
+        }
+        else
+        {
+            // OFFLINE ORDER ENTRY MODE
+            OfflineOrderEntry application(serverConfiguration);
+            application.run();
+        }
     }
     catch (const std::invalid_argument & e)
     {

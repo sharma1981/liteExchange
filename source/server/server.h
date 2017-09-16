@@ -3,17 +3,16 @@
 
 #include <string>
 #include <vector>
-#include <memory>
 
 #include <boost/noncopyable.hpp>
 
 #include <order_matcher/central_order_book.h>
 #include <order_matcher/central_order_book_observer.h>
 
+#include <server/cli.h>
 #include <server/server_configuration.h>
 #include <server/server_outgoing_message_processor.h>
 #include <server/server_incoming_message_dispatcher.h>
-#include <server/server_interface.h>
 #include <server/server_error.h>
 
 #include <quickfix/Application.h>
@@ -32,7 +31,6 @@ class Server : public boost::noncopyable, public FIX::Application, public FIX::M
         void run();
 
         order_matcher::CentralOrderBook& getCentralOrderBook() { return m_centralOrderBook;  }
-        const std::string getAllOrderBookAsString();
         static void onError(const std::string& message, ServerError error);
 
     private:
@@ -50,11 +48,12 @@ class Server : public boost::noncopyable, public FIX::Application, public FIX::M
         void onMessage(const FIX42::OrderCancelRequest&, const FIX::SessionID&);
 
         std::string m_fixEngineConfigFile;
-        std::unique_ptr<ServerInterface> m_serverInterface;
         order_matcher::CentralOrderBook m_centralOrderBook;
         order_matcher::CentralOrderBookObserver m_centralOrderBookObserver;
         OutgoingMessageProcessor m_outgoingMessageProcessor;
         IncomingMessageDispatcher m_dispatcher;
+
+        CommandLineInterface m_commandLineInterface;
 };
 
 #endif

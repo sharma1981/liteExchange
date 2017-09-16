@@ -1,18 +1,67 @@
-#ifndef _ALIGNED_ALLOCATOR_H_
-#define _ALIGNED_ALLOCATOR_H_
+#ifndef _HEAP_MEMORY_
+#define _HEAP_MEMORY_
 
 #include <cstddef>
+#include <type_traits>
 #include <new>
 #include <limits>
 #include <stdexcept>
 
 #include <core/compiler/noexcept.h>
-#include "memory_utilities.h"
-#include "cpu_cache_line.h"
-#include "aligned_memory.h"
+#include <core/pretty_exception.h>
+
+#include "cpu_memory.h"
+#include "virtual_memory.h"
+
+#define IS_POWER_OF_TWO(n) ( n && ((n & (n - 1)) == 0) ? true : false )
 
 namespace core
 {
+
+template<std::size_t alignment = CACHE_LINE_SIZE>
+class Aligned
+{
+public:
+
+    Aligned()
+    {
+        static_assert(IS_POWER_OF_TWO(alignment), "Template argument must be a power of two.");
+    }
+
+    /*
+    From Herb Sutter`s exceptional C++
+
+    All flavors of operator new() and operator delete() are always static functions, even if
+    they're not declared static. Although C++ doesn't force you to say "static" explicitly when
+    you declare your own, it's better to do so anyway, because it serves as a reminder to yourself as
+    you're writing the code and as a reminder to the next programmer who has to maintain it.
+    */
+
+    static void* operator new(std::size_t size) throw(std::bad_alloc)
+    {
+        void* ret = nullptr;
+
+        ret = VirtualMemory::alignedMalloc(size, alignment);
+
+        return ret;
+    }
+
+    static void operator delete(void* ptr) noexcept
+    {
+        VirtualMemory::alignedFree(ptr);
+    }
+};
+
+template<typename T>
+class AlignedContainerPolicy
+{
+public:
+    AlignedContainerPolicy()
+    {
+        static_assert(std::is_fundamental<T>::value || std::is_base_of<core::Aligned<>, T>::value, "Allowed concurrent container specialisations : \
+                                                                                                                                                                                                                                                                                                               Classes derived from core::Aligned, fundamental types");
+    }
+};
 
 template <typename T, std::size_t alignment = CACHE_LINE_SIZE>
 class AlignedAllocator
@@ -31,7 +80,7 @@ class AlignedAllocator
         // Empty for stateless allocators.
         AlignedAllocator()
         {
-            static_assert(is_power_of_two(alignment), "Template argument must be a power of two.");
+            static_assert(IS_POWER_OF_TWO(alignment), "Template argument must be a power of two.");
         }
         AlignedAllocator(const AlignedAllocator&) { }
 
@@ -43,12 +92,12 @@ class AlignedAllocator
             return &r;
         }
 
-        const T * address(const T& s) const noexcept
+            const T * address(const T& s) const noexcept
         {
             return &s;
         }
 
-        size_t max_size() const noexcept
+            size_t max_size() const noexcept
         {
             // The following has been carefully written to be independent of
             // the definition of size_t and to avoid signed/unsigned warnings.
@@ -58,8 +107,8 @@ class AlignedAllocator
             return (std::numeric_limits<int>::max)() / sizeof(value_type);
         }
 
-        // The following must be the same for all allocators.
-        template <typename U>
+            // The following must be the same for all allocators.
+            template <typename U>
         struct rebind
         {
             typedef AlignedAllocator<U> other;
@@ -76,18 +125,18 @@ class AlignedAllocator
             new (pv)T(t);
         }
 
-#ifdef _MSC_VER
-#pragma warning(push)
-#pragma warning(disable: 4100) // unreferenced formal parameter
-#endif
+    #ifdef _MSC_VER
+    #pragma warning(push)
+    #pragma warning(disable: 4100) // unreferenced formal parameter
+    #endif
         void destroy(T * const p) const
         {
             p->~T();
         }
 
-#ifdef _MSC_VER
-#pragma warning(pop)
-#endif
+    #ifdef _MSC_VER
+    #pragma warning(pop)
+    #endif
 
         // Returns true if and only if storage allocated from *this
         // can be deallocated from other, and vice versa.
@@ -122,7 +171,7 @@ class AlignedAllocator
                 THROW_PRETTY_LENGTH_EXCEPTION("AlignedAllocator<T>::allocate() – Integer overflow.")
             }
 
-            void * const pv = alignedMalloc(n * sizeof(T), alignment);
+            void * const pv = VirtualMemory::alignedMalloc(n * sizeof(T), alignment);
 
             // Allocators should throw std::bad_alloc in the case of memory allocation failure.
             if (pv == nullptr)
@@ -135,11 +184,11 @@ class AlignedAllocator
 
         void deallocate(T * const p, const size_t n) const
         {
-            alignedFree(p);
+            VirtualMemory::alignedFree(p);
         }
 
         // The following will be the same for all allocators that ignore hints.
-        template <typename U> T * allocate(const size_t n, const U * /* const hint */) const {
+        template <typename U> T * allocate(const size_t n, const U * ) const {
             return allocate(n);
         }
 
@@ -156,8 +205,8 @@ class AlignedAllocator
 
         AlignedAllocator& operator=(const AlignedAllocator&);
 
-    };
+};
 
-} // namespace
+}
 
 #endif

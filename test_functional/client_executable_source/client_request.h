@@ -4,8 +4,6 @@
 #include <atomic>
 #include <string>
 #include <quickfix/Application.h>
-#include <boost/flyweight.hpp>
-using FlyweightStdString = boost::flyweights::flyweight<std::string>;
 
 #include <memory>
 
@@ -38,11 +36,11 @@ class ClientRequest
         FIX::Side m_side;
         std::string m_orderID;
         std::string m_origOrderID; // For cancel requests
-        FlyweightStdString m_symbol;
+		std::string m_symbol;
         long m_quantity;
         double m_price;
-        FlyweightStdString m_senderID;
-        FlyweightStdString m_targetID;
+        std::string m_senderID;
+		std::string m_targetID;
         std::atomic<bool> m_requestSent;
 };
 

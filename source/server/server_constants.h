@@ -8,6 +8,7 @@ namespace server_constants
 static const char* CONFIGURATION_FILE = "ome.ini";
 // General process related
 static const char* CONFIGURATION_FILE_SINGLE_INSTANCE_TCP_PORT = "SINGLE_INSTANCE_TCP_PORT";
+static const char* CONFIGURATION_FILE_OFFLINE_ORDER_ENTRY_FILE = "OFFLINE_ORDER_ENTRY_FILE";
 static const char* CONFIGURATION_FILE_PROCESS_PRIORITY = "PROCESS_PRIORITY";
 static const char* CONFIGURATION_FILE_LOGGER_BUFFER_SIZE = "LOGGER_BUFFER_SIZE";
 // Central order book related

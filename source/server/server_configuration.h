@@ -29,6 +29,11 @@ class ServerConfiguration
             m_singleInstanceTCPPortNumber = configuration.getIntValue(server_constants::CONFIGURATION_FILE_SINGLE_INSTANCE_TCP_PORT);
             m_processPriority = configuration.getStringValue(server_constants::CONFIGURATION_FILE_PROCESS_PRIORITY);
 
+            if (configuration.doesAttributeExist(server_constants::CONFIGURATION_FILE_OFFLINE_ORDER_ENTRY_FILE))
+            {
+                m_offlineOrderEntryFile = configuration.getStringValue(server_constants::CONFIGURATION_FILE_OFFLINE_ORDER_ENTRY_FILE);
+            }
+
             // Get logging related configurations, the loop is for per logger sink
             core::Logger::getInstance()->initialise(configuration.getIntValue(server_constants::CONFIGURATION_FILE_LOGGER_BUFFER_SIZE));
 
@@ -78,10 +83,12 @@ class ServerConfiguration
         bool getMatchingMultithreadingMode() const { return m_isMatchingMultithreaded; }
         core::ThreadPoolArguments getThreadPoolArguments() const { return m_threadPoolArguments; }
         std::vector<std::string> getSymbols() const { return m_symbols;  }
+        std::string getOfflineOrderEntryFile() const { return m_offlineOrderEntryFile; }
 
     private :
         int m_singleInstanceTCPPortNumber;
         std::string m_processPriority;
+        std::string m_offlineOrderEntryFile;
         bool m_isMatchingMultithreaded;
         core::ThreadPoolArguments m_threadPoolArguments;
         std::vector<std::string> m_symbols;

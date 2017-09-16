@@ -2,8 +2,9 @@
 #define _INCOMING_MESSAGE_H_
 
 #include <string>
+#include "base_message.h"
 #include "order.h"
-#include <core/memory/aligned.hpp>
+#include <core/memory/heap_memory.h>
 #include <core/pretty_exception.h>
 
 namespace order_matcher
@@ -11,7 +12,7 @@ namespace order_matcher
 
 enum class IncomingMessageType { NEW_ORDER, CANCEL_ORDER };
 
-class IncomingMessage : public core::Aligned<>
+class IncomingMessage : public BaseMessage, public core::Aligned<>
 {
     public:
 
@@ -20,15 +21,15 @@ class IncomingMessage : public core::Aligned<>
         }
 
         IncomingMessage(Order order, IncomingMessageType type, const std::string& origClientOrderID="")
-        : m_order(order), m_originalOrderID(origClientOrderID), m_type(type)
+        : BaseMessage(order), m_originalOrderID(origClientOrderID), m_type(type)
         {
         }
 
-        const Order& getOrder() const { return m_order; }
-        const IncomingMessageType& getType() const { return m_type; }
-        const std::string& getOrigClientOrderID() const { return m_originalOrderID; }
+        IncomingMessageType& getType() { return m_type; }
 
-        std::string toString() const
+        std::string& getOrigClientOrderID() { return m_originalOrderID; }
+
+        std::string toString() const override
         {
             switch (m_type)
             {
@@ -45,7 +46,6 @@ class IncomingMessage : public core::Aligned<>
         }
 
     private:
-        Order m_order;
         std::string m_originalOrderID; // Only applies to cancel messages
         IncomingMessageType m_type;
 };

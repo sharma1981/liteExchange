@@ -25,7 +25,7 @@ inline std::string getCurrentDateTime(const char* format = "%d-%m-%Y %H:%M:%S:%%
 #if defined( _MSC_VER ) || ( __GNUC__ > 4 )
     auto now = std::chrono::system_clock::now();
     auto inTimeT = std::chrono::system_clock::to_time_t(now);
-    
+
     ss << std::put_time(std::localtime(&inTimeT), "%d-%m-%Y %H:%M:%S");
 
     if (core::contains(format, "%S:%%03u") == true )

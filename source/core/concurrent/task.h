@@ -6,7 +6,7 @@
 #include <string>
 #include <boost/optional.hpp>
 #include <boost/any.hpp>
-#include <core/memory/aligned.hpp>
+#include <core/memory/heap_memory.h>
 
 namespace core
 {

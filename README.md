@@ -63,6 +63,8 @@ The engine currently is using :
 * Actor pattern
 * Also the engine currently makes use of a set of CPU cache aligned allocators for memory allocations in order to avoid false sharing : https://github.com/akhin/cpp_multithreaded_order_matching_engine/tree/master/source/core/memory
 
+For detailed low level implementation details please see https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/documentation/README_MultithreadingImplementationDetails.md
+
 The core of order matching layer is called a central order book, which keeps order books per security symbol. Each order book has a table for bids and another table for asks.
 
 1. The FIX engine will listen for session requests from the clients, and if a session is established then it listens for incoming ask/bid orders. If the order type is not supported, it sends “rejected” message. Otherwise the message will be submitted to an incoming message dispatcher which is a fine grained MPSC unbounded queue. ( The main reason being for MPSC here is the FIX engine being used is multithreaded and the worker queues in the thread pool are SPSC by design ) The incoming message dispatcher will submit messages to the central order book.
@@ -78,8 +80,6 @@ The core of order matching layer is called a central order book, which keeps ord
 3. Each thread in the thread pool will get message from their SPSC queue in the thread pool , and add them to corresponding order queue which is used by only itself and eventually trigger the order matching process for that queue. At the end of the order matching , worker threads will submit messages ( FILLED or PARTIALLY FILLED ) to the outgoing messages queue.
 
 4. Outgoing message processor which is a fine grained MPMC queue will process the outgoing messages and send responses back to the clients.
-
-For more implementation details please see https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/documentation/README_MultithreadingImplementationDetails.md
 
 ## <a name="BuildDependencies">**3. Build dependencies:** 
 

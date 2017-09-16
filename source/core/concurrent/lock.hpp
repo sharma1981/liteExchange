@@ -24,12 +24,6 @@
 
 #include <string>
 
-#define DEFAULT_SPIN_COUNT 0x00000400
-// Spin count of this lock (critical section on Windows and pthread_mutex on Linux )
-// only applies to Windows as there is not a direct equivalent in all Linux systems
-// In HP`s systems, there is : pthread_mutexattr_setspin_np : http://h20564.www2.hpe.com/hpsc/doc/public/display?docId=emr_na-c02267594&lang=en-us&cc=us
-// But this does not apply to all distributions
-
 #include <core/concurrent/base_lock.h>
 
 namespace core
@@ -53,7 +47,7 @@ class Lock : public BaseLock
 #endif
         }
 
-        Lock() : Lock("", DEFAULT_SPIN_COUNT) // CPP11 Constructor delegation
+        Lock() : Lock("", BaseLock::DEFAULT_SPIN_COUNT) // CPP11 Constructor delegation
         {
         }
 
@@ -80,7 +74,7 @@ class Lock : public BaseLock
 #endif
         }
 
-        bool try_lock() override
+        bool tryLock() override
         {
             bool ret{false};
 #ifdef __linux__

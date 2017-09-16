@@ -4,7 +4,6 @@
 #endif
 
 #include <server/server.h>
-#include <server/server_interface_cli.h>
 
 #include <iostream>
 #include <algorithm>
@@ -22,7 +21,6 @@
 
 #include <core/concurrent/thread_priority.h>
 
-#include <order_matcher/central_order_book_visitor.h>
 #include <order_matcher/order.h>
 #include <order_matcher/security_manager.h>
 #include <server/quickfix_converter.h>
@@ -35,7 +33,7 @@ using namespace order_matcher;
 using namespace std;
 
 Server::Server(const string& fixEngineConfigFile, const ServerConfiguration& serverConfiguration)
-: m_serverInterface{ nullptr }, m_fixEngineConfigFile( fixEngineConfigFile )
+: m_fixEngineConfigFile( fixEngineConfigFile )
 {
     if (!core::doesFileExist(m_fixEngineConfigFile))
     {
@@ -64,8 +62,8 @@ Server::Server(const string& fixEngineConfigFile, const ServerConfiguration& ser
     m_outgoingMessageProcessor.setMessageQueue(m_centralOrderBook.getOutgoingMessageQueue());
     m_outgoingMessageProcessor.start();
 
-    // Create server interface
-    m_serverInterface.reset( new ServerInterfaceCli(*this) );
+    //CLI
+    m_commandLineInterface.setParentCentralOrderbook(&m_centralOrderBook);
 }
 
 void Server::run()
@@ -79,8 +77,7 @@ void Server::run()
 
     LOG_INFO("FIX Engine", "Acceptor started")
 
-    // Execute the server inteface loop
-    m_serverInterface->run();
+    m_commandLineInterface.run();
 
     // FIX engine stop
     fixEngineAcceptor.stop(true);
@@ -91,13 +88,6 @@ Server::~Server()
 {
     m_outgoingMessageProcessor.shutdown();
     m_dispatcher.shutdown();
-}
-
-const string Server::getAllOrderBookAsString()
-{
-    CentralOrderBookVisitor visitor;
-    m_centralOrderBook.accept(visitor);
-    return visitor.toString();
 }
 
 void Server::onError(const string& message, ServerError error)
@@ -169,8 +159,8 @@ void Server::onMessage(const FIX42::NewOrderSingle& message, const FIX::SessionI
     message.get(ordType);
     message.get(orderQty);
 
-    OrderType newOrderType = order_matcher::convertOrderTypeFromQuickFix(ordType);
-    OrderSide newOrderSide = order_matcher::convertOrderSideFromQuickFix(side);
+    OrderType newOrderType = convertOrderTypeFromQuickFix(ordType);
+    OrderSide newOrderSide = convertOrderSideFromQuickFix(side);
 
     // Find security id of the symbol in our SecurityManager
     auto securityId = SecurityManager::getInstance()->getSecurityId(symbol);
@@ -217,7 +207,7 @@ void Server::onMessage(const FIX42::OrderCancelRequest& message, const FIX::Sess
 
     auto securityId = SecurityManager::getInstance()->getSecurityId(symbol);
 
-    Order order("", securityId, senderCompID, "", order_matcher::convertOrderSideFromQuickFix(side), order_matcher::OrderType::LIMIT, 0, 0);
+    Order order("", securityId, senderCompID, "", convertOrderSideFromQuickFix(side), order_matcher::OrderType::LIMIT, 0, 0);
     IncomingMessage incomingMessage(order, order_matcher::IncomingMessageType::CANCEL_ORDER, origClOrdID);
     m_dispatcher.pushMessage(incomingMessage);
 }

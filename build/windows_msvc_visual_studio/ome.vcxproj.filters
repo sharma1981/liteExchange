@@ -36,11 +36,11 @@
     <ClCompile Include="..\..\source\core\concurrent\thread_pool.cpp">
       <Filter>core\concurrent</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\core\memory\aligned_memory.cpp">
-      <Filter>core\memory</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\source\order_matcher\security_manager.cpp">
       <Filter>order_matcher</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\server\offline_order_entry.cpp">
+      <Filter>server</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -82,12 +82,6 @@
       <Filter>server</Filter>
     </ClInclude>
     <ClInclude Include="..\..\source\server\server_configuration.h">
-      <Filter>server</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\server\server_interface.h">
-      <Filter>server</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\server\server_interface_cli.h">
       <Filter>server</Filter>
     </ClInclude>
     <ClInclude Include="..\..\source\core\callstack.h">
@@ -234,24 +228,6 @@
     <ClInclude Include="..\..\source\core\compiler\unused.h">
       <Filter>core\compiler</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\core\memory\aligned.hpp">
-      <Filter>core\memory</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\core\memory\aligned_allocator.hpp">
-      <Filter>core\memory</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\core\memory\aligned_container_policy.hpp">
-      <Filter>core\memory</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\core\memory\aligned_memory.h">
-      <Filter>core\memory</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\core\memory\cpu_memory.h">
-      <Filter>core\memory</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\core\memory\virtual_memory.h">
-      <Filter>core\memory</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\source\core\concurrent\thread_pool_observer.h">
       <Filter>core\concurrent</Filter>
     </ClInclude>
@@ -266,6 +242,30 @@
     </ClInclude>
     <ClInclude Include="..\..\source\order_matcher\security_manager.h">
       <Filter>order_matcher</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\memory\cpu_memory.h">
+      <Filter>core\memory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\memory\heap_memory.h">
+      <Filter>core\memory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\memory\virtual_memory.h">
+      <Filter>core\memory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\design_patterns\pool.hpp">
+      <Filter>core\design_patterns</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\concurrent\spinlock.hpp">
+      <Filter>core\concurrent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\order_matcher\base_message.h">
+      <Filter>order_matcher</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\server\offline_order_entry.h">
+      <Filter>server</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\server\cli.h">
+      <Filter>server</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
