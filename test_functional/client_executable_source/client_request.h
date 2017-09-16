@@ -36,11 +36,11 @@ class ClientRequest
         FIX::Side m_side;
         std::string m_orderID;
         std::string m_origOrderID; // For cancel requests
-		std::string m_symbol;
+        std::string m_symbol;
         long m_quantity;
         double m_price;
         std::string m_senderID;
-		std::string m_targetID;
+        std::string m_targetID;
         std::atomic<bool> m_requestSent;
 };
 
