@@ -205,7 +205,7 @@ Once you start the ome executable , initially you will see a screen like this :
 The order matcher will process all the orders in that file bypassing FIX protocol and produce offline_order_entry_results.txt as result file.
 For an example offlone order file see :
 
-https://github.com/akhin/multithreaded_order_matching_engine/blob/master/sample_offline_order_file.txt
+https://github.com/akhin/multithreaded_order_matching_engine/blob/master/bin/sample_offline_order_file.txt
 
 
 The output of offline order matching will have timestamps with microsecond precision and FIX execution report messages as below :

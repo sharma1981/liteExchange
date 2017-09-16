@@ -59,12 +59,12 @@ Another note is that , the project uses MS CRT rather than MS Windows API ( pref
 **1. core::Lock :** This type uses default preffered OS locks, pthread_mutex on Linux and CRITICAL_SECTION on Windows. Therefore it is a mix of user mode spinlocks
 	and kernel mode sleeping mutex objects : 
 	
-		https://github.com/akhin/multithreaded_order_matching_engine/blob/master/source/core/concurrent/lock.hpp
+https://github.com/akhin/multithreaded_order_matching_engine/blob/master/source/core/concurrent/lock.hpp
 	
 **2. core::SpinLock :** This is the spinlock implementation and mostly used lock type in the project. However you can also set spin count and if spinning reaches a specific number,
 this lock can also yield : 
 
-		https://github.com/akhin/multithreaded_order_matching_engine/blob/master/source/core/concurrent/spinlock.hpp
+https://github.com/akhin/multithreaded_order_matching_engine/blob/master/source/core/concurrent/spinlock.hpp
 
 ## <a name="Actor"></a>**Actor/Active object pattern :** 
 
