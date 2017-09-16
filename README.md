@@ -8,7 +8,7 @@
     * [3. Build dependencies](#BuildDependencies)
 	* [4. Runtime dependencies](#RuntimeDependencies)
 	* [5. How to build](#HowToBuild)
-	* [6. Server parameters and running the server](#ServerParams)
+	* [6. Server parameters, running the server and offline order entry mode](#ServerParams)
 	* [7. Example log messages with FIX ](#ExampleLog)
 	* [8. Functional testing](#FunctionalTesting)
 	* [9. Unit testing with GoogleTest](#UnitTesting)
@@ -141,7 +141,7 @@ How to build the project on Windows with Visual Studio in command line :
     Go to "build/windows_msvc_command_line" directory
     Execute one of batch files : build_debug.bat or build_release.bat
 
-## <a name="ServerParams">**6. Server parameters and running the matching engine:** 
+## <a name="ServerParams">**6. Server parameters, running the server and offline order entry mode:** 
 
 The engine executable looks for "ome.ini" file. Here is the list of things you can set :
 
@@ -158,6 +158,7 @@ The engine executable looks for "ome.ini" file. Here is the list of things you c
 | CENTRAL_ORDER_BOOK_WORK_QUEUE_SIZE_PER_THREAD     | Queue size per worker thread in the thread pool               |
 | CENTRAL_ORDER_BOOK_THREAD_PRIORITY         		| OS-level priority of thread pool threads                      |
 | CENTRAL_ORDER_BOOK_THREAD_STACK_SIZE         		| Stack size for thread pool threads                            |
+| OFFLINE_ORDER_ENTRY_FILE							| Offline order entry mode see below for details 							|
         
 You will also need to specify security symbols. The order matching engine`s thread pool will create a worker thread for each symbol.
 For specifying symbols in ini file, you need to use brackets as  below :
@@ -196,7 +197,24 @@ Once you start the ome executable , initially you will see a screen like this :
 
                 display : Shows all order books in the central order book
                 quit : Shutdowns the server
-                
+
+**Offline Order Entry Mode :** The default mode is FIX server mode. However, if you specify an order file in ome.ini as below :
+
+					OFFLINE_ORDER_ENTRY_FILE=orders.txt
+					
+the order matcher will process all the orders in that file bypassing FIX protocol and produce offline_order_entry_results.txt as result file.
+For an example offlone order file see https://github.com/akhin/multithreaded_order_matching_engine/blob/master/sample_offline_order_file.txt
+The output of offline order matching will have timestamps with microsecond precision and FIX execution report messages as below :
+
+		16-09-2017 03:12:27.739729
+		8=FIX.4.29=6835=86=011=14=017=120=037=38=239=054=255=GOOGL150=0151=210=001
+		16-09-2017 03:12:27.755355
+		8=FIX.4.29=6835=86=011=14=017=220=037=38=139=054=155=GOOGL150=0151=110=255
+		16-09-2017 03:12:27.773486
+		8=FIX.4.29=7835=86=111=14=117=320=031=132=137=38=139=254=155=GOOGL150=2151=010=173
+		16-09-2017 03:12:27.777489
+			
+
 ## <a name="ExampleLog">**7. Example log message from the engine:** 
 
 The engine produces log messages below when it receives 1 buy order with quantity 1 and 1 sell order with quantity 1 for the same symbol :
@@ -235,8 +253,22 @@ The engine produces log messages below when it receives 1 buy order with quantit
 
 ## <a name="FunctionalTesting">**8. Functional testing:** 
 
-There is a prebuilt executable for both Linux and Windows which can send specified ask/bid orders to the order matching engine.
-   
+There is a prebuilt executable for both Linux and Windows which can send specified ask/bid orders to the order matching engine using CSV test case files.
+Test case files have orders in the below CSV format :
+
+		#
+		#	New order
+		#	
+		#		order_type symbol side target_id price quantity
+		#
+		#	Cancel order
+		#
+		#		order_type symbol side target_id orig_order_id
+		#
+		#
+		NEW_ORDER,GOOGL,SELL,OME,1,2
+		NEW_ORDER,GOOGL,BUY,OME,1,1
+		   
 Under "test_functional" directory :
    
 For Windows

@@ -2,6 +2,7 @@
 	* [Multithreading mode](#MTMode)
     * [Process priority](#ProcessPriority)
     * [Thread class](#ThreadClass)
+	* [Locks](#Locks)
 	* [Actor/Active object pattern](#Actor)
 	* [Thread safe containers](#ThreadSafeContainers)
 	* [Thread pool and CPU pinning](#ThreadPool)
@@ -52,6 +53,16 @@ Thread class source : https://github.com/akhin/cpp_multithreaded_order_matching_
 I particularly find setting names for threads very useful for debugging. A note here is that in Linux you can only use maximum 16 characters for thread names. In Windows side, the name support for threads in kernel doesn`t exist , it is a mechanism provided by Windows debuggers.
 
 Another note is that , the project uses MS CRT rather than MS Windows API ( preferring _beginthread over _beginthreadex. ) So we can specify a worker function with void* retval like pthreads
+
+## <a name="Locks"></a>**Locks :** 
+
+Currently supporting 2 lock types :
+
+	1. core::Lock : This type uses default preffered OS locks, pthread_mutex on Linux and CRITICAL_SECTION on Windows. Therefore it is a mix of user mode spinlocks
+	and kernel mode sleeping mutex objects : https://github.com/akhin/multithreaded_order_matching_engine/blob/master/source/core/concurrent/lock.hpp
+	
+	2. core::SpinLock : This is the spinlock implementation and mostly used lock type in the project. However you can also set spin count and if spinning reaches a specific number,
+	this lock can also yield : https://github.com/akhin/multithreaded_order_matching_engine/blob/master/source/core/concurrent/spinlock.hpp
 
 ## <a name="Actor"></a>**Actor/Active object pattern :** 
 
@@ -116,14 +127,6 @@ The classes that derived from "aligned" class are tasks, incoming messages and o
 As for the use aligned container policy, the unbounded queue based thread safe containers are derived from it :
 
 <img src="https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/documentation/class_diagram_aligned_container_policy.png">
-
-Cross platform aligned memory allocations: https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/source/core/memory/aligned_memory.cpp
-
-Aligned base class : https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/source/core/memory/aligned.hpp
-
-Aligned container policy : https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/source/core/memory/aligned_container_policy.hpp
-
-An aligned STL allocator : https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/source/core/memory/aligned_allocator.hpp
 
 ## <a name="Logging"></a>**Logging in multithreaded environment & thread safe singleton :** 
 

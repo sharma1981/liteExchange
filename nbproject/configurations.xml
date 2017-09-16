@@ -23,8 +23,10 @@
           <in>central_order_book.cpp</in>
           <in>order.cpp</in>
           <in>order_book.cpp</in>
+          <in>security_manager.cpp</in>
         </df>
         <df name="server">
+          <in>offline_order_entry.cpp</in>
           <in>server.cpp</in>
         </df>
         <in>server_main.cpp</in>
@@ -127,6 +129,20 @@
         </ccTool>
       </item>
       <item path="source/order_matcher/order_book.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="source/order_matcher/security_manager.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="source/server/offline_order_entry.cpp"
             ex="false"
             tool="1"
             flavor2="8">

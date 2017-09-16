@@ -9,6 +9,7 @@
 namespace core
 {
 
+// Not thread safe
 template<typename T, std::size_t initialCapacity, bool doubleSizeWhenGrowing=true>
 class Pool
 {

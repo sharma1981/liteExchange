@@ -3575,17 +3575,20 @@
             <in>queue_mpsc.hpp</in>
             <in>ring_buffer_mpmc.hpp</in>
             <in>ring_buffer_spsc_lockfree.hpp</in>
+            <in>spinlock.hpp</in>
             <in>task.h</in>
             <in>thread.cpp</in>
             <in>thread.h</in>
             <in>thread_pool.cpp</in>
             <in>thread_pool.h</in>
             <in>thread_pool_arguments.h</in>
+            <in>thread_pool_observer.h</in>
             <in>thread_priority.h</in>
           </df>
           <df name="design_patterns">
             <in>factory.hpp</in>
             <in>observer.hpp</in>
+            <in>pool.hpp</in>
             <in>singleton_dclp.hpp</in>
             <in>singleton_static.hpp</in>
             <in>visitor.hpp</in>
@@ -3603,11 +3606,9 @@
           </df>
           <df name="memory">
             <in>aligned.hpp</in>
-            <in>aligned_allocator.hpp</in>
-            <in>aligned_container_policy.hpp</in>
             <in>aligned_memory.cpp</in>
-            <in>aligned_memory.h</in>
             <in>cpu_memory.h</in>
+            <in>heap_memory.h</in>
             <in>virtual_memory.h</in>
           </df>
           <in>callstack.h</in>
@@ -3615,9 +3616,10 @@
           <in>config_file.h</in>
           <in>console_utility.h</in>
           <in>datetime_utility.h</in>
+          <in>environment.h</in>
           <in>file_utility.h</in>
-          <in>os_utility.h</in>
           <in>pretty_exception.h</in>
+          <in>self_process.h</in>
           <in>shared_memory.cpp</in>
           <in>shared_memory.h</in>
           <in>single_instance.cpp</in>
@@ -3628,6 +3630,7 @@
           <in>trace.h</in>
         </df>
         <df name="order_matcher">
+          <in>base_message.h</in>
           <in>central_order_book.cpp</in>
           <in>central_order_book.h</in>
           <in>central_order_book_observer.h</in>
@@ -3638,8 +3641,13 @@
           <in>order_book.cpp</in>
           <in>order_book.h</in>
           <in>outgoing_message.h</in>
+          <in>security_manager.cpp</in>
+          <in>security_manager.h</in>
         </df>
         <df name="server">
+          <in>cli.h</in>
+          <in>offline_order_entry.cpp</in>
+          <in>offline_order_entry.h</in>
           <in>quickfix_converter.h</in>
           <in>server.cpp</in>
           <in>server.h</in>
@@ -3647,8 +3655,6 @@
           <in>server_constants.h</in>
           <in>server_error.h</in>
           <in>server_incoming_message_dispatcher.h</in>
-          <in>server_interface.h</in>
-          <in>server_interface_cli.h</in>
           <in>server_outgoing_message_processor.h</in>
         </df>
         <in>precompiled_header.cpp</in>
@@ -3658,11 +3664,7 @@
       <df name="test_functional">
         <df name="client_executable">
           <df name="old_quickfix_log">
-            <df name="quickfix_log_12_08_2017_22_49_20">
-            </df>
-            <df name="quickfix_log_12_08_2017_22_49_21">
-            </df>
-            <df name="quickfix_log_12_08_2017_22_49_32">
+            <df name="quickfix_log_21_08_2017_21_39_30">
             </df>
           </df>
           <df name="quickfix_log">
@@ -3678,6 +3680,14 @@
       </df>
       <df name="test_unit">
         <df name="google_test_windows">
+          <df name="Debug">
+            <df name="google_t.BE460948.tlog">
+            </df>
+          </df>
+          <df name="Release">
+            <df name="google_t.BE460948.tlog">
+            </df>
+          </df>
         </df>
         <in>test.cpp</in>
         <in>test_concurrent.h</in>
@@ -3685,10 +3695,6 @@
         <in>test_utility.h</in>
       </df>
       <df name="utility_scripts">
-        <df name="profiler_linux_gprof">
-        </df>
-        <df name="profiler_windows_visual_studio">
-        </df>
       </df>
     </df>
   </logicalFolder>
