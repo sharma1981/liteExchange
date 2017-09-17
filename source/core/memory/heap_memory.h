@@ -97,7 +97,7 @@ class AlignedAllocator
             return &s;
         }
 
-            size_t max_size() const noexcept
+        size_t max_size() const noexcept
         {
             // The following has been carefully written to be independent of
             // the definition of size_t and to avoid signed/unsigned warnings.
@@ -107,8 +107,8 @@ class AlignedAllocator
             return (std::numeric_limits<int>::max)() / sizeof(value_type);
         }
 
-            // The following must be the same for all allocators.
-            template <typename U>
+        // The following must be the same for all allocators.
+        template <typename U>
         struct rebind
         {
             typedef AlignedAllocator<U> other;
@@ -125,18 +125,18 @@ class AlignedAllocator
             new (pv)T(t);
         }
 
-    #ifdef _MSC_VER
-    #pragma warning(push)
-    #pragma warning(disable: 4100) // unreferenced formal parameter
-    #endif
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable: 4100) // unreferenced formal parameter
+#endif
         void destroy(T * const p) const
         {
             p->~T();
         }
 
-    #ifdef _MSC_VER
-    #pragma warning(pop)
-    #endif
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
 
         // Returns true if and only if storage allocated from *this
         // can be deallocated from other, and vice versa.
@@ -145,8 +145,6 @@ class AlignedAllocator
         {
             return true;
         }
-
-
 
         // The following will be different for each allocator.
         T * allocate(const std::size_t n) const throw(std::runtime_error, std::length_error)
@@ -188,7 +186,8 @@ class AlignedAllocator
         }
 
         // The following will be the same for all allocators that ignore hints.
-        template <typename U> T * allocate(const size_t n, const U * ) const {
+        template <typename U> T * allocate(const size_t n, const U * ) const 
+		{
             return allocate(n);
         }
 

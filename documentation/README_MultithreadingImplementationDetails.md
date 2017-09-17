@@ -61,8 +61,8 @@ Another note is that , the project uses MS CRT rather than MS Windows API ( pref
 	
 https://github.com/akhin/multithreaded_order_matching_engine/blob/master/source/core/concurrent/lock.hpp
 	
-**2. core::SpinLock :** This is the spinlock implementation and mostly used lock type in the project. However you can also set spin count and if spinning reaches a specific number,
-this lock can also yield : 
+**2. core::SpinLock :** This is the spinlock implementation and mostly used lock type in the project. By default, yielding is on so when spin count reaches a specific number,
+this lock can also yield. This behaviour can be turned off : 
 
 https://github.com/akhin/multithreaded_order_matching_engine/blob/master/source/core/concurrent/spinlock.hpp
 
