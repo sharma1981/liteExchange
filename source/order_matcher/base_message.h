@@ -4,11 +4,12 @@
 #include <cstddef>
 #include <string>
 #include "order.h"
+#include <core/memory/heap_memory.h>
 
 namespace order_matcher
 {
 
-class BaseMessage
+class BaseMessage : public core::Aligned<>
 {
     public :
         BaseMessage(){}

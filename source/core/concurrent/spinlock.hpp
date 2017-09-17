@@ -11,39 +11,39 @@ namespace core
     class SpinLock : public BaseLock
     {
     public:
-		SpinLock() : m_yielding{ true }, m_spinCount{ BaseLock::DEFAULT_SPIN_COUNT }
+        SpinLock() : m_yielding{ true }, m_spinCount{ BaseLock::DEFAULT_SPIN_COUNT }
         {
             unlock();
         }
 
-		void setYieldingAndSpinCount(bool value, std::size_t spinCount)
-		{
-			m_yielding = value;
-			m_spinCount = spinCount;
-		}
+        void setYieldingAndSpinCount(bool value, std::size_t spinCount)
+        {
+            m_yielding = value;
+            m_spinCount = spinCount;
+        }
 
         void lock() override
         {
             while (true)
             {
-				if (m_yielding)
-				{
-					for (std::size_t i(0); i < m_spinCount; i++)
-					{
-						if (tryLock() == true)
-						{
-							return;
-						}
-					}
-					std::this_thread::yield(); // Where context switch happens
-				}
-				else
-				{
-					if (tryLock() == true)
-					{
-						return;
-					}
-				}
+                if (m_yielding)
+                {
+                    for (std::size_t i(0); i < m_spinCount; i++)
+                    {
+                        if (tryLock() == true)
+                        {
+                            return;
+                        }
+                    }
+                    std::this_thread::yield(); // Where context switch happens
+                }
+                else
+                {
+                    if (tryLock() == true)
+                    {
+                        return;
+                    }
+                }
             }
         }
 
@@ -63,7 +63,7 @@ namespace core
         }
 
     private:
-		bool m_yielding;
+        bool m_yielding;
         std::size_t m_spinCount;
         std::atomic_flag m_flag;
         // Move ctor deletion

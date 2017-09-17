@@ -4,7 +4,6 @@
 #include <string>
 #include "base_message.h"
 #include "order.h"
-#include <core/memory/heap_memory.h>
 #include <core/pretty_exception.h>
 
 namespace order_matcher
@@ -12,7 +11,7 @@ namespace order_matcher
 
 enum class OutgoingMessageType { ACCEPTED, FILLED, PARTIALLY_FIELD, CANCELED, REJECTED };
 
-class OutgoingMessage : public BaseMessage, public core::Aligned<>
+class OutgoingMessage : public BaseMessage
 {
     public:
 
