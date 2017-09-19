@@ -91,9 +91,9 @@ https://connect.microsoft.com/VisualStudio/feedbackdetail/view/938122/list-initi
 
 In the libraries side :
 
-- Boost 1.59 : Using only template based part of Boost and a compacted version of Boost is in dependencies directory, therefore you don`t need to do anything. The compacting command is as below  :
+- Boost 1.65 : Using only template based part of Boost and a compacted version of Boost is in dependencies directory, therefore you don`t need to do anything. The compacting command is as below  :
 
-                bcp --boost=c:\boost_1_59_0 any optional format c:\boost
+                bcp --boost=c:\boost_1_65_0 any optional format c:\boost
                         
 - QuickFix & its requirements : For Windows you don`t need to do anything as the static library for Windows is already in dependencies directory. For Linux you need to apply the steps on http://www.quickfixengine.org/quickfix/doc/html/install.html
 
@@ -390,7 +390,7 @@ utility/source_code_formatter.sh : It is a Bash script that scans all cpp,h,hpp 
 Inclusions : Using forward slash as it works for both Linux and Windows :
 
 ~~~C++
-		#include <core/concurrent/thread.h>
+		#include <core/concurrency/thread.h>
 ~~~
     
 Warning level used for GCC : -Wall
