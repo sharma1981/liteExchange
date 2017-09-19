@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-#include <core/concurrent/thread_priority.h>
+#include <core/concurrency/thread_priority.h>
 
 namespace core
 {

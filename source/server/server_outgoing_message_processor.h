@@ -15,7 +15,7 @@
 
 #include <core/file_utility.h>
 #include <core/compiler/likely.h>
-#include <core/concurrent/actor.h>
+#include <core/concurrency/actor.h>
 #include <core/logger/logger.h>
 #include <core/datetime_utility.h>
 

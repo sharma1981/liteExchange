@@ -30,17 +30,17 @@
     <ClCompile Include="..\..\source\core\logger\logger.cpp">
       <Filter>core\logger</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\core\concurrent\thread.cpp">
-      <Filter>core\concurrent</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\core\concurrent\thread_pool.cpp">
-      <Filter>core\concurrent</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\source\order_matcher\security_manager.cpp">
       <Filter>order_matcher</Filter>
     </ClCompile>
     <ClCompile Include="..\..\source\server\offline_order_entry.cpp">
       <Filter>server</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\core\concurrency\thread.cpp">
+      <Filter>core\concurrency</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\core\concurrency\thread_pool.cpp">
+      <Filter>core\concurrency</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -156,42 +156,6 @@
     <ClInclude Include="..\..\source\core\design_patterns\visitor.hpp">
       <Filter>core\design_patterns</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\core\concurrent\actor.h">
-      <Filter>core\concurrent</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\core\concurrent\base_lock.h">
-      <Filter>core\concurrent</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\core\concurrent\lock.hpp">
-      <Filter>core\concurrent</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\core\concurrent\queue_mpmc.hpp">
-      <Filter>core\concurrent</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\core\concurrent\queue_mpsc.hpp">
-      <Filter>core\concurrent</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\core\concurrent\ring_buffer_mpmc.hpp">
-      <Filter>core\concurrent</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\core\concurrent\ring_buffer_spsc_lockfree.hpp">
-      <Filter>core\concurrent</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\core\concurrent\task.h">
-      <Filter>core\concurrent</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\core\concurrent\thread.h">
-      <Filter>core\concurrent</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\core\concurrent\thread_pool.h">
-      <Filter>core\concurrent</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\core\concurrent\thread_pool_arguments.h">
-      <Filter>core\concurrent</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\core\concurrent\thread_priority.h">
-      <Filter>core\concurrent</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\source\core\compiler\alignas.h">
       <Filter>core\compiler</Filter>
     </ClInclude>
@@ -228,9 +192,6 @@
     <ClInclude Include="..\..\source\core\compiler\unused.h">
       <Filter>core\compiler</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\core\concurrent\thread_pool_observer.h">
-      <Filter>core\concurrent</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\source\core\self_process.h">
       <Filter>core</Filter>
     </ClInclude>
@@ -255,9 +216,6 @@
     <ClInclude Include="..\..\source\core\design_patterns\pool.hpp">
       <Filter>core\design_patterns</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\core\concurrent\spinlock.hpp">
-      <Filter>core\concurrent</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\source\order_matcher\base_message.h">
       <Filter>order_matcher</Filter>
     </ClInclude>
@@ -266,6 +224,51 @@
     </ClInclude>
     <ClInclude Include="..\..\source\server\cli.h">
       <Filter>server</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\noncopyable.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\concurrency\actor.h">
+      <Filter>core\concurrency</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\concurrency\base_lock.h">
+      <Filter>core\concurrency</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\concurrency\lock.hpp">
+      <Filter>core\concurrency</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\concurrency\queue_mpmc.hpp">
+      <Filter>core\concurrency</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\concurrency\queue_mpsc.hpp">
+      <Filter>core\concurrency</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\concurrency\ring_buffer_mpmc.hpp">
+      <Filter>core\concurrency</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\concurrency\ring_buffer_spsc_lockfree.hpp">
+      <Filter>core\concurrency</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\concurrency\spinlock.hpp">
+      <Filter>core\concurrency</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\concurrency\task.h">
+      <Filter>core\concurrency</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\concurrency\thread.h">
+      <Filter>core\concurrency</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\concurrency\thread_pool.h">
+      <Filter>core\concurrency</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\concurrency\thread_pool_arguments.h">
+      <Filter>core\concurrency</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\concurrency\thread_pool_observer.h">
+      <Filter>core\concurrency</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\concurrency\thread_priority.h">
+      <Filter>core\concurrency</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -284,14 +287,14 @@
     <Filter Include="core\design_patterns">
       <UniqueIdentifier>{18b8a0c7-f1d1-4e94-ae91-b1da81cff11e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="core\concurrent">
-      <UniqueIdentifier>{09befdce-9098-4869-b853-4fa003799909}</UniqueIdentifier>
-    </Filter>
     <Filter Include="core\compiler">
       <UniqueIdentifier>{ccefa686-4571-47a9-b73c-ed5e21ade1ce}</UniqueIdentifier>
     </Filter>
     <Filter Include="core\memory">
       <UniqueIdentifier>{1e8f2e81-370f-49de-a4a4-771ed19819da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="core\concurrency">
+      <UniqueIdentifier>{09befdce-9098-4869-b853-4fa003799909}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

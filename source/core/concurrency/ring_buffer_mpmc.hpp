@@ -6,9 +6,9 @@
 #include <condition_variable>
 #include <memory>
 #include <utility>
-#include <boost/noncopyable.hpp>
+#include <core/noncopyable.h>
 
-#include <core/concurrent/spinlock.hpp>
+#include <core/concurrency/spinlock.hpp>
 
 namespace core
 {
@@ -16,7 +16,7 @@ namespace core
 // Bounded queue ( ring buffer ) multi producer multi consumer
 // Uses mutex and cond variable
 template<typename T>
-class RingBufferMPMC : public boost::noncopyable
+class RingBufferMPMC : public core::NonCopyable
 {
     public:
 

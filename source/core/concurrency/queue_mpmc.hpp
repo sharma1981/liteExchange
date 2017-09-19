@@ -1,10 +1,10 @@
 #ifndef _QUEUE_MPMC_H_
 #define _QUEUE_MPMC_H_
 
-#include <boost/noncopyable.hpp>
+#include <core/noncopyable.h>
 #include <mutex>
 
-#include <core/concurrent/spinlock.hpp>
+#include <core/concurrency/spinlock.hpp>
 #include <core/memory/heap_memory.h>
 
 namespace core
@@ -14,7 +14,7 @@ namespace core
 // Uses fine-grained locking to minimise lock contention :
 // 1 mutex for the tail , 1 mutex for the head
 template< typename T>
-class QueueMPMC : public boost::noncopyable, AlignedContainerPolicy<T>
+class QueueMPMC : public core::NonCopyable, AlignedContainerPolicy<T>
 {
     public:
 

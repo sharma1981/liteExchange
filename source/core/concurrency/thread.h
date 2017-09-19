@@ -12,7 +12,7 @@
 #include <utility>
 #include <string>
 #include <memory>
-#include <boost/noncopyable.hpp>
+#include <core/noncopyable.h>
 
 #include "thread_priority.h"
 #include "task.h"
@@ -24,7 +24,7 @@ namespace core
 #define THREAD_WAIT_TIMEOUT 5000
 
 // Non copyable & Non movable
-class Thread : public boost::noncopyable
+class Thread : public core::NonCopyable
 {
     public :
 

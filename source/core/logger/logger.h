@@ -4,9 +4,9 @@
 #include <cstddef>
 #include <string>
 
-#include <core/concurrent/lock.hpp>
-#include <core/concurrent/actor.h>
-#include <core/concurrent/ring_buffer_mpmc.hpp>
+#include <core/concurrency/lock.hpp>
+#include <core/concurrency/actor.h>
+#include <core/concurrency/ring_buffer_mpmc.hpp>
 
 #include <core/design_patterns/singleton_dclp.hpp>
 

@@ -5,7 +5,7 @@
 
 TEST(Utility, SingleInstance)
 {
-	core::SingleInstance singleton;
+    core::SingleInstance singleton;
 
     bool b = singleton();
 
@@ -14,7 +14,7 @@ TEST(Utility, SingleInstance)
 
 TEST(Utility, ConfigFile)
 {
-	core::ConfigFile x;
+    core::ConfigFile x;
     x.loadFromFile("./test_config.txt");
 
     string val;
@@ -34,6 +34,6 @@ TEST(Utility, ConfigFile)
 TEST(Utility, ReplaceInString)
 {
     std::string orig = "xxxyyxx";
-	core::replaceInString(orig, "yy", "jjj");
+    core::replaceInString(orig, "yy", "jjj");
     EXPECT_STREQ("xxxjjjxx", orig.c_str()); // string equal
 }

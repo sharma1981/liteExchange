@@ -1,7 +1,7 @@
 #ifndef _SINGLETON_STATIC_H_
 #define _SINGLETON_STATIC_H_
 
-#include <boost/noncopyable.hpp>
+#include <core/noncopyable.h>
 
 /*
     Scott Meyers` singleton
@@ -24,7 +24,7 @@ namespace core
 {
 
 template<typename T>
-class SingletonStatic : public boost::noncopyable
+class SingletonStatic : public core::NonCopyable
 {
 public:
     static T& getInstance()

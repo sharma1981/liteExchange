@@ -9,9 +9,9 @@
 #include <order_matcher/incoming_message.h>
 #include <order_matcher/central_order_book.h>
 
-#include <core/concurrent/thread.h>
-#include <core/concurrent/actor.h>
-#include <core/concurrent/queue_mpsc.hpp>
+#include <core/concurrency/thread.h>
+#include <core/concurrency/actor.h>
+#include <core/concurrency/queue_mpsc.hpp>
 
 #include <core/logger/logger.h>
 

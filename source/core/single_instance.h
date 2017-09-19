@@ -3,7 +3,7 @@
 
 #include <cstdint>
 #include <string>
-#include <boost/noncopyable.hpp>
+#include <core/noncopyable.h>
 
 #ifdef _WIN32
 #include <windows.h>
@@ -11,7 +11,7 @@
 
 namespace core
 {
-class SingleInstance : public boost::noncopyable
+class SingleInstance : public core::NonCopyable
 {
     public:
 

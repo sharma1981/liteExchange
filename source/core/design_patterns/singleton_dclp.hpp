@@ -1,8 +1,8 @@
 #ifndef _SINGLETON_DCLP_H_
 #define _SINGLETON_DCLP_H_
 
-#include <boost/noncopyable.hpp>
-#include <core/concurrent/spinlock.hpp>
+#include <core/noncopyable.h>
+#include <core/concurrency/spinlock.hpp>
 #include <atomic>
 #include <mutex>
 
@@ -15,7 +15,7 @@
 namespace core
 {
 template <class T>
-class SingletonDCLP : public boost::noncopyable
+class SingletonDCLP : public core::NonCopyable
 {
     public:
         static T * getInstance()

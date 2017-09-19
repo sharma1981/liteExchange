@@ -3567,7 +3567,7 @@
             <in>thread_local.h</in>
             <in>unused.h</in>
           </df>
-          <df name="concurrent">
+          <df name="concurrency">
             <in>actor.h</in>
             <in>base_lock.h</in>
             <in>lock.hpp</in>
@@ -3584,6 +3584,10 @@
             <in>thread_pool_arguments.h</in>
             <in>thread_pool_observer.h</in>
             <in>thread_priority.h</in>
+          </df>
+          <df name="concurrent">
+            <in>thread.cpp</in>
+            <in>thread_pool.cpp</in>
           </df>
           <df name="design_patterns">
             <in>factory.hpp</in>
@@ -3605,7 +3609,6 @@
             <in>logger_sinks.hpp</in>
           </df>
           <df name="memory">
-            <in>aligned.hpp</in>
             <in>aligned_memory.cpp</in>
             <in>cpu_memory.h</in>
             <in>heap_memory.h</in>
@@ -3618,6 +3621,7 @@
           <in>datetime_utility.h</in>
           <in>environment.h</in>
           <in>file_utility.h</in>
+          <in>noncopyable.h</in>
           <in>pretty_exception.h</in>
           <in>self_process.h</in>
           <in>shared_memory.cpp</in>
@@ -3663,10 +3667,6 @@
       </df>
       <df name="test_functional">
         <df name="client_executable">
-          <df name="old_quickfix_log">
-            <df name="quickfix_log_21_08_2017_21_39_30">
-            </df>
-          </df>
           <df name="quickfix_log">
           </df>
         </df>
@@ -3680,17 +3680,9 @@
       </df>
       <df name="test_unit">
         <df name="google_test_windows">
-          <df name="Debug">
-            <df name="google_t.BE460948.tlog">
-            </df>
-          </df>
-          <df name="Release">
-            <df name="google_t.BE460948.tlog">
-            </df>
-          </df>
         </df>
         <in>test.cpp</in>
-        <in>test_concurrent.h</in>
+        <in>test_concurrency.h</in>
         <in>test_order_matcher.h</in>
         <in>test_utility.h</in>
       </df>

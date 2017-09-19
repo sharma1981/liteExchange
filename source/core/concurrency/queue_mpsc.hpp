@@ -1,11 +1,11 @@
 #ifndef _QUEUE_MPSC_H_
 #define _QUEUE_MPSC_H_
 
-#include <boost/noncopyable.hpp>
+#include <core/noncopyable.h>
 #include <mutex>
 #include <condition_variable>
 
-#include <core/concurrent/lock.hpp>
+#include <core/concurrency/lock.hpp>
 #include <core/memory/heap_memory.h>
 
 namespace core
@@ -13,7 +13,7 @@ namespace core
 
 // Unbounded multi producer single consumer queue
 template<typename T>
-class QueueMPSC : public boost::noncopyable, AlignedContainerPolicy<T>
+class QueueMPSC : public core::NonCopyable, AlignedContainerPolicy<T>
 {
     public:
 

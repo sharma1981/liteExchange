@@ -1,5 +1,5 @@
 #include "config_file.h"
-#include <boost/tokenizer.hpp>
+#include <core/string_utility.h>
 #include <boost/format.hpp>
 #include <fstream>
 #include <algorithm>
@@ -26,7 +26,6 @@ void ConfigFile::loadFromFile(const string& fileName)
 
     file.seekg(0, std::ios::beg);
     string line;
-    boost::char_separator<char> seperator("=");
     unsigned long lineNumber(0);
 
     while ( std::getline(file, line) )
@@ -59,12 +58,9 @@ void ConfigFile::loadFromFile(const string& fileName)
             THROW_PRETTY_RUNTIME_EXCEPTION(exceptionMessage)
         }
 
-        boost::tokenizer<boost::char_separator<char>> tokenizer(line, seperator);
-        auto iter = tokenizer.begin();
-
-        string attribute = *iter;
-        ++iter;
-        string value = *iter;
+        auto tokens = core::split(line, '=');
+        string attribute = tokens[0];
+        string value = tokens[1];
         m_dictionary.insert( std::make_pair(attribute, value) );
     }
 

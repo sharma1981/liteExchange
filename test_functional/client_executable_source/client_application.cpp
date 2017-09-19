@@ -14,7 +14,7 @@ using namespace std;
 #include <core/pretty_exception.h>
 #include <core/datetime_utility.h>
 #include <core/file_utility.h>
-#include <core/concurrent/thread.h>
+#include <core/concurrency/thread.h>
 
 #include <boost/format.hpp>
 

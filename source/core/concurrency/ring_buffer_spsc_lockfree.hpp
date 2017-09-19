@@ -5,7 +5,7 @@
 #include <atomic>
 #include <utility>
 #include <memory>
-#include <boost/noncopyable.hpp>
+#include <core/noncopyable.h>
 
 namespace core
 {
@@ -13,7 +13,7 @@ namespace core
 // Bounded queue ( ring buffer ) single producer single consumer queue
 // Uses atomic operations with acquire-release memory ordering
 template<typename T>
-class RingBufferSPSCLockFree : public boost::noncopyable
+class RingBufferSPSCLockFree : public core::NonCopyable
 {
     public:
 

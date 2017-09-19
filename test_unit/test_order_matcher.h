@@ -1,12 +1,14 @@
 #include <order_matcher/order.h>
+#include <order_matcher/security_manager.h>
 #include <order_matcher/order_book.h>
 #include <string>
 #include <queue>
 
 TEST(OrderMatcher, OrderBook)
 {
+    auto securityId = order_matcher::SecurityManager::getInstance()->addSecurity("TEST");
+
     std::string clientOrderID = "1";
-    std::string symbol = "TEST";
     std::string client = "test_client";
     std::string server = "test_server";
     order_matcher::OrderSide buySide = order_matcher::OrderSide::BUY;
@@ -23,11 +25,11 @@ TEST(OrderMatcher, OrderBook)
     double buyer2Quantity = 1;
 
 
-    order_matcher::Order orderSell(clientOrderID, symbol, "test_client", "test_server", sellSide, orderType, supplierPrice, supplierQuantity);
-    order_matcher::Order orderBuy1(clientOrderID, symbol, "test_client", "test_server", buySide, orderType, buyer1Price, buyer1Quantity);
-    order_matcher::Order orderBuy2(clientOrderID, symbol, "test_client", "test_server", buySide, orderType, buyer2Price, buyer2Quantity);
+    order_matcher::Order orderSell(clientOrderID, securityId, "test_client", "test_server", sellSide, orderType, supplierPrice, supplierQuantity);
+    order_matcher::Order orderBuy1(clientOrderID, securityId, "test_client", "test_server", buySide, orderType, buyer1Price, buyer1Quantity);
+    order_matcher::Order orderBuy2(clientOrderID, securityId, "test_client", "test_server", buySide, orderType, buyer2Price, buyer2Quantity);
 
-    order_matcher::OrderBook book(symbol);
+    order_matcher::OrderBook book;
 
     book.insert(orderSell);
     book.insert(orderBuy1);

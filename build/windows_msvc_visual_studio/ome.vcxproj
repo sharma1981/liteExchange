@@ -90,8 +90,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\source\core\concurrent\thread.cpp" />
-    <ClCompile Include="..\..\source\core\concurrent\thread_pool.cpp" />
+    <ClCompile Include="..\..\source\core\concurrency\thread.cpp" />
+    <ClCompile Include="..\..\source\core\concurrency\thread_pool.cpp" />
     <ClCompile Include="..\..\source\core\config_file.cpp" />
     <ClCompile Include="..\..\source\core\logger\logger.cpp" />
     <ClCompile Include="..\..\source\core\shared_memory.cpp" />
@@ -123,20 +123,20 @@
     <ClInclude Include="..\..\source\core\compiler\preprocessor.h" />
     <ClInclude Include="..\..\source\core\compiler\thread_local.h" />
     <ClInclude Include="..\..\source\core\compiler\unused.h" />
-    <ClInclude Include="..\..\source\core\concurrent\actor.h" />
-    <ClInclude Include="..\..\source\core\concurrent\base_lock.h" />
-    <ClInclude Include="..\..\source\core\concurrent\lock.hpp" />
-    <ClInclude Include="..\..\source\core\concurrent\queue_mpmc.hpp" />
-    <ClInclude Include="..\..\source\core\concurrent\queue_mpsc.hpp" />
-    <ClInclude Include="..\..\source\core\concurrent\ring_buffer_mpmc.hpp" />
-    <ClInclude Include="..\..\source\core\concurrent\ring_buffer_spsc_lockfree.hpp" />
-    <ClInclude Include="..\..\source\core\concurrent\spinlock.hpp" />
-    <ClInclude Include="..\..\source\core\concurrent\task.h" />
-    <ClInclude Include="..\..\source\core\concurrent\thread.h" />
-    <ClInclude Include="..\..\source\core\concurrent\thread_pool.h" />
-    <ClInclude Include="..\..\source\core\concurrent\thread_pool_arguments.h" />
-    <ClInclude Include="..\..\source\core\concurrent\thread_pool_observer.h" />
-    <ClInclude Include="..\..\source\core\concurrent\thread_priority.h" />
+    <ClInclude Include="..\..\source\core\concurrency\actor.h" />
+    <ClInclude Include="..\..\source\core\concurrency\base_lock.h" />
+    <ClInclude Include="..\..\source\core\concurrency\lock.hpp" />
+    <ClInclude Include="..\..\source\core\concurrency\queue_mpmc.hpp" />
+    <ClInclude Include="..\..\source\core\concurrency\queue_mpsc.hpp" />
+    <ClInclude Include="..\..\source\core\concurrency\ring_buffer_mpmc.hpp" />
+    <ClInclude Include="..\..\source\core\concurrency\ring_buffer_spsc_lockfree.hpp" />
+    <ClInclude Include="..\..\source\core\concurrency\spinlock.hpp" />
+    <ClInclude Include="..\..\source\core\concurrency\task.h" />
+    <ClInclude Include="..\..\source\core\concurrency\thread.h" />
+    <ClInclude Include="..\..\source\core\concurrency\thread_pool.h" />
+    <ClInclude Include="..\..\source\core\concurrency\thread_pool_arguments.h" />
+    <ClInclude Include="..\..\source\core\concurrency\thread_pool_observer.h" />
+    <ClInclude Include="..\..\source\core\concurrency\thread_priority.h" />
     <ClInclude Include="..\..\source\core\config_file.h" />
     <ClInclude Include="..\..\source\core\console_utility.h" />
     <ClInclude Include="..\..\source\core\datetime_utility.h" />
@@ -159,6 +159,7 @@
     <ClInclude Include="..\..\source\core\memory\cpu_memory.h" />
     <ClInclude Include="..\..\source\core\memory\heap_memory.h" />
     <ClInclude Include="..\..\source\core\memory\virtual_memory.h" />
+    <ClInclude Include="..\..\source\core\noncopyable.h" />
     <ClInclude Include="..\..\source\core\pretty_exception.h" />
     <ClInclude Include="..\..\source\core\self_process.h" />
     <ClInclude Include="..\..\source\core\shared_memory.h" />

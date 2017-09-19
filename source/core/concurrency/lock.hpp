@@ -24,7 +24,7 @@
 
 #include <string>
 
-#include <core/concurrent/base_lock.h>
+#include <core/concurrency/base_lock.h>
 
 namespace core
 {

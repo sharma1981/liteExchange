@@ -9,8 +9,8 @@
 #include <core/config_file.h>
 #include <core/logger/logger_sink_factory.hpp>
 
-#include <core/concurrent/thread_pool_arguments.h>
-#include <core/concurrent/thread_priority.h>
+#include <core/concurrency/thread_pool_arguments.h>
+#include <core/concurrency/thread_priority.h>
 
 class ServerConfiguration
 {

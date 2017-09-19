@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-#include <boost/noncopyable.hpp>
+#include <core/noncopyable.h>
 
 #include <order_matcher/central_order_book.h>
 #include <order_matcher/central_order_book_observer.h>
@@ -23,7 +23,7 @@
 #include <quickfix/fix42//NewOrderSingle.h>
 #include <quickfix/fix42/OrderCancelRequest.h>
 
-class Server : public boost::noncopyable, public FIX::Application, public FIX::MessageCracker
+class Server : public core::NonCopyable, public FIX::Application, public FIX::MessageCracker
 {
     public:
         Server(const std::string& fixEngineConfigFile, const ServerConfiguration& serverConfiguration);

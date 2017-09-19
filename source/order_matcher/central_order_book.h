@@ -11,22 +11,22 @@
 #include <cstddef>
 #include <unordered_map>
 
-#include <boost/noncopyable.hpp>
+#include <core/noncopyable.h>
 
-#include <core/concurrent/thread.h>
-#include <core/concurrent/queue_mpmc.hpp>
-#include <core/concurrent/thread_pool.h>
+#include <core/concurrency/thread.h>
+#include <core/concurrency/queue_mpmc.hpp>
+#include <core/concurrency/thread_pool.h>
 #include <core/design_patterns/visitor.hpp>
 #include <core/design_patterns/observer.hpp>
 
-#include <core/concurrent/thread_pool_observer.h>
+#include <core/concurrency/thread_pool_observer.h>
 
 namespace order_matcher
 {
 
 using OutgoingMessageQueue = core::QueueMPMC<OutgoingMessage>;
 
-class CentralOrderBook : public boost::noncopyable, public core::Visitable<Order>, public core::Observable<CentralOrderBook>
+class CentralOrderBook : public core::NonCopyable, public core::Visitable<Order>, public core::Observable<CentralOrderBook>
 {
     public:
         CentralOrderBook() : m_isMatchingMultithreaded{ false } {}

@@ -46,9 +46,9 @@ As for Windows side, you can see both names of threads and different thread affi
 
 <img src="https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/documentation/thread_names_affinities.png">
 
-Thread class header : https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/source/core/concurrent/thread.h
+Thread class header : https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/source/core/concurrency/thread.h
 
-Thread class source : https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/source/core/concurrent/thread.cpp
+Thread class source : https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/source/core/concurrency/thread.cpp
 
 I particularly find setting names for threads very useful for debugging. A note here is that in Linux you can only use maximum 16 characters for thread names. In Windows side, the name support for threads in kernel doesn`t exist , it is a mechanism provided by Windows debuggers.
 
@@ -59,12 +59,12 @@ Another note is that , the project uses MS CRT rather than MS Windows API ( pref
 **1. core::Lock :** This type uses default preffered OS locks, pthread_mutex on Linux and CRITICAL_SECTION on Windows. Therefore it is a mix of user mode spinlocks
 	and kernel mode sleeping mutex objects : 
 	
-https://github.com/akhin/multithreaded_order_matching_engine/blob/master/source/core/concurrent/lock.hpp
+https://github.com/akhin/multithreaded_order_matching_engine/blob/master/source/core/concurrency/lock.hpp
 	
 **2. core::SpinLock :** This is the spinlock implementation and mostly used lock type in the project. By default, yielding is on so when spin count reaches a specific number,
 this lock can also yield. This behaviour can be turned off : 
 
-https://github.com/akhin/multithreaded_order_matching_engine/blob/master/source/core/concurrent/spinlock.hpp
+https://github.com/akhin/multithreaded_order_matching_engine/blob/master/source/core/concurrency/spinlock.hpp
 
 ## <a name="Actor"></a>**Actor/Active object pattern :** 
 
@@ -76,7 +76,7 @@ I find this approach very convenient when designing mutithreaded objects that wi
 
 If you look at their code, you will notice that what you do is basically deriving from concurrent::Actor class and then override virtual run method :
 
-Actor base class : https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/source/core/concurrent/actor.h
+Actor base class : https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/source/core/concurrency/actor.h
 
 Logger : https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/source/core/logger/logger.cpp
 
@@ -100,19 +100,19 @@ https://nativecoding.wordpress.com/2015/08/30/multithreading-lock-contention-and
 
 Finally the incoming message dispatcher demultiplexes messages coming from multithreaded FIX server. For the time being it is not lockless , however the main consideration in its implementation is that it provides a method called "flush" rather than pop or dequeue. The reason being is since it will be consumed by only one consumer , there is no need to copy all nodes in the internal linked list but actually we can flush all incoming messages with a basic pointer swap :
 
-https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/source/core/concurrent/queue_mpsc.hpp
+https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/source/core/concurrency/queue_mpsc.hpp
 
 ## <a name="ThreadPool"></a>**Task, Thread pool, CPU pinning and hyperthreading considerations  :** 
 
 The task class packages all kind of tasks and return values. For flexibility it uses C++11 variadic templates and std::function and std::bind , and as for flexibility for the return values it uses both boost::optional and boost::any :
 
-https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/source/core/concurrent/task.h
+https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/source/core/concurrency/task.h
 
 One of the main considerations of this project was seeing how we can gain performance by pinning each thread to CPU cores and also experiments affects of hyperthreading. Therefore the thread pool class is able to pin threads to CPU cores and if it is told that to avoid hyperthreading , it will pin threads to cores with only even indexes. ( Odd indexed CPU cores will be logical processors ).
 
 Thread pool is not applying anything like work stealing and work load balancing. The main reason for that , each worker thread is already assigned to a specific security symbol. Therefore work items of worker threads can not be shared. Here you can see the thread pool`s source :
 
-https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/source/core/concurrent/thread_pool.cpp
+https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/source/core/concurrency/thread_pool.cpp
 
 ## <a name="Allocator"></a>**CPU-CacheLine Aligned Memory allocations :** 
 
@@ -162,11 +162,11 @@ Basically atomic variables guarantees you safety. In the article above , you can
 
 "Is shutting down" flag in the thread pool as the thread pool itself should be thread safe :
 
-https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/source/core/concurrent/thread_pool.h
+https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/source/core/concurrency/thread_pool.h
 
 "Is finishing" flag in actor class :
 
-https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/source/core/concurrent/actor.h
+https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/source/core/concurrency/actor.h
 
 2 flags in the logger ( file_logging_enabled and console_loging_enabled ) are atomics :
 

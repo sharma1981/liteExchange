@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-#include <boost/noncopyable.hpp>
+#include <core/noncopyable.h>
 
 #include <order_matcher/central_order_book.h>
 #include <order_matcher/incoming_message.h>

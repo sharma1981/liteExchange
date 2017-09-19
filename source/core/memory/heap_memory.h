@@ -186,8 +186,8 @@ class AlignedAllocator
         }
 
         // The following will be the same for all allocators that ignore hints.
-        template <typename U> T * allocate(const size_t n, const U * ) const 
-		{
+        template <typename U> T * allocate(const size_t n, const U * ) const
+        {
             return allocate(n);
         }
 

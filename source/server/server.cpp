@@ -19,7 +19,7 @@
 
 #include <boost/format.hpp>
 
-#include <core/concurrent/thread_priority.h>
+#include <core/concurrency/thread_priority.h>
 
 #include <order_matcher/order.h>
 #include <order_matcher/security_manager.h>

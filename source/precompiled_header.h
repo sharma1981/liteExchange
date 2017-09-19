@@ -47,8 +47,6 @@
 // BOOST
 #include <boost/optional.hpp>
 #include <boost/any.hpp>
-#include <boost/noncopyable.hpp>
-#include <boost/tokenizer.hpp>
 #include <boost/format.hpp>
 // LINUX
 #ifdef __linux__
