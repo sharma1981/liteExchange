@@ -8,8 +8,8 @@
 
 namespace core
 {
-    class SpinLock : public BaseLock
-    {
+class SpinLock : public BaseLock
+{
     public:
         SpinLock() : m_yielding{ true }, m_spinCount{ BaseLock::DEFAULT_SPIN_COUNT }
         {
@@ -70,7 +70,7 @@ namespace core
         SpinLock(SpinLock&& other) = delete;
         // Move assignment operator deletion
         SpinLock& operator=(SpinLock&& other) = delete;
-    };
+};
 
 } // namespace
 

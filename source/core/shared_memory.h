@@ -15,39 +15,39 @@
 namespace core
 {
 
-    class SharedMemory
-    {
-        public:
-            SharedMemory();
-            ~SharedMemory();
+class SharedMemory
+{
+	public:
+		SharedMemory();
+		~SharedMemory();
 
-            bool open(std::string name, std::size_t maxSize = DEFAULT_VIRTUAL_MEMORY_PAGE_SIZE, bool createFile = false, bool ipc = false, bool buffered = false);
-            void write(void* buffer , std::size_t size);
-            void close();
+		bool open(std::string name, std::size_t maxSize = DEFAULT_VIRTUAL_MEMORY_PAGE_SIZE, bool createFile = false, bool ipc = false, bool buffered = false);
+		void write(void* buffer , std::size_t size);
+		void close();
 
-            std::size_t getSize() const { return m_size;  }
-            bool isOpen() const
-            {
-                bool ret = false;
+		std::size_t getSize() const { return m_size;  }
+		bool isOpen() const
+		{
+			bool ret = false;
 #ifdef __linux__
-                ret = m_buffer != nullptr;
+			ret = m_buffer != nullptr;
 #elif _WIN32
-                ret = m_handle != INVALID_HANDLE_VALUE;
+			ret = m_handle != INVALID_HANDLE_VALUE;
 #endif
-                return ret;
-            }
+			return ret;
+		}
 
-        private :
-            char* m_buffer;
-            std::size_t m_size;
-            std::size_t m_writtenSize;
+	private :
+		char* m_buffer;
+		std::size_t m_size;
+		std::size_t m_writtenSize;
 #ifdef __linux__
-            int m_fileDescriptor;
+		int m_fileDescriptor;
 #elif _WIN32
-            HANDLE m_handle;
-            HANDLE m_fileHandle;
+		HANDLE m_handle;
+		HANDLE m_fileHandle;
 #endif
-    };
+};
 
 } // namespace
 

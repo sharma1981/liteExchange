@@ -43,7 +43,6 @@ inline std::size_t getCPUCacheLineSize()
             break;
         }
     }
-
 #endif
     return lineSize;
 }

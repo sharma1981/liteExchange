@@ -12,8 +12,6 @@
 #include <unistd.h>
 #endif
 
-#include "os_utility.h"
-
 namespace core
 {
 
