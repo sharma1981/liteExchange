@@ -14,9 +14,8 @@ using namespace std;
 #include <core/pretty_exception.h>
 #include <core/datetime_utility.h>
 #include <core/file_utility.h>
+#include <core/string_utility.h>
 #include <core/concurrency/thread.h>
-
-#include <boost/format.hpp>
 
 
 #define ONE_SECOND 1000
@@ -30,13 +29,13 @@ ClientApplication::ClientApplication(const string& csvTestFile, const string& fi
 
     if (!core::doesFileExist(m_fixEngineConfigFile))
     {
-        auto exceptionMessage = boost::str(boost::format("FIX configuration file %s does not exist") % m_fixEngineConfigFile);
+        auto exceptionMessage = core::format("FIX configuration file %s does not exist", m_fixEngineConfigFile);
         THROW_PRETTY_RUNTIME_EXCEPTION(exceptionMessage)
     }
 
     if (!core::doesFileExist(csvTestFile))
     {
-        auto exceptionMessage = boost::str(boost::format("Test file %s does not exist") % csvTestFile);
+        auto exceptionMessage = core::format("Test file %s does not exist", csvTestFile);
         THROW_PRETTY_RUNTIME_EXCEPTION(exceptionMessage)
     }
 
@@ -169,7 +168,7 @@ void ClientApplication::waitTillAllRequestsComplete()
 
         if (secondsWaited >= SERVER_PROCESS_TIMEOUT)
         {
-            THROW_PRETTY_RUNTIME_EXCEPTION(std::string("Timeout , when waiting responses from the server , check the server logs"))
+            THROW_PRETTY_RUNTIME_EXCEPTION("Timeout , when waiting responses from the server , check the server logs")
         }
     }
 }
@@ -185,7 +184,7 @@ void ClientApplication::waitTillSessionStarts()
 
         if (secondsWaited >= SESSION_TIMEOUT)
         {
-            THROW_PRETTY_RUNTIME_EXCEPTION(std::string("Timeout , could not establish a session with the server"))
+            THROW_PRETTY_RUNTIME_EXCEPTION("Timeout , could not establish a session with the server")
         }
     }
 }
@@ -196,7 +195,7 @@ void ClientApplication::loadRequests(const std::string& csvTestFile)
     ifstream file(csvTestFile);
     if (!file.good())
     {
-        auto exceptionMessage = boost::str(boost::format("File %s could not be opened") % csvTestFile);
+        auto exceptionMessage = core::format("File %s could not be opened", csvTestFile);
         THROW_PRETTY_RUNTIME_EXCEPTION(exceptionMessage)
     }
 
@@ -265,7 +264,7 @@ std::string ClientApplication::orderStatusToString(const FIX::OrdStatus& type)
         case FIX::OrdStatus_REJECTED:
             return "REJECTED BY THE SERVER";
         default:
-            THROW_PRETTY_RUNTIME_EXCEPTION(string("Not supported order status type"))
+            THROW_PRETTY_RUNTIME_EXCEPTION("Not supported order status type")
     }
 }
 
@@ -301,7 +300,7 @@ void ClientApplication::onMessage( const FIX42::ExecutionReport& report, const F
     string clientOrderID = clOrdID.getString();
     string status =  orderStatusToString(orderStatus);
 
-    threadSafeConsoleOut(boost::str(boost::format("Execution report from server for client order ID : %s , status : %s ") % clientOrderID % status ));
+    threadSafeConsoleOut(core::format("Execution report from server for client order ID : %s , status : %s ", clientOrderID, status ));
 
     if ( orderStatus == FIX::OrdStatus_FILLED || orderStatus == FIX::OrdStatus_REJECTED)
     {
@@ -331,6 +330,8 @@ string ClientApplication::newOrder(const std::string& orderID, const string& sym
 
     header.setField(FIX::SenderCompID(senderID));
     header.setField(FIX::TargetCompID(targetID));
+
+    //newOrderSingle.
 
     FIX::Session::sendToTarget(newOrderSingle);
 

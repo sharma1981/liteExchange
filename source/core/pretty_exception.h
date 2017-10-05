@@ -2,6 +2,7 @@
 #define _PRETTY_EXCEPTION_H_
 
 #include <exception>
+#include <stdexcept>
 #include <string>
 
 #include <core/compiler/preprocessor.h>
@@ -9,6 +10,18 @@
 #include "console_utility.h"
 #include "callstack.h"
 #include "environment.h"
+
+
+inline std::string convertToStdString(const char* str)
+{
+    return std::string(str);
+}
+
+template <typename T>
+T convertToStdString(T const& t)
+{
+    return t;
+}
 
 #define EXCEPTION_CALLSTACK_DEPTH 16
 #define EXCEPTION_CONSOLE_OUTPUT 1
@@ -52,7 +65,7 @@
       do  {     \
                       { \
                 std::string message =  std::string("Exception type : ") + exceptionTypeAsStringLiteral + NEW_LINE + NEW_LINE; \
-                message +=  std::string("Message : ") + std::string(msg) + NEW_LINE + NEW_LINE; \
+                message +=  std::string("Message : ") + convertToStdString(msg) + NEW_LINE + NEW_LINE; \
                 message += "File : " __FILE__ "Line : " STRINGIFY(__LINE__) NEW_LINE NEW_LINE; \
                 message += "Callstack : " NEW_LINE NEW_LINE; \
                 message += core::getCallstackAsString(EXCEPTION_CALLSTACK_DEPTH); \

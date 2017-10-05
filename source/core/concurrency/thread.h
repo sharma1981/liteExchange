@@ -37,6 +37,8 @@ class Thread : public core::NonCopyable
             m_task = std::move(pTask);
         }
 
+        Task* getTask() const { return m_task.get();}
+
         const std::string getThreadName()const {return m_name;}
 
         void start(std::size_t stackSize=0);
@@ -67,19 +69,20 @@ class Thread : public core::NonCopyable
 #endif
         }
 
-        static inline void sleep(unsigned long milliseconds)
+        static inline void sleep(unsigned long microseconds)
         {
             // C++11 way std::this_thread::sleep_for
             // However doesn`t exist in MSVC 2013
-            auto iterations = milliseconds / 1000;
-            for (unsigned long i(0); i<iterations; i++ )
-            {
 #ifdef __linux__
-                usleep(1000000);
+            usleep(microseconds);
 #elif _WIN32
-                Sleep(1000);
-#endif
+            // In Windows , you can sleep in terms of milliseconds...
+            auto iterations = microseconds / 1000;
+            for (unsigned long i(0); i < iterations; i++)
+            {
+                Sleep(1);
             }
+#endif
         }
 
     private:
@@ -93,9 +96,9 @@ class Thread : public core::NonCopyable
         std::string m_name;
         bool m_started;
         bool m_joined;
+        unsigned long m_threadID;
         ThreadPriority m_priority;
 
-        unsigned long m_threadID;
     #ifdef __linux__
         pthread_attr_t m_threadAttr;
         static int pinToCPUCoreInternal(int coreId, unsigned long threadID);

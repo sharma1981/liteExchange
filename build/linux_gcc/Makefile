@@ -14,25 +14,24 @@ SOURCES =  $(SOURCE_DIR_CORE_CONCURRENT)/thread.cpp \
 		$(SOURCE_DIR_CORE)/config_file.cpp \
 		$(SOURCE_DIR_CORE)/stopwatch.cpp \
 		$(SOURCE_DIR_CORE)/single_instance.cpp \
+		$(SOURCE_DIR_CORE)/timer.cpp \
 		$(SOURCE_DIR_CORE_LOGGER)/logger.cpp \
-		$(SOURCE_DIR_CORE)/shared_memory.cpp \
 		$(SOURCE_DIR_ORDER_MATCHER)/order.cpp \
 		$(SOURCE_DIR_ORDER_MATCHER)/security_manager.cpp \
 		$(SOURCE_DIR_ORDER_MATCHER)/order_book.cpp \
 		$(SOURCE_DIR_ORDER_MATCHER)/central_order_book.cpp \
 		$(SOURCE_DIR_SERVER)/server.cpp \
 		$(SOURCE_DIR_SERVER)/offline_order_entry.cpp \
-		$(SOURCE_DIR)/server_main.cpp
+		$(SOURCE_DIR)/main.cpp
 #Include Directories
 INCLUDE_DIR = $(SOURCE_DIR)/
-INCLUDE_DIR_BOOST = ../../dependencies/
 INCLUDE_DIR_QUICKFIX = ../../dependencies/quickfix/include
 #Objects
 OBJECTS = $(SOURCES:.cpp=.o)
 #Executable
 EXECUTABLE = ../../bin/ome
 #Compiler flags
-CFLAGS= -I$(INCLUDE_DIR) -I$(INCLUDE_DIR_BOOST) -I$(INCLUDE_DIR_QUICKFIX) -std=c++11 -c
+CFLAGS= -I$(INCLUDE_DIR) -I$(INCLUDE_DIR_QUICKFIX) -std=c++11 -c 
 #Linker flags
 LFLAGS= -lstdc++ -pthread -lquickfix -rdynamic
 

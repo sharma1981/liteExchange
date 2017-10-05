@@ -1,16 +1,15 @@
 #ifndef _TRACE_H_
 #define _TRACE_H_
 
-#include <cstdarg>
-#include <cstring>
-#include <cstdio>
-
 #ifdef _WIN32
 #include <windows.h>
 #elif __linux__
 #include <syslog.h>
 #include <unistd.h>
 #endif
+
+#include <string>
+#include <core/string_utility.h>
 
 namespace core
 {
@@ -20,20 +19,18 @@ namespace core
 
 #define MAX_TRACE_MESSAGE_LENGTH 1024
 
-inline void trace(const char* message, ...)
+template <typename... Args>
+inline void trace(const char* message, Args&&... args)
 {
-    char buffer[MAX_TRACE_MESSAGE_LENGTH] = { (char)NULL };
-    va_list args;
-    va_start(args, message);
-    vsnprintf(buffer, MAX_TRACE_MESSAGE_LENGTH, message, args);
-    va_end(args);
+    std::string buffer;
+    buffer = core::format(message, args...);
 
 #ifdef _WIN32
-    OutputDebugStringA(buffer);
+    OutputDebugStringA(buffer.c_str());
     OutputDebugStringA(NEW_LINE);
 #elif __linux__
     openlog("slog", LOG_PID|LOG_CONS, LOG_USER);
-    syslog(LOG_INFO, buffer );
+    syslog(LOG_INFO, buffer.c_str() );
     closelog();
 #endif
 }

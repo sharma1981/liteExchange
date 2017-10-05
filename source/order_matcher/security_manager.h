@@ -9,6 +9,7 @@
 namespace order_matcher
 {
 
+// NOT THREAD SAFE
 class SecurityManager : public core::SingletonDCLP<SecurityManager>
 {
     public :

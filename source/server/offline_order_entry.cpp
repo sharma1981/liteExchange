@@ -5,6 +5,8 @@
 
 #include <order_matcher/security_manager.h>
 
+#include <server/server_constants.h>
+
 #include <iostream>
 #include <fstream>
 using namespace std;
@@ -23,7 +25,7 @@ OfflineOrderEntry::OfflineOrderEntry(const ServerConfiguration& serverConfigurat
     }
 
     // Outgoing message processor initialisation
-    m_outgoingMessageProcessor.setOfflineMode("offline_order_entry_results.txt");
+    m_outgoingMessageProcessor.setOfflineMode(server_constants::OFFLINE_ORDER_ENTRY_RESULTS_FILE);
     m_outgoingMessageProcessor.setMessageQueue(m_centralOrderBook.getOutgoingMessageQueue());
     m_outgoingMessageProcessor.start();
 
@@ -62,9 +64,9 @@ void OfflineOrderEntry::loadOrder(const string& line)
 {
     auto tokens = core::split(line, ',');
 
-    IncomingMessageType type = (core::contains(tokens[0], "NEW_ORDER")) ? IncomingMessageType::NEW_ORDER : IncomingMessageType::CANCEL_ORDER;
+    IncomingMessageType type = (core::contains(tokens[0], server_constants::OFFLINE_ORDER_ENTRY_NEW_ORDER )) ? IncomingMessageType::NEW_ORDER : IncomingMessageType::CANCEL_ORDER;
     auto securityId = SecurityManager::getInstance()->getSecurityId(tokens[1]);
-    OrderSide side = (core::contains(tokens[2], "SELL")) ? OrderSide::SELL : OrderSide::BUY;
+    OrderSide side = (core::contains(tokens[2], server_constants::OFFLINE_ORDER_ENTRY_SELL)) ? OrderSide::SELL : OrderSide::BUY;
     double price = std::stod(tokens[4]);
     long quantity = std::stol(tokens[5]);
 

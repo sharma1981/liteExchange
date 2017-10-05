@@ -25,7 +25,7 @@
 #include <new>
 #include <limits>
 #include <stdexcept>
-// STD THREADS
+// STD CONCURRENCY
 #include <thread>
 #include <atomic>
 #include <mutex>
@@ -44,10 +44,6 @@
 #include <algorithm>
 #include <vector>
 #include <unordered_map>
-// BOOST
-#include <boost/optional.hpp>
-#include <boost/any.hpp>
-#include <boost/format.hpp>
 // LINUX
 #ifdef __linux__
 #include <string.h>

@@ -3,7 +3,8 @@
 
 #include <cassert>
 #include <fstream>
-#include <boost/format.hpp>
+
+#include <core/string_utility.h>
 #include <core/logger/log_entry.hpp>
 
 #include <core/logger/base_logger_sink.hpp>
@@ -35,7 +36,7 @@ class FileSink : public BaseLoggerSink
 
             if (!m_logFile.is_open())
             {
-                THROW_PRETTY_RUNTIME_EXCEPTION(boost::str(boost::format("Log file %s can`t be opened") % m_resourceName.c_str()))
+                THROW_PRETTY_RUNTIME_EXCEPTION(core::format("Log file %s can`t be opened", m_resourceName.c_str()))
             }
         }
 

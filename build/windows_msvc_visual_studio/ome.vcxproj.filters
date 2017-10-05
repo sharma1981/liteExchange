@@ -10,15 +10,11 @@
     <ClCompile Include="..\..\source\order_matcher\central_order_book.cpp">
       <Filter>order_matcher</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\server_main.cpp" />
     <ClCompile Include="..\..\source\server\server.cpp">
       <Filter>server</Filter>
     </ClCompile>
     <ClCompile Include="..\..\source\precompiled_header.cpp" />
     <ClCompile Include="..\..\source\core\config_file.cpp">
-      <Filter>core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\core\shared_memory.cpp">
       <Filter>core</Filter>
     </ClCompile>
     <ClCompile Include="..\..\source\core\single_instance.cpp">
@@ -42,6 +38,7 @@
     <ClCompile Include="..\..\source\core\concurrency\thread_pool.cpp">
       <Filter>core\concurrency</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\source\main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\source\order_matcher\order.h">
@@ -100,9 +97,6 @@
       <Filter>core</Filter>
     </ClInclude>
     <ClInclude Include="..\..\source\core\pretty_exception.h">
-      <Filter>core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\core\shared_memory.h">
       <Filter>core</Filter>
     </ClInclude>
     <ClInclude Include="..\..\source\core\single_instance.h">
@@ -269,6 +263,9 @@
     </ClInclude>
     <ClInclude Include="..\..\source\core\concurrency\thread_priority.h">
       <Filter>core\concurrency</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\memory\stack_memory.h">
+      <Filter>core\memory</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

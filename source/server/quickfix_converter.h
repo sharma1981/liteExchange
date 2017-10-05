@@ -50,7 +50,7 @@ inline FIX::Side convertOrderSideToQuickFix(const order_matcher::OrderSide& side
         return FIX::Side_SELL;
 
     default:
-        THROW_PRETTY_INVALID_ARG_EXCEPTION(std::string("Unsupported Side, use buy or sell"))
+        THROW_PRETTY_INVALID_ARG_EXCEPTION("Unsupported Side, use buy or sell")
     }
 }
 
@@ -74,7 +74,7 @@ inline char convertToQuickFixOutgoingMessageType(const order_matcher::OutgoingMe
         return FIX::OrdStatus_REJECTED;
 
     default:
-        THROW_PRETTY_INVALID_ARG_EXCEPTION(std::string("Unsupported outgoing message type"))
+        THROW_PRETTY_INVALID_ARG_EXCEPTION("Unsupported outgoing message type")
     }
 }
 

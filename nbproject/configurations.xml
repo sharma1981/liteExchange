@@ -4,7 +4,7 @@
     <df root="." name="0">
       <df name="source">
         <df name="core">
-          <df name="concurrent">
+          <df name="concurrency">
             <in>thread.cpp</in>
             <in>thread_pool.cpp</in>
           </df>
@@ -15,9 +15,9 @@
             <in>aligned_memory.cpp</in>
           </df>
           <in>config_file.cpp</in>
-          <in>shared_memory.cpp</in>
           <in>single_instance.cpp</in>
           <in>stopwatch.cpp</in>
+          <in>timer.cpp</in>
         </df>
         <df name="order_matcher">
           <in>central_order_book.cpp</in>
@@ -29,7 +29,7 @@
           <in>offline_order_entry.cpp</in>
           <in>server.cpp</in>
         </df>
-        <in>server_main.cpp</in>
+        <in>main.cpp</in>
       </df>
     </df>
     <logicalFolder name="ExternalFiles"
@@ -65,9 +65,6 @@
           <ccTool>
             <incDir>
               <pElem>source</pElem>
-              <pElem>dependencies</pElem>
-              <pElem>dependencies/quickfix/include</pElem>
-              <pElem>build/linux_gcc</pElem>
             </incDir>
             <preprocessorList>
               <Elem>DEBUG</Elem>
@@ -79,11 +76,52 @@
           <preBuildCommand></preBuildCommand>
         </preBuild>
       </makefileType>
-      <item path="source/core/concurrent/thread.cpp" ex="false" tool="1" flavor2="8">
+      <folder path="0/source/core/concurrency">
+        <ccTool>
+          <incDir>
+            <pElem>dependencies/quickfix/include</pElem>
+            <pElem>build/linux_gcc</pElem>
+          </incDir>
+        </ccTool>
+      </folder>
+      <folder path="0/source/core/logger">
+        <ccTool>
+          <incDir>
+            <pElem>dependencies/quickfix/include</pElem>
+            <pElem>build/linux_gcc</pElem>
+          </incDir>
+        </ccTool>
+      </folder>
+      <folder path="0/source/core/memory">
+        <ccTool>
+          <incDir>
+            <pElem>dependencies</pElem>
+            <pElem>dependencies/quickfix/include</pElem>
+            <pElem>build/linux_gcc</pElem>
+          </incDir>
+        </ccTool>
+      </folder>
+      <folder path="0/source/order_matcher">
+        <ccTool>
+          <incDir>
+            <pElem>dependencies/quickfix/include</pElem>
+            <pElem>build/linux_gcc</pElem>
+          </incDir>
+        </ccTool>
+      </folder>
+      <folder path="0/source/server">
+        <ccTool>
+          <incDir>
+            <pElem>dependencies/quickfix/include</pElem>
+            <pElem>build/linux_gcc</pElem>
+          </incDir>
+        </ccTool>
+      </folder>
+      <item path="source/core/concurrency/thread.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
         </ccTool>
       </item>
-      <item path="source/core/concurrent/thread_pool.cpp"
+      <item path="source/core/concurrency/thread_pool.cpp"
             ex="false"
             tool="1"
             flavor2="8">
@@ -92,6 +130,10 @@
       </item>
       <item path="source/core/config_file.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
+          <incDir>
+            <pElem>dependencies/quickfix/include</pElem>
+            <pElem>build/linux_gcc</pElem>
+          </incDir>
         </ccTool>
       </item>
       <item path="source/core/logger/logger.cpp" ex="false" tool="1" flavor2="8">
@@ -105,16 +147,36 @@
         <ccTool flags="0">
         </ccTool>
       </item>
-      <item path="source/core/shared_memory.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="0">
-        </ccTool>
-      </item>
       <item path="source/core/single_instance.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
+          <incDir>
+            <pElem>dependencies/quickfix/include</pElem>
+            <pElem>build/linux_gcc</pElem>
+          </incDir>
         </ccTool>
       </item>
       <item path="source/core/stopwatch.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
+          <incDir>
+            <pElem>dependencies/quickfix/include</pElem>
+            <pElem>build/linux_gcc</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="source/core/timer.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>dependencies/quickfix/include</pElem>
+            <pElem>build/linux_gcc</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="source/main.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>dependencies/quickfix/include</pElem>
+            <pElem>build/linux_gcc</pElem>
+          </incDir>
         </ccTool>
       </item>
       <item path="source/order_matcher/central_order_book.cpp"
@@ -150,10 +212,6 @@
         </ccTool>
       </item>
       <item path="source/server/server.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool flags="0">
-        </ccTool>
-      </item>
-      <item path="source/server_main.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
         </ccTool>
       </item>

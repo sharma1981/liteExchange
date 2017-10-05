@@ -4,7 +4,6 @@
 #include <cassert>
 #include <string>
 #include <memory>
-#include <boost/format.hpp>
 
 #include <quickfix/Session.h>
 #include <quickfix/fix42/ExecutionReport.h>
@@ -15,16 +14,18 @@
 
 #include <core/file_utility.h>
 #include <core/compiler/likely.h>
+#include <core/concurrency/thread_wait_strategy.h>
 #include <core/concurrency/actor.h>
 #include <core/logger/logger.h>
 #include <core/datetime_utility.h>
+#include <core/string_utility.h>
 
 #include <server/server_constants.h>
 
 using namespace core;
 using namespace order_matcher;
 
-class OutgoingMessageProcessor : public Actor
+class OutgoingMessageProcessor : public Actor, public YieldWaitStrategy
 {
     public:
 
@@ -59,7 +60,7 @@ class OutgoingMessageProcessor : public Actor
 
                 if (m_messageQueue == nullptr)
                 {
-                    core::Thread::sleep(server_constants::SERVER_THREAD_SLEEP_DURATION);
+                    core::Thread::sleep(server_constants::SERVER_THREAD_SLEEP_DURATION_MICROSECONDS);
                 }
                 else
                 {
@@ -80,7 +81,7 @@ class OutgoingMessageProcessor : public Actor
                     {
                         const Order& order = message->getOrder();
 
-                        LOG_INFO("Outgoing message processor", boost::str(boost::format("Processing %s for order : %s ") % message->toString() % order.toString()) )
+            LOG_INFO("Outgoing message processor", core::format("Processing %s for order : %s ", message->toString(), order.toString()))
 
                         FIX::TargetCompID targetCompID(order.getOwner());
                         FIX::SenderCompID senderCompID(order.getTarget());
@@ -130,7 +131,7 @@ class OutgoingMessageProcessor : public Actor
                     }
                     else
                     {
-                        core::Thread::yield();
+                        applyWaitStrategy(0);
                     }
                 }//Scope for the smart pointer
 

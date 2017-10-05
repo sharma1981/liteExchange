@@ -2,7 +2,7 @@
 #include <utility>
 using namespace std;
 
-#include <boost/format.hpp>
+#include <core/string_utility.h>
 #include "thread_pool.h"
 
 namespace core
@@ -98,7 +98,7 @@ void* ThreadPool::workerThreadFunction(void* argument)
     ThreadPool* pool = threadArgument->m_threadPool;
     auto queueIndex = threadArgument->m_queueIndex;
 
-    pool->notify(boost::str(boost::format("Thread(%d) %s starting") % queueIndex % pool->m_threads[queueIndex]->getThreadName()));
+    pool->notify(core::format("Thread(%d) %s starting", queueIndex, pool->m_threads[queueIndex]->getThreadName()));
 
     while( ! pool->m_isShuttingDown.load() )
     {
@@ -110,11 +110,11 @@ void* ThreadPool::workerThreadFunction(void* argument)
         }
         else
         {
-            core::Thread::yield();
+            pool->applyWaitStrategy(0);
         }
     }
 
-    pool->notify(boost::str(boost::format("Thread(%d) %s exiting") % queueIndex % pool->m_threads[queueIndex]->getThreadName()));
+    pool->notify(core::format("Thread(%d) %s exiting", queueIndex, pool->m_threads[queueIndex]->getThreadName()));
     return nullptr;
 }
 

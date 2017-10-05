@@ -14,6 +14,7 @@
 
 #include <core/pretty_exception.h>
 #include <core/file_utility.h>
+#include <core/string_utility.h>
 
 namespace core
 {
@@ -74,9 +75,9 @@ class SelfProcess
             const std::size_t tempBufferLength = 1024;
             char tempBuffer[tempBufferLength] = { char(NULL) };
 #ifdef __linux__
-            char procAddress[32];
-            snprintf(procAddress, 32, "/proc/%d/exe", getpid());
-            int bytes = readlink(procAddress, tempBuffer, tempBufferLength);
+            std::string procAddress;
+            procAddress = core::format("/proc/%d/exe", getpid());
+            int bytes = readlink(procAddress.c_str(), tempBuffer, tempBufferLength);
             tempBuffer[bytes] = '\0';
 #elif _WIN32
             GetModuleFileName(NULL, tempBuffer, tempBufferLength);

@@ -4,7 +4,8 @@
 #include <atomic>
 #include <thread>
 #include <cstddef>
-#include "base_lock.h"
+#include <core/concurrency/thread.h>
+#include <core/concurrency/base_lock.h>
 
 namespace core
 {
@@ -65,6 +66,7 @@ class SpinLock : public BaseLock
     private:
         bool m_yielding;
         std::size_t m_spinCount;
+        unsigned long m_sleepMicroseconds;
         std::atomic_flag m_flag;
         // Move ctor deletion
         SpinLock(SpinLock&& other) = delete;

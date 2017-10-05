@@ -8,13 +8,14 @@
     * [3. Build dependencies](#BuildDependencies)
 	* [4. Runtime dependencies](#RuntimeDependencies)
 	* [5. How to build](#HowToBuild)
-	* [6. Server parameters, running the server and offline order entry mode](#ServerParams)
-	* [7. Example log messages with FIX ](#ExampleLog)
-	* [8. Functional testing](#FunctionalTesting)
-	* [9. Unit testing with GoogleTest](#UnitTesting)
-	* [10. Utility scripts](#UtilityScripts)
-	* [11. Coding and other guidelines](#CodingGuideline)
-	* [12. Continous integration](#ContinousIntegration)
+	* [6. Server parameters and running the server](#ServerParams)
+	* [7. Offline order entry mode](#OfflineOrderEntry)
+	* [8. Example log messages with FIX ](#ExampleLog)
+	* [9. Functional testing](#FunctionalTesting)
+	* [10. Unit testing with GoogleTest](#UnitTesting)
+	* [11. Utility scripts](#UtilityScripts)
+	* [12. Coding and other guidelines](#CodingGuideline)
+	* [13. Continous integration](#ContinousIntegration)
           
 ## <a name="Introduction"></a>**1. Introduction:** 
 A multithreaded order matching engine written in C++11 using FIX protocol. For limit orders and matching engines , see https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/documentation/README_Orders_MatchingEngines.md
@@ -25,10 +26,10 @@ Features can be seen in the table below :
 
 | Feature                       | Details                                               |
 | ----------------------------- |:-----------------------------------------------------:|
-| FIX Version                   | 4.2                                                   |
+| Order entry					| FIX 4.2 & offline mode with files  			        |
 | Order types                   | Limit                                                 |
-| Order types                   | NewOrder, Cancel                                      |
-| Exec report order statuses    | Accepted, Filled, PartiallyFilled, Rejected, Canceled |
+| Order message types           | NewOrder, Cancel                                      |
+| Exec report types			    | Accepted, Filled, PartiallyFilled, Rejected, Canceled |
 | TIF                           | Not supported       			                        |
 | Securities                    | Shares with RIC code                                  |
 
@@ -39,8 +40,9 @@ Technical implementation details are as below :
 | OS                    | Windows ( tested on 8.1), Linux ( tested on Ubuntu and CentOS)|
 | C++                   | C++11                                                         |
 | C++ Compiler Support  | GCC4.8 and MSVC120 (VS2013)									|
+| C++ Libraries         | STD, STL, QuickFix			                                |
 | C++ Platform APIs     | GNU LibC, POSIX, some POSIX NP ,WinAPI, MS CRT                |
-| C++ Libraries         | STL, Boost, QuickFix                                          |
+| IDEs supported        | Netbeans for Linux, VS2013 for Windows 						|
 
 Watch server when working :
 
@@ -91,10 +93,6 @@ https://connect.microsoft.com/VisualStudio/feedbackdetail/view/938122/list-initi
 
 In the libraries side :
 
-- Boost 1.65 : Using only template based part of Boost and a compacted version of Boost is in dependencies directory, therefore you don`t need to do anything. The compacting command is as below  :
-
-                bcp --boost=c:\boost_1_65_0 any optional format c:\boost
-                        
 - QuickFix & its requirements : For Windows you don`t need to do anything as the static library for Windows is already in dependencies directory. For Linux you need to apply the steps on http://www.quickfixengine.org/quickfix/doc/html/install.html
 
 ## <a name="RuntimeDependencies">**4. Runtime dependencies:** 
@@ -141,7 +139,7 @@ How to build the project on Windows with Visual Studio in command line :
     Go to "build/windows_msvc_command_line" directory
     Execute one of batch files : build_debug.bat or build_release.bat
 
-## <a name="ServerParams">**6. Server parameters, running the server and offline order entry mode:** 
+## <a name="ServerParams">**6. Server parameters and running the server :** 
 
 The engine executable looks for "ome.ini" file. Here is the list of things you can set :
 
@@ -198,11 +196,13 @@ Once you start the ome executable , initially you will see a screen like this :
                 display : Shows all order books in the central order book
                 quit : Shutdowns the server
 
-**Offline Order Entry Mode :** The default mode is FIX server mode. However, if you specify an order file in ome.ini as below :
+## <a name="OfflineOrderEntry">**7. Offline order entry mode:** 
+
+The default mode is FIX server mode. However, if you specify an order file in ome.ini as below :
 
 					OFFLINE_ORDER_ENTRY_FILE=orders.txt
 					
-The order matcher will process all the orders in that file bypassing FIX protocol and produce offline_order_entry_results.txt as result file.
+the order matcher will process all the orders in that file bypassing FIX protocol and produce offline_order_entry_results.txt as result file.
 For an example offlone order file see :
 
 https://github.com/akhin/multithreaded_order_matching_engine/blob/master/bin/sample_offline_order_file.txt
@@ -220,7 +220,7 @@ The output of offline order matching will have timestamps with microsecond preci
 		16-09-2017 03:12:27.777489
 			
 
-## <a name="ExampleLog">**7. Example log message from the engine:** 
+## <a name="ExampleLog">**8. Example log message from the engine:** 
 
 The engine produces log messages below when it receives 1 buy order with quantity 1 and 1 sell order with quantity 1 for the same symbol :
 
@@ -256,7 +256,7 @@ The engine produces log messages below when it receives 1 buy order with quantit
     06-02-2016 20:16:09 : INFO , FIX Engine , Sending fix message : 8=FIX.4.29=13535=834=2649=OME52=20160206-20:16:09.34256=TEST_CLIENT16=111=114=117=11620=031=132=137=138=139=254=255=MSFT150=2151=010=002
     06-02-2016 20:16:11 : INFO , FIX Engine , Logout , session ID : FIX.4.2:OME->TEST_CLIENT1
 
-## <a name="FunctionalTesting">**8. Functional testing:** 
+## <a name="FunctionalTesting">**9. Functional testing:** 
 
 There is a prebuilt executable for both Linux and Windows which can send specified ask/bid orders to the order matching engine using CSV test case files.
 Test case files have orders in the below CSV format :
@@ -313,7 +313,7 @@ Alternatively on Linux , there is a GUI script as in Windows one :
 <img src="https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/documentation/testfunctional_gui_linux.png">
 </p>
     
-## <a name="UnitTesting">**9. Unit testing with GoogleTest:** 
+## <a name="UnitTesting">**10. Unit testing with GoogleTest:** 
 
 The project uses GoogleTest 1.7. You can find a makefile and vcproj under "test_unit" directory.
     
@@ -336,7 +336,7 @@ Building and running unit test on Linux : You have to build and install Google T
 
 Building and running unit test on Windows : You can use VisualStudio solution in "test_unit" directory.
 
-## <a name="UtilityScripts">**10. Utility scripts:**
+## <a name="UtilityScripts">**11. Utility scripts:**
 
 You can find them under "utility_scripts" directory :
 
@@ -359,7 +359,7 @@ Viewing tcpdump captures with Wireshark :
 <img src="https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/documentation/wireshark_fix.png">
 </p>
 
-## <a name="CodingGuideline">**11. Coding and other guidelines:**
+## <a name="CodingGuideline">**12. Coding and other guidelines:**
 
 Source code and file/directory naming conventions :
 
@@ -406,6 +406,6 @@ For MSVC 120 see https://msdn.microsoft.com/en-us/library/8c5ztk84(v=vs.120).asp
 
 MSVC120 C++11 Limitations : Curly brace initialisation at MILs and noexcept is not supported. For noexcept usage please see compiler_portability/noexcept.h .
 
-## <a name="ContinousIntegration">**12. Continous integration:**
+## <a name="ContinousIntegration">**13. Continous integration:**
 
 For the time being , online CI has been setup for only MSVC using Appveyor. Planning to add GCC based online CI with TravisCI.

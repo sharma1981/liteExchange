@@ -94,9 +94,9 @@
     <ClCompile Include="..\..\source\core\concurrency\thread_pool.cpp" />
     <ClCompile Include="..\..\source\core\config_file.cpp" />
     <ClCompile Include="..\..\source\core\logger\logger.cpp" />
-    <ClCompile Include="..\..\source\core\shared_memory.cpp" />
     <ClCompile Include="..\..\source\core\single_instance.cpp" />
     <ClCompile Include="..\..\source\core\stopwatch.cpp" />
+    <ClCompile Include="..\..\source\main.cpp" />
     <ClCompile Include="..\..\source\order_matcher\central_order_book.cpp" />
     <ClCompile Include="..\..\source\order_matcher\order.cpp" />
     <ClCompile Include="..\..\source\order_matcher\order_book.cpp" />
@@ -107,7 +107,6 @@
     </ClCompile>
     <ClCompile Include="..\..\source\server\offline_order_entry.cpp" />
     <ClCompile Include="..\..\source\server\server.cpp" />
-    <ClCompile Include="..\..\source\server_main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\source\core\callstack.h" />
@@ -158,11 +157,11 @@
     <ClInclude Include="..\..\source\core\logger\log_levels.h" />
     <ClInclude Include="..\..\source\core\memory\cpu_memory.h" />
     <ClInclude Include="..\..\source\core\memory\heap_memory.h" />
+    <ClInclude Include="..\..\source\core\memory\stack_memory.h" />
     <ClInclude Include="..\..\source\core\memory\virtual_memory.h" />
     <ClInclude Include="..\..\source\core\noncopyable.h" />
     <ClInclude Include="..\..\source\core\pretty_exception.h" />
     <ClInclude Include="..\..\source\core\self_process.h" />
-    <ClInclude Include="..\..\source\core\shared_memory.h" />
     <ClInclude Include="..\..\source\core\single_instance.h" />
     <ClInclude Include="..\..\source\core\stopwatch.h" />
     <ClInclude Include="..\..\source\core\string_utility.h" />

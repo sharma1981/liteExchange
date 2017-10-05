@@ -12,6 +12,8 @@
 #include <core/concurrency/thread_pool_arguments.h>
 #include <core/concurrency/thread_priority.h>
 
+#include <core/pretty_exception.h>
+
 class ServerConfiguration
 {
     public :
@@ -26,8 +28,8 @@ class ServerConfiguration
             core::ConfigFile configuration;
             configuration.loadFromFile(configurationFile);
 
-            m_singleInstanceTCPPortNumber = configuration.getIntValue(server_constants::CONFIGURATION_FILE_SINGLE_INSTANCE_TCP_PORT);
-            m_processPriority = configuration.getStringValue(server_constants::CONFIGURATION_FILE_PROCESS_PRIORITY);
+            m_singleInstanceTCPPortNumber = configuration.getIntValue(server_constants::CONFIGURATION_FILE_SINGLE_INSTANCE_TCP_PORT, server_constants::CONFIFURATION_DEFAULT_SINGLE_INSTANCE_TCP_PORT);
+            m_processPriority = configuration.getStringValue(server_constants::CONFIGURATION_FILE_PROCESS_PRIORITY, server_constants::CONFIGURATION_DEFAULT_PROCESS_PRIORITY);
 
             if (configuration.doesAttributeExist(server_constants::CONFIGURATION_FILE_OFFLINE_ORDER_ENTRY_FILE))
             {
@@ -57,24 +59,23 @@ class ServerConfiguration
             }
 
             // Get symbol configuration
-
             m_symbols = configuration.getArray(server_constants::CONFIGURATION_FILE_SYMBOL_ARRAY);
             if (m_symbols.size() == 0)
             {
-                throw std::runtime_error("No symbol found in the ini file");
+                THROW_PRETTY_RUNTIME_EXCEPTION("No symbol found in the ini file");
             }
 
             // Get matching multithreading mode
-            m_isMatchingMultithreaded = configuration.getBoolValue(server_constants::CONFIGURATION_FILE_CENTRAL_ORDER_BOOK_MULTITHREADED_ORDER_MATCHING);
+            m_isMatchingMultithreaded = configuration.getBoolValue(server_constants::CONFIGURATION_FILE_CENTRAL_ORDER_BOOK_MULTITHREADED_ORDER_MATCHING, server_constants::CONFIGURATION_DEFAULT_CENTRAL_ORDER_BOOK_MULTITHREADED_ORDER_MATCHING_ENGINE);
 
             // Get multithreading configuration
             if (m_isMatchingMultithreaded)
             {
-                m_threadPoolArguments.m_pinThreadsToCores = configuration.getBoolValue(server_constants::CONFIGURATION_FILE_CENTRAL_ORDER_BOOK_PIN_THREADS_TO_CORES);
-                m_threadPoolArguments.m_hyperThreading = configuration.getBoolValue(server_constants::CONFIGURATION_FILE_CENTRAL_ORDER_BOOK_HYPER_THREADING);
-                m_threadPoolArguments.m_workQueueSizePerThread = configuration.getIntValue(server_constants::CONFIGURATION_FILE_CENTRAL_ORDER_BOOK_WORK_QUEUE_SIZE_PER_THREAD);
-                m_threadPoolArguments.m_threadStackSize = configuration.getIntValue(server_constants::CONFIGURATION_FILE_CENTRAL_ORDER_BOOK_THREAD_STACK_SIZE);
-                m_threadPoolArguments.m_threadPriority = core::getThreadPriorityFromString(configuration.getStringValue(server_constants::CONFIGURATION_FILE_CENTRAL_ORDER_BOOK_THREAD_PRIORITY));
+                m_threadPoolArguments.m_pinThreadsToCores = configuration.getBoolValue(server_constants::CONFIGURATION_FILE_CENTRAL_ORDER_BOOK_PIN_THREADS_TO_CORES, server_constants::CONFIGURATION_DEFAULT_CENTRAL_ORDER_BOOK_PIN_THREADS_TO_CORES);
+                m_threadPoolArguments.m_hyperThreading = configuration.getBoolValue(server_constants::CONFIGURATION_FILE_CENTRAL_ORDER_BOOK_HYPER_THREADING, server_constants::CONFIGURATION_DEFAULT_CENTRAL_ORDER_BOOK_HYPER_THREADING);
+                m_threadPoolArguments.m_workQueueSizePerThread = configuration.getIntValue(server_constants::CONFIGURATION_FILE_CENTRAL_ORDER_BOOK_WORK_QUEUE_SIZE_PER_THREAD, server_constants::CONFIGURATION_DEFAULT_CENTRAL_ORDER_BOOK_WORK_QUEUE_SIZE_PER_THREAD);
+                m_threadPoolArguments.m_threadStackSize = configuration.getIntValue(server_constants::CONFIGURATION_FILE_CENTRAL_ORDER_BOOK_THREAD_STACK_SIZE, server_constants::CONFIGURATION_DEFAULT_CENTRAL_ORDER_BOOK_THREAD_STACK_SIZE);
+                m_threadPoolArguments.m_threadPriority = core::getThreadPriorityFromString(configuration.getStringValue(server_constants::CONFIGURATION_FILE_CENTRAL_ORDER_BOOK_THREAD_PRIORITY, server_constants::CONFIGURATION_DEFAULT_CENTRAL_ORDER_BOOK_THREAD_PRIORITY));
             }
         }
 

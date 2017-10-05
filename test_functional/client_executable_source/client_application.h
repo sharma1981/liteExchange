@@ -1,8 +1,6 @@
 #ifndef _CLIENT_APPLICATION_H_
 #define _CLIENT_APPLICATION_H_
 
-#include <boost/noncopyable.hpp>
-
 #include <quickfix/Application.h>
 #include <quickfix/MessageCracker.h>
 #include <quickfix/Values.h>
@@ -13,6 +11,7 @@
 #include <quickfix/fix42/OrderCancelRequest.h>
 #include <quickfix/fix42/ExecutionReport.h>
 
+#include <core/noncopyable.h>
 #include "client_request.h"
 
 #include <sstream>
@@ -24,7 +23,7 @@
 #include <thread>
 #include <mutex>
 
-class ClientApplication : public FIX::Application, public FIX::MessageCracker, public boost::noncopyable
+class ClientApplication : public FIX::Application, public FIX::MessageCracker, public core::NonCopyable
 {
     public:
         ClientApplication(const std::string& csvTestFile, const std::string& fixEngineConfigFile);

@@ -18,6 +18,34 @@
 namespace core
 {
 
+static void* alignedMalloc(std::size_t size, std::size_t alignment) throw(std::bad_alloc)
+{
+    void* ptr{ nullptr };
+#ifdef __linux__
+    posix_memalign(&ptr, alignment, size);
+#elif _WIN32
+    ptr = _aligned_malloc(size, alignment);
+#endif
+    //For just C++11 implementation with std::align
+    //See http://en.cppreference.com/w/cpp/core/memory/align
+
+    if (ptr == nullptr)
+    {
+        throw std::bad_alloc();
+    }
+
+    return ptr;
+}
+
+static void alignedFree(void* ptr) noexcept
+{
+#ifdef __linux__
+    free(ptr);
+#elif _WIN32
+    _aligned_free(ptr);
+#endif
+}
+
 template<std::size_t alignment = CACHE_LINE_SIZE>
 class Aligned
 {
@@ -41,15 +69,17 @@ public:
     {
         void* ret = nullptr;
 
-        ret = VirtualMemory::alignedMalloc(size, alignment);
+        ret = alignedMalloc(size, alignment);
 
         return ret;
     }
 
     static void operator delete(void* ptr) noexcept
     {
-        VirtualMemory::alignedFree(ptr);
+        alignedFree(ptr);
     }
+
+
 };
 
 template<typename T>
@@ -169,7 +199,7 @@ class AlignedAllocator
                 THROW_PRETTY_LENGTH_EXCEPTION("AlignedAllocator<T>::allocate() – Integer overflow.")
             }
 
-            void * const pv = VirtualMemory::alignedMalloc(n * sizeof(T), alignment);
+            void * const pv = alignedMalloc(n * sizeof(T), alignment);
 
             // Allocators should throw std::bad_alloc in the case of memory allocation failure.
             if (pv == nullptr)
@@ -182,7 +212,7 @@ class AlignedAllocator
 
         void deallocate(T * const p, const size_t n) const
         {
-            VirtualMemory::alignedFree(p);
+            alignedFree(p);
         }
 
         // The following will be the same for all allocators that ignore hints.

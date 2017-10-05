@@ -21,6 +21,7 @@ class Order
         std::string toString() const;
 
         bool isFilled() const { return m_executedQuantity == m_quantity; }
+        bool isPartiallyFilled() const { return (m_executedQuantity > 0 && m_executedQuantity < m_quantity) ? true : false; }
         bool isCancelled() const { return m_cancelled; }
 
         long getQuantity() const { return m_quantity; }

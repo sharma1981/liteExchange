@@ -1,3 +1,8 @@
+##################################################################
+#
+#	In ome.ini , add the line below :
+#
+#					OFFLINE_ORDER_ENTRY_FILE=sample_offline_order_file.txt
 #
 #	New order
 #	

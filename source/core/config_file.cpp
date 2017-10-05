@@ -1,6 +1,5 @@
 #include "config_file.h"
 #include <core/string_utility.h>
-#include <boost/format.hpp>
 #include <fstream>
 #include <algorithm>
 #include <ctype.h>
@@ -20,8 +19,7 @@ void ConfigFile::loadFromFile(const string& fileName)
 
     if ( ! file.good())
     {
-        auto exceptionMessage = boost::str(boost::format("File %s could not be opened") % fileName);
-        THROW_PRETTY_RUNTIME_EXCEPTION(exceptionMessage)
+        THROW_PRETTY_RUNTIME_EXCEPTION(core::format("File %s could not be opened", fileName))
     }
 
     file.seekg(0, std::ios::beg);
@@ -31,6 +29,8 @@ void ConfigFile::loadFromFile(const string& fileName)
     while ( std::getline(file, line) )
     {
         lineNumber++;
+
+        core::trim(line);
         auto lineLength = line.length();
 
         if (line.c_str()[0] == '#' || lineLength == 0 ) // Skip comment lines and empty lines
@@ -40,22 +40,19 @@ void ConfigFile::loadFromFile(const string& fileName)
 
         if ( lineLength < 3)
         {
-            auto exceptionMessage = boost::str(boost::format("Line is too short , line number : %d") % lineNumber);
-            THROW_PRETTY_RUNTIME_EXCEPTION(exceptionMessage)
+            THROW_PRETTY_RUNTIME_EXCEPTION( core::format("Line is too short , line number : %d", lineNumber) )
         }
 
         size_t equalsPos = line.find("=", 0);
 
         if (equalsPos  == std::string::npos)
         {
-            auto exceptionMessage = boost::str(boost::format("Line doesn`t contain equals sign , line number : %d") % lineNumber);
-            THROW_PRETTY_RUNTIME_EXCEPTION(exceptionMessage)
+            THROW_PRETTY_RUNTIME_EXCEPTION( core::format("Line doesn`t contain equals sign , line number : %d", lineNumber))
         }
 
         if (line.find("=", equalsPos+1 ) != std::string::npos)
         {
-            auto exceptionMessage = boost::str(boost::format("Line contains more than one equals sign , line number : %d") % lineNumber);
-            THROW_PRETTY_RUNTIME_EXCEPTION(exceptionMessage)
+            THROW_PRETTY_RUNTIME_EXCEPTION( core::format("Line contains more than one equals sign , line number : %d", lineNumber) )
         }
 
         auto tokens = core::split(line, '=');
@@ -67,7 +64,7 @@ void ConfigFile::loadFromFile(const string& fileName)
     file.close();
 }
 
-bool ConfigFile::doesAttributeExist(const std::string& attribute)
+bool ConfigFile::doesAttributeExist(const std::string& attribute) const
 {
     auto element = m_dictionary.find(attribute);
     if (element == m_dictionary.end())
@@ -77,27 +74,36 @@ bool ConfigFile::doesAttributeExist(const std::string& attribute)
     return true;
 }
 
-const string& ConfigFile::getStringValue(const string& attribute) const
+const string ConfigFile::getStringValue(const string& attribute, string defaultVal) const
 {
-    auto element = m_dictionary.find(attribute);
-    if (element == m_dictionary.end())
+    if (doesAttributeExist(attribute) == false)
     {
-        auto exceptionMessage = boost::str(boost::format("Attribute %s could not be found") % attribute);
-        THROW_PRETTY_INVALID_ARG_EXCEPTION(exceptionMessage)
+        return defaultVal;
     }
 
+    auto element = m_dictionary.find(attribute);
     return element->second;
 }
 
-bool ConfigFile::getBoolValue(const string& attribute) const
+bool ConfigFile::getBoolValue(const string& attribute, bool defaultVal) const
 {
+    if (doesAttributeExist(attribute) == false)
+    {
+        return defaultVal;
+    }
+
     auto stringVal = getStringValue(attribute);
-    std::transform(stringVal.begin(), stringVal.end(), stringVal.begin(), ::tolower);
+    stringVal = core::toLower(stringVal);
     return (stringVal == "true") ? true : false;
 }
 
-int ConfigFile::getIntValue(const string& attribute) const
+int ConfigFile::getIntValue(const string& attribute, int defaultVal) const
 {
+    if (doesAttributeExist(attribute) == false)
+    {
+        return defaultVal;
+    }
+
     return std::stoi(getStringValue(attribute));
 }
 

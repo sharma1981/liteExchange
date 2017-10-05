@@ -5,7 +5,6 @@
 #include <iostream>
 
 #include <core/string_utility.h>
-#include <core/logger/logger.h>
 
 #include <order_matcher/central_order_book.h>
 #include <order_matcher/central_order_book_visitor.h>
@@ -33,7 +32,7 @@ class CommandLineInterface
                 std::string value;
                 std::cin >> value;
 
-                value = core::toLowercase(value);
+                value = core::toLower(value);
 
                 if (value == "display")
                 {

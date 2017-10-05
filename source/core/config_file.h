@@ -13,11 +13,11 @@ class ConfigFile
     public :
 
         void loadFromFile(const std::string& fileName);
-        bool doesAttributeExist(const std::string& attribute);
+        bool doesAttributeExist(const std::string& attribute) const;
 
-        const std::string& getStringValue(const std::string& attribute) const;
-        bool getBoolValue(const std::string& attribute) const;
-        int getIntValue(const std::string& attribute) const;
+        const std::string getStringValue(const std::string& attribute, std::string defaultVal="") const;
+        bool getBoolValue(const std::string& attribute, bool defaultVal=false) const;
+        int getIntValue(const std::string& attribute, int defaultVal=0) const;
         std::vector<std::string> getArray(const std::string& attribute);
 
     private:

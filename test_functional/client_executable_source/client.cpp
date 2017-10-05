@@ -8,8 +8,6 @@
 #include <algorithm>
 using namespace std;
 
-#include <boost/format.hpp>
-
 #include <core/file_utility.h>
 #include <core/string_utility.h>
 #include <core/datetime_utility.h>

@@ -3,6 +3,7 @@
 
 #include <cstddef>
 #include <string>
+#include <memory>
 
 #include <core/concurrency/lock.hpp>
 #include <core/concurrency/actor.h>

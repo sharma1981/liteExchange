@@ -4,10 +4,10 @@
 #include <string>
 #include <iostream>
 #include <sstream>
-#include <boost/format.hpp>
 
 #include <core/logger/log_levels.h>
 #include <core/datetime_utility.h>
+#include <core/string_utility.h>
 
 namespace core
 {
@@ -49,10 +49,10 @@ class LogEntry
                 logLevel = "ERROR";
                 break;
         }
-		
-        os << boost::str(boost::format("[ %s : %s ]") % entry.m_sourceCode % entry.m_sourceCodeLineNumber);
+
+        os << core::format("[ %s : %s ]",  entry.m_sourceCode, entry.m_sourceCodeLineNumber);
         os << std::endl;
-        os << boost::str(boost::format("%s : %s , %s , %s") % getCurrentDateTime() % logLevel % entry.m_sender % entry.m_message);
+        os << core::format("%s : %s , %s , %s", getCurrentDateTime(), logLevel, entry.m_sender, entry.m_message);
         return os;
     }
 

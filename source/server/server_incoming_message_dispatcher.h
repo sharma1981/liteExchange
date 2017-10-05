@@ -4,12 +4,12 @@
 #include <cassert>
 #include <string>
 #include <memory>
-#include <boost/format.hpp>
 
 #include <order_matcher/incoming_message.h>
 #include <order_matcher/central_order_book.h>
 
 #include <core/concurrency/thread.h>
+#include <core/concurrency/thread_wait_strategy.h>
 #include <core/concurrency/actor.h>
 #include <core/concurrency/queue_mpsc.hpp>
 
@@ -21,7 +21,7 @@ using namespace core;
 using namespace order_matcher;
 
 
-class IncomingMessageDispatcher : public Actor
+class IncomingMessageDispatcher : public Actor, public YieldWaitStrategy
 {
     public:
 
@@ -57,7 +57,7 @@ class IncomingMessageDispatcher : public Actor
 
                 if (m_centralOrderBook == nullptr)
                 {
-                    core::Thread::sleep(server_constants::SERVER_THREAD_SLEEP_DURATION);
+                    core::Thread::sleep(server_constants::SERVER_THREAD_SLEEP_DURATION_MICROSECONDS);
                 }
                 else
                 {
@@ -101,7 +101,7 @@ class IncomingMessageDispatcher : public Actor
                 }
                 else
                 {
-                    core::Thread::yield();
+                    applyWaitStrategy(0);
                 }
             }
 

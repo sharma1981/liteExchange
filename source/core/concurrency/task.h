@@ -4,14 +4,12 @@
 #include <memory>
 #include <functional>
 #include <string>
-#include <boost/optional.hpp>
-#include <boost/any.hpp>
 #include <core/memory/heap_memory.h>
 
 namespace core
 {
 
-using ReturnType = boost::optional<boost::any>;
+using TaskReturnType = void*;
 
 class Task : public core::Aligned<>
 {
@@ -31,18 +29,18 @@ class Task : public core::Aligned<>
 
         void execute()
         {
-            // Execute callback & Transfer return value buffer to Task via boost::optional<boost::any>
+            // Execute callback & Transfer return value buffer to Task via void* return type
             m_returnValue = m_callback();
         }
 
-        ReturnType getReturnValue()const
+        TaskReturnType getReturnValue()const
         {
             return m_returnValue;
         }
 
     private:
         std::function<void*()> m_callback;
-        ReturnType m_returnValue;
+        TaskReturnType m_returnValue;
 };
 
 using TaskPtr = std::unique_ptr<Task>;

@@ -3,6 +3,10 @@
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <df root="." name="0">
       <df name="bin">
+        <df name="intermediate">
+          <df name="ome.tlog">
+          </df>
+        </df>
         <df name="quickfix_log">
           <df name="TEST_CLIENT1">
           </df>
@@ -28,6 +32,10 @@
         <df name="windows_msvc_command_line">
         </df>
         <df name="windows_msvc_visual_studio">
+          <df name="ipch">
+            <df name="ome-61419283">
+            </df>
+          </df>
         </df>
       </df>
       <df name="dependencies">
@@ -3584,10 +3592,7 @@
             <in>thread_pool_arguments.h</in>
             <in>thread_pool_observer.h</in>
             <in>thread_priority.h</in>
-          </df>
-          <df name="concurrent">
-            <in>thread.cpp</in>
-            <in>thread_pool.cpp</in>
+            <in>thread_wait_strategy.h</in>
           </df>
           <df name="design_patterns">
             <in>factory.hpp</in>
@@ -3612,7 +3617,10 @@
             <in>aligned_memory.cpp</in>
             <in>cpu_memory.h</in>
             <in>heap_memory.h</in>
+            <in>stack_memory.h</in>
             <in>virtual_memory.h</in>
+          </df>
+          <df name="network">
           </df>
           <in>callstack.h</in>
           <in>config_file.cpp</in>
@@ -3624,14 +3632,23 @@
           <in>noncopyable.h</in>
           <in>pretty_exception.h</in>
           <in>self_process.h</in>
-          <in>shared_memory.cpp</in>
-          <in>shared_memory.h</in>
           <in>single_instance.cpp</in>
           <in>single_instance.h</in>
           <in>stopwatch.cpp</in>
           <in>stopwatch.h</in>
           <in>string_utility.h</in>
+          <in>timer.cpp</in>
+          <in>timer.h</in>
           <in>trace.h</in>
+        </df>
+        <df name="fix">
+          <in>fix_constants.h</in>
+          <in>fix_message.cpp</in>
+          <in>fix_message.h</in>
+          <in>fix_server.cpp</in>
+          <in>fix_server.h</in>
+          <in>fix_session.cpp</in>
+          <in>fix_session.h</in>
         </df>
         <df name="order_matcher">
           <in>base_message.h</in>
@@ -3661,9 +3678,9 @@
           <in>server_incoming_message_dispatcher.h</in>
           <in>server_outgoing_message_processor.h</in>
         </df>
+        <in>main.cpp</in>
         <in>precompiled_header.cpp</in>
         <in>precompiled_header.h</in>
-        <in>server_main.cpp</in>
       </df>
       <df name="test_functional">
         <df name="client_executable">

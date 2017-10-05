@@ -1,11 +1,11 @@
 #include "central_order_book.h"
 #include "security_manager.h"
 #include <queue>
-#include <boost/format.hpp>
 using namespace std;
 
 #include <core/compiler/likely.h>
 #include <core/stopwatch.h>
+#include <core/string_utility.h>
 using namespace core;
 
 namespace order_matcher
@@ -31,7 +31,7 @@ void CentralOrderBook::setSymbols(const std::vector<std::string>symbols)
 void CentralOrderBook::initialiseMultithreadedMatching(core::ThreadPoolArguments& args)
 {
     m_orderBookThreadPool.attach(m_threadPoolObserver);
-    notify(boost::str(boost::format("Initialising thread pool, work queue size per thread %d")  %args.m_workQueueSizePerThread) );
+    notify(core::format("Initialising thread pool, work queue size per thread %d", args.m_workQueueSizePerThread) );
 
     m_isMatchingMultithreaded = true;
 
@@ -58,7 +58,7 @@ bool CentralOrderBook::addOrder(const Order& order)
     int queueID = m_queueIDDictionary[securityId];
 
     // SEND ACCEPTED MESSAGE TO THE CLIENT
-    notify(boost::str(boost::format("New order accepted, client %s, client order ID %d ") % order.getOwner() % order.getClientID()));
+    notify( core::format("New order accepted, client %s, client order ID %d ", order.getOwner(), order.getClientID()));
     OutgoingMessage message(order, OutgoingMessageType::ACCEPTED);
     m_outgoingMessages.enqueue(message);
 
@@ -104,13 +104,13 @@ void* CentralOrderBook::taskNewOrder(const Order& order)
 
     ////////////////////////////////////////////////////////////////
     watch.stop();
-    notify(boost::str(boost::format("Order processing for symbol %s took %07ld microseconds , num of processed orders : %d") % SecurityManager::getInstance()->getSecurityName(securityId) % watch.getElapsedTimeMicroseconds() % processedOrderNum));
+    notify(core::format("Order processing for symbol %s took %07ld microseconds , num of processed orders : %d", SecurityManager::getInstance()->getSecurityName(securityId), watch.getElapsedTimeMicroseconds(), processedOrderNum));
     return nullptr;
 }
 
 void CentralOrderBook::rejectOrder(const Order& order, const std::string& message)
 {
-    notify(boost::str(boost::format("Order being rejected, client %s, client ID %d")  %order.getOwner() %order.getClientID()));
+    notify(core::format("Order being rejected, client %s, client ID %d", order.getOwner(), order.getClientID()));
     OutgoingMessage outgoingMessage(order, OutgoingMessageType::REJECTED, message);
     m_outgoingMessages.enqueue(outgoingMessage);
 }
@@ -120,7 +120,7 @@ void CentralOrderBook::cancelOrder(const Order& order, const std::string& origCl
     const string& owner = order.getOwner();
     size_t securityId = order.getSecurityId();
     // NOTIFY THE CLIENT
-    notify(boost::str(boost::format("Order being canceled, client %s, client ID %d") % owner % origClientOrderID));
+    notify(core::format("Order being canceled, client %s, client ID %d", owner, origClientOrderID));
 
     int queueID = m_queueIDDictionary[securityId];
     core::Task cancelOrderTask(&CentralOrderBook::taskCancelOrder, this, order, origClientOrderID);
@@ -153,7 +153,7 @@ void* CentralOrderBook::taskCancelOrder(const Order& order, const std::string& o
     }
     else
     {
-        string message = boost::str(boost::format("Order to cancel could not be found, client %s, client ID %d") % owner % origClientOrderID);
+        string message = core::format("Order to cancel could not be found, client %s, client ID %d", owner, origClientOrderID);
         notify(message);
         rejectOrder(order, message);
     }

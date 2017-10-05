@@ -13,7 +13,7 @@
 #include <windows.h>
 #endif
 
-#define MAX_CONSOLE_MESSAGE_LENGTH 1024
+#include <core/string_utility.h>
 
 namespace core
 {
@@ -80,18 +80,14 @@ inline std::string getAnsiColorCode(ConsoleColor color)
 }
 #endif
 
-
-inline void consoleOutputWithColor(ConsoleColor foregroundColor, const char* message, ...)
+template <typename... Args>
+inline void consoleOutputWithColor(ConsoleColor foregroundColor, const char* message, Args&&... args)
 {
-    char buffer[MAX_CONSOLE_MESSAGE_LENGTH] = {(char) NULL};
+    std::string buffer;
+    buffer = core::format(message, args...);
+#ifdef _WIN32
     auto fgIndex = static_cast<std::underlying_type<ConsoleColor>::type>(foregroundColor);
     auto foreGroundColorCode = NATIVE_CONSOLE_COLORS[fgIndex].value;
-
-    va_list args;
-    va_start(args, message);
-    vsnprintf(buffer, MAX_CONSOLE_MESSAGE_LENGTH, message, args);
-    va_end(args);
-#ifdef _WIN32
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     auto setConsoleAttribute = [&hConsole](int code){ SetConsoleTextAttribute(hConsole, code);  };
 
@@ -104,6 +100,15 @@ inline void consoleOutputWithColor(ConsoleColor foregroundColor, const char* mes
     SetConsoleTextAttribute(hConsole, 15); //set back to black background and white text
 #elif __linux__
     std::cout << getAnsiColorCode(foregroundColor)<< buffer << "\033[0m" << std::endl;
+#endif
+}
+
+inline void pressAnyKeyToContinue()
+{
+#ifdef _WIN32
+    system("pause");
+#elif __linux__
+    system("read");
 #endif
 }
 

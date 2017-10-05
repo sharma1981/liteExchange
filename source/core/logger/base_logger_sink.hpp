@@ -1,7 +1,6 @@
 #ifndef _BASE_LOGGER_SINK_H_
 #define _BASE_LOGGER_SINK_H_
 
-#include <stdexcept>
 #include <memory>
 #include <string>
 

@@ -1,30 +1,25 @@
 #include <exception>
 #include <iterator>
 #include <core/pretty_exception.h>
+#include <core/string_utility.h>
 #include "client_request.h"
 using namespace std;
-
-#include <boost/format.hpp>
-#include <boost/tokenizer.hpp>
 
 ClientRequest::ClientRequest(const string& csvRequest)
 {
     m_requestSent.store(false);
 
-    boost::char_separator<char> seperator(",");
-    boost::tokenizer<boost::char_separator<char>> tokenizer(csvRequest, seperator);
-
-    auto iter = tokenizer.begin();
-    auto numTokens = std::distance(tokenizer.begin(), tokenizer.end());
+    auto tokens = core::split(csvRequest, ',');
+    auto numTokens = tokens.size();
 
     if (numTokens < 5)
     {
-        auto exceptionMessage = boost::str(boost::format("Invalid number of tokens in line : %s") % csvRequest);
+        auto exceptionMessage = core::format("Invalid number of tokens in line : %s", csvRequest);
         THROW_PRETTY_INVALID_ARG_EXCEPTION(exceptionMessage)
     }
 
     // ORDER TYPE COLUMN
-    string orderType = *iter;
+    string orderType = tokens[0];
 
     if (orderType.compare("NEW_ORDER") == 0)
     {
@@ -32,7 +27,7 @@ ClientRequest::ClientRequest(const string& csvRequest)
 
         if (numTokens != 6)
         {
-            auto exceptionMessage = boost::str(boost::format("Invalid number of tokens for a new order in line : %s") % csvRequest);
+            auto exceptionMessage = core::format("Invalid number of tokens for a new order in line : %s", csvRequest);
             THROW_PRETTY_INVALID_ARG_EXCEPTION(exceptionMessage)
         }
     }
@@ -42,23 +37,21 @@ ClientRequest::ClientRequest(const string& csvRequest)
 
         if (numTokens != 5)
         {
-            auto exceptionMessage = boost::str(boost::format("Invalid number of tokens for a cancel order in line : %s") % csvRequest);
+            auto exceptionMessage = core::format("Invalid number of tokens for a cancel order in line : %s", csvRequest);
             THROW_PRETTY_INVALID_ARG_EXCEPTION(exceptionMessage)
         }
     }
     else
     {
-        THROW_PRETTY_INVALID_ARG_EXCEPTION(std::string("Invalid order type"))
+        THROW_PRETTY_INVALID_ARG_EXCEPTION("Invalid order type")
     }
 
     // SYMBOL COLUMN
-    iter++;
-    string temp( *iter);
+    string temp(tokens[1]);
     m_symbol = temp;
 
     // SIDE COLUMN
-    iter++;
-    string orderSide = *iter;
+    string orderSide = tokens[2];
 
     if (orderSide.compare("BUY") == 0)
     {
@@ -70,26 +63,22 @@ ClientRequest::ClientRequest(const string& csvRequest)
     }
     else
     {
-        THROW_PRETTY_INVALID_ARG_EXCEPTION(std::string("Invalid side"))
+        THROW_PRETTY_INVALID_ARG_EXCEPTION("Invalid side")
     }
 
     // TARGET ID
-    iter++;
-    m_targetID = *iter;
+    m_targetID = tokens[3];
 
     // ORIG ORDER ID , IF CANCEL ORDER
     if (m_type == ClientRequestType::CANCEL_ORDER)
     {
-        iter++;
-        m_origOrderID = *iter;
+        m_origOrderID = tokens[4];
     }
     else // PRICE AND QUANTITY , IF NEW ORDER
     {
-        iter++;
-        m_price = std::stod(*iter);
 
-        iter++;
-        m_quantity = std::stol(*iter);
+        m_price = std::stod(tokens[4]);
+        m_quantity = std::stol(tokens[5]);
     }
 }
 

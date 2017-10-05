@@ -17,8 +17,6 @@
 #include <quickfix/SessionSettings.h>
 #include <quickfix/Log.h>
 
-#include <boost/format.hpp>
-
 #include <core/concurrency/thread_priority.h>
 
 #include <order_matcher/order.h>
@@ -37,8 +35,7 @@ Server::Server(const string& fixEngineConfigFile, const ServerConfiguration& ser
 {
     if (!core::doesFileExist(m_fixEngineConfigFile))
     {
-        auto exceptionMessage = boost::str(boost::format("FIX configuration file %s does not exist") % m_fixEngineConfigFile);
-        THROW_PRETTY_RUNTIME_EXCEPTION(exceptionMessage)
+        THROW_PRETTY_RUNTIME_EXCEPTION(core::format("FIX configuration file %s does not exist", m_fixEngineConfigFile))
     }
 
     // Central order book initialisation

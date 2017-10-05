@@ -1,6 +1,7 @@
 #include<core/concurrency/task.h>
 #include<core/concurrency/actor.h>
 #include<core/concurrency/thread.h>
+#include<core/concurrency/spinlock.hpp>
 #include<core/concurrency/thread_pool.h>
 #include<core/concurrency/ring_buffer_spsc_lockfree.hpp>
 #include<core/concurrency/queue_mpmc.hpp>
@@ -57,6 +58,30 @@ TEST(Concurrent, Thread)
     EXPECT_EQ(666, testVal);
 }
 
+TEST(Concurrent, Spinlock)
+{
+    int sum = 10;
+    int actual = 0;
+    std::vector<std::thread> threads;
+    core::SpinLock sharedLock;
+
+    for (int i {0}; i < sum; i++)
+    {
+        threads.push_back(std::thread([&](){
+                                                sharedLock.lock();
+                                                actual++;
+                                                sharedLock.unlock();
+                                            }));
+    }
+
+    for (auto& elem : threads)
+    {
+        elem.join();
+    }
+
+    EXPECT_EQ(sum, actual);
+}
+
 TEST(Concurrent, Actor)
 {
     fred f;
@@ -83,7 +108,16 @@ TEST(Concurrent, RingBufferSPSCLockFree)
 
     for (auto i : testVector)
     {
-        threads.push_back(std::thread([&](){ int n = 0; queue.tryPop(&n); cout << n << endl; testSum += n; }));
+        threads.push_back(std::thread([&](){    int n = 0;
+                                                while(true)
+                                                {
+                                                    if(queue.tryPop(&n) )
+                                                    {
+                                                        break;
+                                                    }
+                                                }
+                                                cout << n << endl; testSum += n;
+                                            }));
     }
 
     for (auto& elem : threads)
@@ -225,10 +259,10 @@ TEST(Concurrent, ThreadPool)
     for (size_t i = 0; i < threadNames.size(); i++)
     {
         job_args.index = i;
-        expectedSum += i;
+        expectedSum++;
         core::Task task(&ThreadPoolJob::run, &job, job_args);
         pool.submitTask(task, i);
-        core::Thread::sleep(1000);
+        core::Thread::sleep(1000000); // Let`s wait long enough , 1 second , to make sure that all thread pool jobs invoked
     }
 
     pool.shutdown();
@@ -239,5 +273,5 @@ TEST(Concurrent, ThreadPool)
 
     delete[] workArray;
 
-    EXPECT_EQ(actualSum, 4);
+    EXPECT_EQ(actualSum, expectedSum);
 }

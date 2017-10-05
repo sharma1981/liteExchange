@@ -4,6 +4,7 @@
     * [Thread class](#ThreadClass)
 	* [Locks](#Locks)
 	* [Actor/Active object pattern](#Actor)
+	* [Thread wait strategies](#ThreadWaitStrategies)
 	* [Thread safe containers](#ThreadSafeContainers)
 	* [Thread pool and CPU pinning](#ThreadPool)
 	* [CPU cache aligned memory allocations ](#Allocator)
@@ -86,6 +87,19 @@ Outgoing message processor : https://github.com/akhin/cpp_multithreaded_order_ma
 
 They also pass their name to the base constructor of actor class , therefore their thread will be named threads.
 
+## <a name="ThreadWaitStrategies"></a>**Thread wait strategies :** 
+
+There are 3 different thread wait strategies. All implement base ThreadWaitStrategy class.
+The classes which are derived from them applies their thread waiting strategy by calling their virtual method :
+
+Source : https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/source/core/concurrency/thread_wait_strategy.h
+
+	1. SleepWait : Callers will be sleeping for their waiting.
+	
+	2. YieldWait : Callers will yield which means scheduler will switch to another thread immediately.
+	
+	3. BusyWait : Callers will neither sleep nor yield but simply will continue to do what they do.
+	
 ## <a name="ThreadSafeContainers"></a>**Thread safe container implementations :** 
 
 As mentioned in the overview , SPSC lockbuffer queue is used as work queues and they are per worker thread in a thread pool. You can see information about its implementation as below :
