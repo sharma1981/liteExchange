@@ -267,6 +267,9 @@
     <ClInclude Include="..\..\source\core\memory\stack_memory.h">
       <Filter>core\memory</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\source\core\concurrency\thread_wait_strategy.h">
+      <Filter>core\concurrency</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="order_matcher">

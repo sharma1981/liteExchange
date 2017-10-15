@@ -81,7 +81,7 @@ class OutgoingMessageProcessor : public Actor, public YieldWaitStrategy
                     {
                         const Order& order = message->getOrder();
 
-            LOG_INFO("Outgoing message processor", core::format("Processing %s for order : %s ", message->toString(), order.toString()))
+						LOG_INFO("Outgoing message processor", core::format("Processing %s for order : %s ", message->toString(), order.toString()))
 
                         FIX::TargetCompID targetCompID(order.getOwner());
                         FIX::SenderCompID senderCompID(order.getTarget());

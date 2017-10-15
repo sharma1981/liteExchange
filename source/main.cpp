@@ -32,7 +32,7 @@ int main ()
     // Initial checks
     if (core::getCPUCacheLineSize() != CACHE_LINE_SIZE)
     {
-    auto message = core::format("This executable compiled for cache line size %d , but you are running on a CPU with a cache line of %d", CACHE_LINE_SIZE, core::getCPUCacheLineSize());
+        auto message = core::format("This executable compiled for cache line size %d , but you are running on a CPU with a cache line of %d", CACHE_LINE_SIZE, core::getCPUCacheLineSize());
         Server::onError(message, ServerError::NON_SUPPORTED_EXECUTION);
     }
 

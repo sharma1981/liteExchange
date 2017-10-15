@@ -108,6 +108,7 @@ inline void pressAnyKeyToContinue()
 #ifdef _WIN32
     system("pause");
 #elif __linux__
+    std::cout << std::endl << "Press any key to continue..." << std::endl;
     system("read");
 #endif
 }

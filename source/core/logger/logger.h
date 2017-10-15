@@ -5,8 +5,8 @@
 #include <string>
 #include <memory>
 
-#include <core/concurrency/lock.hpp>
 #include <core/concurrency/actor.h>
+#include <core/concurrency/thread_wait_strategy.h>
 #include <core/concurrency/ring_buffer_mpmc.hpp>
 
 #include <core/design_patterns/singleton_dclp.hpp>
@@ -32,7 +32,7 @@ namespace core
 
 using LogBuffer = std::unique_ptr< core::RingBufferMPMC<LogEntry> >;
 
-class Logger : public core::Actor, public SingletonDCLP<Logger>
+class Logger : public core::Actor, public SingletonDCLP<Logger>, public SleepWaitStrategy
 {
     public :
         Logger() : Actor("LoggerThread") {}

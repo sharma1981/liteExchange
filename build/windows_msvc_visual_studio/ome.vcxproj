@@ -136,6 +136,7 @@
     <ClInclude Include="..\..\source\core\concurrency\thread_pool_arguments.h" />
     <ClInclude Include="..\..\source\core\concurrency\thread_pool_observer.h" />
     <ClInclude Include="..\..\source\core\concurrency\thread_priority.h" />
+    <ClInclude Include="..\..\source\core\concurrency\thread_wait_strategy.h" />
     <ClInclude Include="..\..\source\core\config_file.h" />
     <ClInclude Include="..\..\source\core\console_utility.h" />
     <ClInclude Include="..\..\source\core\datetime_utility.h" />

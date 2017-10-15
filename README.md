@@ -97,7 +97,7 @@ In the libraries side :
 
 ## <a name="RuntimeDependencies">**4. Runtime dependencies:** 
 
-For Windows, you have to install MSVC120 runtime : https://www.microsoft.com/en-gb/download/details.aspx?id=40784
+For Windows, you need MSVC120 runtime. You can find them in the same directory with executables : bin
 
 For Linux, you need GNU Libstd C++ 6 runtime and QuickFIX runtime.
 

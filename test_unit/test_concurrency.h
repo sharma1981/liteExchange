@@ -42,7 +42,7 @@ class fred : public core::Actor
         int getFoo() const { return foo; }
 };
 
-TEST(Concurrent, Thread)
+TEST(Concurrency, Thread)
 {
     worker w;
     int testVal = 665;
@@ -58,7 +58,7 @@ TEST(Concurrent, Thread)
     EXPECT_EQ(666, testVal);
 }
 
-TEST(Concurrent, Spinlock)
+TEST(Concurrency, Spinlock)
 {
     int sum = 10;
     int actual = 0;
@@ -82,7 +82,7 @@ TEST(Concurrent, Spinlock)
     EXPECT_EQ(sum, actual);
 }
 
-TEST(Concurrent, Actor)
+TEST(Concurrency, Actor)
 {
     fred f;
     f.start();
@@ -91,7 +91,7 @@ TEST(Concurrent, Actor)
     EXPECT_EQ(1, testVal);
 }
 
-TEST(Concurrent, RingBufferSPSCLockFree)
+TEST(Concurrency, RingBufferSPSCLockFree)
 {
     core::RingBufferSPSCLockFree<int> queue(19);
     std::vector<std::thread> threads;
@@ -129,7 +129,7 @@ TEST(Concurrent, RingBufferSPSCLockFree)
 }
 
 
-TEST(Concurrent, QueueMPMC)
+TEST(Concurrency, QueueMPMC)
 {
     core::QueueMPMC<int> mqueue;
     std::vector<std::thread> threads;
@@ -156,7 +156,7 @@ TEST(Concurrent, QueueMPMC)
     EXPECT_EQ(sum, testSum);
 }
 
-TEST(Concurrent, QueueMPSC)
+TEST(Concurrency, QueueMPSC)
 {
     core::QueueMPSC<int> mqueue;
     std::vector<std::thread> threads;
@@ -192,7 +192,7 @@ TEST(Concurrent, QueueMPSC)
     EXPECT_EQ(sum, testSum);
 }
 
-TEST(Concurrent, RingBufferMPMC)
+TEST(Concurrency, RingBufferMPMC)
 {
     core::RingBufferMPMC<int> ringBuffer(10);
     std::vector<std::thread> threads;
@@ -235,7 +235,7 @@ class ThreadPoolJob
         }
 };
 
-TEST(Concurrent, ThreadPool)
+TEST(Concurrency, ThreadPool)
 {
     vector<string> threadNames = { "a", "b", "c", "d" };
 

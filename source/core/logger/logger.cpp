@@ -63,7 +63,8 @@ void* Logger::run()
         {
             break;
         }
-        core::Thread::yield();
+
+        applyWaitStrategy(50000); // 50 milliseconds wait
     }
 
     m_sinks.closeEnabledSinks();
