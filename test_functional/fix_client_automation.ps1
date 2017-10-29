@@ -735,7 +735,7 @@ function initialise()
 
 function start_test()
 {
-	$fix_client_automation = New-Object FixClientAutomation
+    $fix_client_automation = New-Object FixClientAutomation
     [int]$numberClients = [Convert]::ToInt32($textBox_numberOfClients.Text)
     [string]$testcaseFile = $textBox_inputFixFile.Text.ToString()
     [string]$fixVersion = $textBox_fixVersion.Text
@@ -743,23 +743,23 @@ function start_test()
     [int]$serverPort = [Convert]::ToInt32($textBox_serverPort.Text)
     [string]$baseCompid = $textBox_clientCompPrefix.Text.ToString()
     [string]$serverCompId = $textBox_serverCompId.Text.ToString()
-	
-	$fix_client_automation.initialise($numberClients, $testcaseFile, $fixVersion, $server, $serverPort, $baseCompid, $serverCompId)
+    
+    $fix_client_automation.initialise($numberClients, $testcaseFile, $fixVersion, $server, $serverPort, $baseCompid, $serverCompId)
 
-	$sw = [System.Diagnostics.Stopwatch]::startNew()
+    $sw = [System.Diagnostics.Stopwatch]::startNew()
     $button_start_test.Enabled = $false
-	$fix_client_automation.start()
+    $fix_client_automation.start()
     $fix_client_automation.join()
-	$fix_client_automation.report("report.txt")
-	
-	$sw.Stop()
-	Write-Host
-	$time_taken = $sw.ElapsedMilliseconds.toString();
-	Write-Host "Time : $time_taken milliseconds "
-	# Ending
-	Write-Host ""
-	Write-Host "Client automation finished , you can press Start button to start another test." -foregroundcolor "Yellow"
-	Write-Host ""
+    $fix_client_automation.report("report.txt")
+    
+    $sw.Stop()
+    Write-Host
+    $time_taken = $sw.ElapsedMilliseconds.toString();
+    Write-Host "Time : $time_taken milliseconds "
+    # Ending
+    Write-Host ""
+    Write-Host "Client automation finished , you can press Start button to start another test." -foregroundcolor "Yellow"
+    Write-Host ""
     $button_start_test.Enabled = $true
     notepad "report.txt"
 }
@@ -819,7 +819,7 @@ $textBox_serverPort.Font = "Microsoft Sans Serif,10"
 $form_fix_client_automation.controls.Add($textBox_serverPort)
 
 $label_note_client_compids = New-Object system.windows.Forms.Label
-$label_note_client_compids.Text = "Note : If no of clients is 2 , their compids will be : <client_compid_prefix>1 and <client_compid_prefix>2"
+$label_note_client_compids.Text = "Note : If no of clients is 2 , their compids will be : <client_compid_base>1 and <client_compid_base>2"
 $label_note_client_compids.AutoSize = $true
 $label_note_client_compids.Width = 25
 $label_note_client_compids.Height = 10

@@ -258,26 +258,25 @@ The engine produces log messages below when it receives 1 buy order with quantit
 
 ## <a name="FunctionalTesting">**9. Functional testing:** 
 
-There is a Powershell script for Windows which can send orders from FIX files.
-		   
 Under "test_functional" directory :
-   
-For Windows
 
-1. Modify test_data.txt which has the orders to send to the engine as you wish.
+For Linux, a FIX client automation implemented in Python will be available soon.
+   
+For Windows there is a Powershell script for Windows which can send orders from FIX files using Fix protocol.
+It internally uses C# to implement FIX protocol.
+
+1. Modify test_data.txt which has the orders to send to the engine as FIX messages.
 
 2. For firing Windows test client(s), you can use fix_client_automation.bat.
 
-3. A GUI will appear. Simply specify target server , number of test clients and the test case file :
+3. A GUI will appear. Simply specify the arguments.
 
 4. Press the start button.
         
 <p align="center">  
 <img src="https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/documentation/testfunctional_gui_windows.png">       
 </p>
-        
-For Linux, the same automation will be available soon in Perl and Python.
-    
+            
 ## <a name="UnitTesting">**10. Unit testing with GoogleTest:** 
 
 The project uses GoogleTest 1.7. You can find a makefile and vcproj under "test_unit" directory.
