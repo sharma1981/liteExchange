@@ -1,13 +1,5 @@
-#
-#	New order
-#	
-#		order_type symbol side target_id price quantity
-#
-#	Cancel order
-#
-#		order_type symbol side target_id orig_order_id
-#
-#
-NEW_ORDER,GOOGL,SELL,OME,1,2
-NEW_ORDER,GOOGL,BUY,OME,1,1
-NEW_ORDER,GOOGL,BUY,OME,1,1
+35=D38=240=244=154=255=GOOGL59=0
+35=D38=140=244=154=155=GOOGL59=0
+35=D38=140=244=154=155=GOOGL59=0
+35=D38=140=244=154=255=AAPL59=0
+35=D38=140=244=154=155=AAPL59=0

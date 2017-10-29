@@ -258,21 +258,7 @@ The engine produces log messages below when it receives 1 buy order with quantit
 
 ## <a name="FunctionalTesting">**9. Functional testing:** 
 
-There is a prebuilt executable for both Linux and Windows which can send specified ask/bid orders to the order matching engine using CSV test case files.
-Test case files have orders in the below CSV format :
-
-		#
-		#	New order
-		#	
-		#		order_type symbol side target_id price quantity
-		#
-		#	Cancel order
-		#
-		#		order_type symbol side target_id orig_order_id
-		#
-		#
-		NEW_ORDER,GOOGL,SELL,OME,1,2
-		NEW_ORDER,GOOGL,BUY,OME,1,1
+There is a Powershell script for Windows which can send orders from FIX files.
 		   
 Under "test_functional" directory :
    
@@ -280,7 +266,7 @@ For Windows
 
 1. Modify test_data.txt which has the orders to send to the engine as you wish.
 
-2. For firing Windows test client(s), you can use client_automated_test.bat.
+2. For firing Windows test client(s), you can use fix_client_automation.bat.
 
 3. A GUI will appear. Simply specify target server , number of test clients and the test case file :
 
@@ -290,28 +276,7 @@ For Windows
 <img src="https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/documentation/testfunctional_gui_windows.png">       
 </p>
         
-For Linux with Bash Script
-
-1. Modify test_data.txt which has the orders to send to the engine as you wish.
-
-2. For firing Linux test client(s), you can use client_automated_test.sh Bash script. You have to pass it 3 arguments :
-   server address , the test case file and number of clients. Example :
-   
-    .\client_automated_test.sh 127.0.1 test_cases.txt 8
-        
-3. After firing the script, it will be executing all orders in test_data.txt file per client that is declared in the script file.
-
-Alternatively on Linux , there is a GUI script as in Windows one :
-
-1. Install Perl TK ( For CentOS : yum install perl-Tk )
-
-2. In the command line , run the script as : perl .\client_automated_test.pl
-
-3. Set the arguments and then press the start button.
-
-<p align="center">      
-<img src="https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/documentation/testfunctional_gui_linux.png">
-</p>
+For Linux, the same automation will be available soon in Perl and Python.
     
 ## <a name="UnitTesting">**10. Unit testing with GoogleTest:** 
 
