@@ -3,7 +3,7 @@ function initialise()
   $source = @"
     using System;
   
-    class FixConstants
+    public class FixConstants
     {
         // GENERAL
         public const char FIX_EQUALS = '=';
@@ -63,7 +63,7 @@ function initialise()
         public const int FIX_ENCRYPTION_NONE = 0;
     };
 
-    class FixMessage
+    public class FixMessage
     {
         private System.Collections.Generic.Dictionary<int, string> m_tagValuePairs = new System.Collections.Generic.Dictionary<int, string>();
         private string m_fixVersion = "FIX.4.2";
@@ -333,9 +333,10 @@ function initialise()
         }
     }
 
-    class FixSession
+    public class FixSession
     {
         private System.Net.Sockets.Socket m_socket = new System.Net.Sockets.Socket(System.Net.Sockets.AddressFamily.InterNetwork, System.Net.Sockets.SocketType.Stream, System.Net.Sockets.ProtocolType.Tcp);
+        private System.Net.Sockets.Socket m_serverSocket = new System.Net.Sockets.Socket(System.Net.Sockets.AddressFamily.InterNetwork, System.Net.Sockets.SocketType.Stream, System.Net.Sockets.ProtocolType.Tcp);
         private System.Timers.Timer m_heartbeatTimer = new System.Timers.Timer();
 
         public bool Connected { get; set; }
@@ -359,7 +360,7 @@ function initialise()
             m_socket.NoDelay = true;
         }
 
-        private FixMessage getBaseMessage(char messageType)
+        public FixMessage getBaseMessage(char messageType)
         {
             FixMessage message = new FixMessage();
             message.setFixVersion(FixVersion);
@@ -371,7 +372,7 @@ function initialise()
             return message;
         }
 
-        private FixMessage getLogonMessage()
+        public FixMessage getLogonMessage()
         {
             FixMessage message = getBaseMessage(FixConstants.FIX_MESSAGE_LOG_ON);
             message.setTag(FixConstants.FIX_TAG_ENCRYPT_METHOD, EncryptionMethod);
@@ -379,7 +380,7 @@ function initialise()
             return message;
         }
 
-        private FixMessage getLogoffMessage()
+        public FixMessage getLogoffMessage()
         {
             FixMessage message = getBaseMessage(FixConstants.FIX_MESSAGE_LOG_OFF);
             return message;
@@ -430,6 +431,55 @@ function initialise()
                 System.Console.WriteLine(e.Message);
             }
             return result;
+        }
+
+        public void accept()
+        {
+            try
+            {
+                System.Net.IPHostEntry ipHostInfo = System.Net.Dns.GetHostEntry(System.Net.Dns.GetHostName());
+                System.Net.IPAddress ipAddress = ipHostInfo.AddressList[0];
+                System.Net.IPEndPoint localEndPoint = new System.Net.IPEndPoint(Convert.ToInt32(TargetAddress), TargetPort);
+
+                m_serverSocket.Bind(localEndPoint);
+                m_serverSocket.Listen(100);
+
+                m_socket = m_serverSocket.Accept();
+                
+                FixMessage message = recv();
+                if (message != null)
+                {
+                    if (message.hasTag(FixConstants.FIX_TAG_MESSAGE_TYPE))
+                    {
+                        var value = message.getTagValue(FixConstants.FIX_TAG_MESSAGE_TYPE);
+                        if (value == FixConstants.FIX_MESSAGE_LOG_ON.ToString())
+                        {
+                            if (message.hasTag(FixConstants.FIX_TAG_SEQUENCE_NUMBER))
+                            {
+                                Connected = true;
+                                IncomingSequenceNumber = System.Convert.ToInt32(message.getTagValue(FixConstants.FIX_TAG_SEQUENCE_NUMBER));
+                                HeartbeatInterval = System.Convert.ToInt32(message.getTagValue(FixConstants.FIX_TAG_HEARBEAT_INTERVAL));
+                                TargetCompid = message.getTagValue(FixConstants.FIX_TAG_TARGET_COMPID);
+
+                                if (message.hasTag(FixConstants.FIX_TAG_ENCRYPT_METHOD))
+                                {
+                                    EncryptionMethod = System.Convert.ToInt32(message.getTagValue(FixConstants.FIX_TAG_ENCRYPT_METHOD));
+                                }
+
+                                m_heartbeatTimer.Interval = HeartbeatInterval * 1000;
+                                m_heartbeatTimer.Elapsed += new System.Timers.ElapsedEventHandler(heartbeatTimerFunction);
+                                m_heartbeatTimer.Start();
+
+                                send(getLogonMessage());
+                            }
+                        }
+                    }
+                }
+            }
+            catch (System.Exception e)
+            {
+                System.Console.WriteLine(e.Message);
+            }
         }
 
         private void heartbeatTimerFunction(object sender, System.EventArgs e)
@@ -501,6 +551,7 @@ function initialise()
             send(getLogoffMessage());
             FixMessage logoffResponse = recv();
             m_socket.Close();
+            m_serverSocket.Close();
             Connected = false;
             saveSequenceNumberToFile();
         }
@@ -535,9 +586,40 @@ function initialise()
             }
             System.IO.File.WriteAllText(fileName, OutgoingSequenceNumber.ToString() + "," + IncomingSequenceNumber.ToString());
         }
+
+        
+    }
+	
+	public class FixServer
+    {
+        private FixSession m_session = new FixSession();
+        public FixSession FixSession { get { return m_session; } }
+
+        public void start(int port, string compId)
+        {
+            m_session.TargetPort = port;
+            m_session.SenderCompid = compId;
+            m_session.restoreSequenceNumberFromFile();
+            m_session.accept();
+        }
+
+        public void disconnect()
+        {
+            m_session.disconnect();
+        }
+
+        public void send(FixMessage message)
+        {
+            m_session.send(message);
+        }
+
+        public FixMessage recv()
+        {
+            return m_session.recv();
+        }
     }
 
-    class FixClient
+    public class FixClient
     {
         private int m_orderId = 0;
         private FixSession m_session = new FixSession();
@@ -648,8 +730,8 @@ function initialise()
                     {
                         if (message.getTagValue(FixConstants.FIX_TAG_ORDER_STATUS) == FixConstants.FIX_ORDER_STATUS_FILLED.ToString())
                         {
-                            Console.WriteLine(String.Format("{0} received a fill", fixClient.FixSession.SenderCompid));
-                            filledCount++;
+							filledCount++;
+                            Console.WriteLine(String.Format("{0} received a fill : {1} of {2}", fixClient.FixSession.SenderCompid, filledCount, orders.Count));
                         }
                     }
 
@@ -904,7 +986,7 @@ $label_input_fix_file.Font = "Microsoft Sans Serif,10"
 $form_fix_client_automation.controls.Add($label_input_fix_file)
 
 $label_number_of_clients = New-Object system.windows.Forms.Label
-$label_number_of_clients.Text = "Number of clients"
+$label_number_of_clients.Text = "Number of concurrent clients"
 $label_number_of_clients.AutoSize = $true
 $label_number_of_clients.Width = 25
 $label_number_of_clients.Height = 10
