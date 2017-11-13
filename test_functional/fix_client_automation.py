@@ -638,8 +638,8 @@ def main():
             Utility.writeInfoMessage("3 Fix version : " + fixVersion)
             Utility.writeInfoMessage("4 Server address : " + server)
             Utility.writeInfoMessage("5 Server port : " + str(serverPort))
-            Utility.writeInfoMessage("6 Server comp id : " + clientCompIdBase)
-            Utility.writeInfoMessage("7 Client comp id base value : " + serverCompId)
+            Utility.writeInfoMessage("6 Server comp id : " + serverCompId)
+            Utility.writeInfoMessage("7 Client comp id base value : " + clientCompIdBase)
 
             print("")
             answer = Utility.yesNoQuestion("Do you want to change any parameters ? ")
