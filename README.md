@@ -31,7 +31,7 @@ Features can be seen in the table below :
 | Order message types           | NewOrder, Cancel                                      |
 | Exec report types			    | Accepted, Filled, PartiallyFilled, Rejected, Canceled |
 | TIF                           | Not supported       			                        |
-| Symbology`                    | No validation, examples use RIC codes                 |
+| Symbology                     | No validation, examples use RIC codes                 |
 
 Technical implementation details are as below : 
 
@@ -266,7 +266,7 @@ For Linux, the project has a Python script which can send orders from FIX files 
 
 2. To run it : python ./fix_client_automation.py
 
-3. You can set automation parameters in the commmandline :
+3. You can set automation parameters in the commandline :
         
 <p align="center">  
 <img src="https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/documentation/testfunctional_linux.png">       
