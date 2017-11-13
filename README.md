@@ -260,12 +260,23 @@ The engine produces log messages below when it receives 1 buy order with quantit
 
 Under "test_functional" directory :
 
-For Linux, a FIX client automation implemented in Python will be available soon.
+For Linux, the project has a Python script which can send orders from FIX files using Fix protocol.
+
+1. Modify test_cases.txt which has the orders to send to the engine as FIX messages.
+
+2. Just run it : python ./fix_client_automation.py
+
+3. You can automation parameters in the commmandline
+        
+<p align="center">  
+<img src="https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/documentation/testfunctional_linux.png">       
+</p>
+
    
 For Windows there is a Powershell script for Windows which can send orders from FIX files using Fix protocol.
 It internally uses C# to implement FIX protocol.
 
-1. Modify test_data.txt which has the orders to send to the engine as FIX messages.
+1. Modify test_cases.txt which has the orders to send to the engine as FIX messages.
 
 2. For firing Windows test client(s), you can use fix_client_automation.bat.
 
