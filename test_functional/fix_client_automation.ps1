@@ -1,7 +1,7 @@
 function initialise()
 {
   $source = @"
-    using System;
+  using System;
   
     public class FixConstants
     {
@@ -52,7 +52,7 @@ function initialise()
         public const int FIX_ORDER_STATUS_STOPPED = 7;
         public const int FIX_ORDER_STATUS_REJECTED = 8;
         // ORDER TYPE
-        public const int FIX_ORDER_TYPE_MARKET= 1;
+        public const int FIX_ORDER_TYPE_MARKET = 1;
         public const int FIX_ORDER_TYPE_LIMIT = 2;
         // SIDE
         public const int FIX_ORDER_SIDE_BUY = 1;
@@ -61,12 +61,11 @@ function initialise()
         public const int FIX_ORDER_TIF_DAY = 0;
         // ENCRYPTION METHODS
         public const int FIX_ENCRYPTION_NONE = 0;
-    };
+    }
 
     public class FixMessage
     {
         private System.Collections.Generic.Dictionary<int, string> m_tagValuePairs = new System.Collections.Generic.Dictionary<int, string>();
-        private string m_fixVersion = "FIX.4.2";
         System.Text.StringBuilder m_builder = new System.Text.StringBuilder();
 
         private void appendTagValueToBuilder(int tag, string value, bool delimiter = true)
@@ -78,7 +77,7 @@ function initialise()
             }
         }
 
-        static public string getCurrentUTCDateTime(bool microseconds = false, bool nanosecond = false)
+        static public string getCurrentUTCDateTime()
         {
             string datetime = "";
             datetime = System.DateTime.Now.ToUniversalTime().ToString("yyyyMMdd-HH:mm:ss.fff");
@@ -90,7 +89,7 @@ function initialise()
             string checksum = "";
             int sum = 0;
 
-            foreach(char c in message)
+            foreach (char c in message)
             {
                 sum += (int)c;
             }
@@ -109,7 +108,7 @@ function initialise()
         public bool isAdminMessage()
         {
             var type = getMessageType();
-            if(type == FixConstants.FIX_MESSAGE_HEARTBEAT)
+            if (type == FixConstants.FIX_MESSAGE_HEARTBEAT)
             {
                 return true;
             }
@@ -154,7 +153,7 @@ function initialise()
 
         public void setFixVersion(string fixVersion)
         {
-            m_fixVersion = fixVersion;
+            setTag(FixConstants.FIX_TAG_VERSION, fixVersion);
         }
 
         public bool hasTag(int tag)
@@ -199,14 +198,7 @@ function initialise()
                 var tokens = tagValuePair.Split(FixConstants.FIX_EQUALS);
                 int tag = System.Convert.ToInt32(tokens[0]);
                 string value = tokens[1];
-                if (tag == FixConstants.FIX_TAG_VERSION)
-                {
-                    setFixVersion(value);
-                }
-                else
-                {
-                    setTag(tag, value);
-                }
+                setTag(tag, value);
             }
         }
 
@@ -230,106 +222,98 @@ function initialise()
             return ret;
         }
 
-        public string toString(bool sendingAsAMessage, bool updateTransactionTime=false)
+        public string toString(bool sendingAsAMessage, bool updateTransactionTime = false)
         {
+            // FIX VERSION
+            appendTagValueToBuilder(FixConstants.FIX_TAG_VERSION, getTagValue(FixConstants.FIX_TAG_VERSION));
+
+            // FIX SENDING TIME AND TRANSACTION, have to be before body length calculation ,but not appended for the correct order
             if (sendingAsAMessage)
             {
-                // FIX VERSION , if message loaded from a file preserve its fix version
-                if (hasTag(FixConstants.FIX_TAG_VERSION) == false)
-                {
-                    appendTagValueToBuilder(FixConstants.FIX_TAG_VERSION, m_fixVersion);
-                }
-                else
-                {
-                    appendTagValueToBuilder(FixConstants.FIX_TAG_VERSION, getTagValue(FixConstants.FIX_TAG_VERSION));
-                }
-
-                // FIX SENDING TIME AND TRANSACTION, have to be before body length calculation ,but not appended for the correct order
                 var currentUTCDateTime = FixMessage.getCurrentUTCDateTime();
                 setTag(FixConstants.FIX_TAG_SENDING_TIME, currentUTCDateTime);
-
+                
                 if (updateTransactionTime && isAdminMessage() == false)
                 {
                     setTag(FixConstants.FIX_TAG_TRANSACTION_TIME, currentUTCDateTime);
                 }
+            }
 
-                // FIX BODY LENGTH
+            // FIX BODY LENGTH
+            if (sendingAsAMessage)
+            {
                 var bodyLength = calculateBodyLength().ToString();
                 appendTagValueToBuilder(FixConstants.FIX_TAG_BODY_LENGTH, bodyLength);
-
-                // FIX MESSAGE TYPE
-                appendTagValueToBuilder(FixConstants.FIX_TAG_MESSAGE_TYPE, getTagValue(FixConstants.FIX_TAG_MESSAGE_TYPE));
-
-                // FIX SEQUENCE NUMBER
-                appendTagValueToBuilder(FixConstants.FIX_TAG_SEQUENCE_NUMBER, getTagValue(FixConstants.FIX_TAG_SEQUENCE_NUMBER));
-
-                // FIX SENDER COMPID
-                appendTagValueToBuilder(FixConstants.FIX_TAG_SENDER_COMPID, getTagValue(FixConstants.FIX_TAG_SENDER_COMPID));
-
-                // FIX SENDING TIME
-                appendTagValueToBuilder(FixConstants.FIX_TAG_SENDING_TIME, getTagValue(FixConstants.FIX_TAG_SENDING_TIME));
-
-                // FIX TARGET COMPID
-                appendTagValueToBuilder(FixConstants.FIX_TAG_TARGET_COMPID, getTagValue(FixConstants.FIX_TAG_TARGET_COMPID));
-
-                foreach (var tagValue in m_tagValuePairs)
-                {
-                    if (tagValue.Key == FixConstants.FIX_TAG_VERSION)
-                    {
-                        continue;
-                    }
-
-                    if (tagValue.Key == FixConstants.FIX_TAG_BODY_LENGTH)
-                    {
-                        continue;
-                    }
-
-                    if (tagValue.Key == FixConstants.FIX_TAG_MESSAGE_TYPE)
-                    {
-                        continue;
-                    }
-
-                    if (tagValue.Key == FixConstants.FIX_TAG_SEQUENCE_NUMBER)
-                    {
-                        continue;
-                    }
-
-                    if (tagValue.Key == FixConstants.FIX_TAG_SENDING_TIME)
-                    {
-                        continue;
-                    }
-
-                    if (tagValue.Key == FixConstants.FIX_TAG_SENDER_COMPID)
-                    {
-                        continue;
-                    }
-
-                    if (tagValue.Key == FixConstants.FIX_TAG_TARGET_COMPID)
-                    {
-                        continue;
-                    }
-
-                    if (tagValue.Key == FixConstants.FIX_TAG_BODY_CHECKSUM)
-                    {
-                        continue;
-                    }
-
-                    appendTagValueToBuilder(tagValue.Key, tagValue.Value);
-                }
-
-                // FIX CHECKSUM
-                var checksum = calculateChecksum(m_builder.ToString());
-                appendTagValueToBuilder(FixConstants.FIX_TAG_BODY_CHECKSUM, checksum);
             }
-            else
+
+            // FIX MESSAGE TYPE
+            appendTagValueToBuilder(FixConstants.FIX_TAG_MESSAGE_TYPE, getTagValue(FixConstants.FIX_TAG_MESSAGE_TYPE));
+
+            // FIX SEQUENCE NUMBER
+            appendTagValueToBuilder(FixConstants.FIX_TAG_SEQUENCE_NUMBER, getTagValue(FixConstants.FIX_TAG_SEQUENCE_NUMBER));
+
+            // FIX SENDER COMPID
+            appendTagValueToBuilder(FixConstants.FIX_TAG_SENDER_COMPID, getTagValue(FixConstants.FIX_TAG_SENDER_COMPID));
+
+            // FIX SENDING TIME
+            appendTagValueToBuilder(FixConstants.FIX_TAG_SENDING_TIME, getTagValue(FixConstants.FIX_TAG_SENDING_TIME));
+
+            // FIX TARGET COMPID
+            appendTagValueToBuilder(FixConstants.FIX_TAG_TARGET_COMPID, getTagValue(FixConstants.FIX_TAG_TARGET_COMPID));
+
+            foreach (var tagValue in m_tagValuePairs)
             {
-                foreach (var tagValue in m_tagValuePairs)
+                if (tagValue.Key == FixConstants.FIX_TAG_VERSION)
                 {
-                    appendTagValueToBuilder(tagValue.Key, tagValue.Value);
+                    continue;
                 }
+
+                if (tagValue.Key == FixConstants.FIX_TAG_BODY_LENGTH)
+                {
+                    continue;
+                }
+
+                if (tagValue.Key == FixConstants.FIX_TAG_MESSAGE_TYPE)
+                {
+                    continue;
+                }
+
+                if (tagValue.Key == FixConstants.FIX_TAG_SEQUENCE_NUMBER)
+                {
+                    continue;
+                }
+
+                if (tagValue.Key == FixConstants.FIX_TAG_SENDING_TIME)
+                {
+                    continue;
+                }
+
+                if (tagValue.Key == FixConstants.FIX_TAG_SENDER_COMPID)
+                {
+                    continue;
+                }
+
+                if (tagValue.Key == FixConstants.FIX_TAG_TARGET_COMPID)
+                {
+                    continue;
+                }
+
+                if (tagValue.Key == FixConstants.FIX_TAG_BODY_CHECKSUM)
+                {
+                    continue;
+                }
+
+                appendTagValueToBuilder(tagValue.Key, tagValue.Value);
             }
 
-            return m_builder.ToString(); 
+            // FIX CHECKSUM
+            if (sendingAsAMessage)
+            {
+                var checksum = calculateChecksum(m_builder.ToString());
+                appendTagValueToBuilder(FixConstants.FIX_TAG_BODY_CHECKSUM, checksum);            
+            }
+
+            return m_builder.ToString();
         }
     }
 
@@ -445,8 +429,9 @@ function initialise()
                 m_serverSocket.Listen(100);
 
                 m_socket = m_serverSocket.Accept();
-                
+
                 FixMessage message = recv();
+
                 if (message != null)
                 {
                     if (message.hasTag(FixConstants.FIX_TAG_MESSAGE_TYPE))
@@ -460,6 +445,7 @@ function initialise()
                                 IncomingSequenceNumber = System.Convert.ToInt32(message.getTagValue(FixConstants.FIX_TAG_SEQUENCE_NUMBER));
                                 HeartbeatInterval = System.Convert.ToInt32(message.getTagValue(FixConstants.FIX_TAG_HEARBEAT_INTERVAL));
                                 TargetCompid = message.getTagValue(FixConstants.FIX_TAG_TARGET_COMPID);
+                                FixVersion = message.getTagValue(FixConstants.FIX_TAG_VERSION);
 
                                 if (message.hasTag(FixConstants.FIX_TAG_ENCRYPT_METHOD))
                                 {
@@ -493,7 +479,10 @@ function initialise()
 
         public void send(FixMessage message)
         {
+            message.setTag(FixConstants.FIX_TAG_VERSION, FixVersion);
             message.setTag(FixConstants.FIX_TAG_SEQUENCE_NUMBER, OutgoingSequenceNumber);
+            message.setTag(FixConstants.FIX_TAG_SENDER_COMPID, SenderCompid);
+            message.setTag(FixConstants.FIX_TAG_TARGET_COMPID, TargetCompid);
             var str = message.toString(true, true);
             byte[] bytes = System.Text.Encoding.ASCII.GetBytes(str);
             m_socket.Send(bytes);
@@ -541,6 +530,8 @@ function initialise()
             FixMessage message = new FixMessage();
 
             message.loadFromString(initialBuffer + restOfBuffer);
+            
+            IncomingSequenceNumber = System.Convert.ToInt32(message.getTagValue(FixConstants.FIX_TAG_SEQUENCE_NUMBER));
 
             return message;
         }
@@ -551,7 +542,11 @@ function initialise()
             send(getLogoffMessage());
             FixMessage logoffResponse = recv();
             m_socket.Close();
-            m_serverSocket.Close();
+            try
+            {
+                m_serverSocket.Close();
+            }
+            catch { }
             Connected = false;
             saveSequenceNumberToFile();
         }
@@ -561,8 +556,8 @@ function initialise()
             var fileName = getSequenceFileName();
             if (System.IO.File.Exists(fileName))
             {
-                int outgoingSequenceNumber = 0;
-                int incomingSequenceNumber = 0;
+                int outgoingSequenceNumber = 1;
+                int incomingSequenceNumber = 1;
                 string text = System.IO.File.ReadAllText(fileName);
 
                 if (System.Int32.TryParse(text.Split(',')[0], out outgoingSequenceNumber))
@@ -587,10 +582,10 @@ function initialise()
             System.IO.File.WriteAllText(fileName, OutgoingSequenceNumber.ToString() + "," + IncomingSequenceNumber.ToString());
         }
 
-        
+
     }
-	
-	public class FixServer
+
+    public class FixServer
     {
         private FixSession m_session = new FixSession();
         public FixSession FixSession { get { return m_session; } }
@@ -628,7 +623,7 @@ function initialise()
 
         public FixSession FixSession { get { return m_session; } }
 
-        public void initialise(string fixVersion, string address, int port, string compId, string targetCompid, int heartbeatInterval=30, int encryptionMethod=0)
+        public void initialise(string fixVersion, string address, int port, string compId, string targetCompid, int heartbeatInterval = 30, int encryptionMethod = 0)
         {
             m_session.TargetAddress = address;
             m_session.TargetPort = port;
@@ -692,14 +687,14 @@ function initialise()
         {
             FixClient fixClient = (FixClient)client;
             bool connected = fixClient.connect();
-            if(connected)
+            if (connected)
             {
                 Console.WriteLine(String.Format("{0} connected", fixClient.FixSession.SenderCompid));
                 // Fire all orders
                 var orders = fixClient.getOrders();
                 int filledCount = 0;
 
-                foreach(var order in orders)
+                foreach (var order in orders)
                 {
                     FixMessage actualOrder = order;
                     actualOrder.setTag(FixConstants.FIX_TAG_SENDER_COMPID, fixClient.FixSession.SenderCompid);
@@ -710,11 +705,11 @@ function initialise()
                 Console.WriteLine(String.Format("{0} fired all orders", fixClient.FixSession.SenderCompid));
 
                 // Collect exec reports for all
-                while(true)
+                while (true)
                 {
                     FixMessage message = fixClient.recv();
 
-                    if(message == null)
+                    if (message == null)
                     {
                         continue;
                     }
@@ -730,12 +725,12 @@ function initialise()
                     {
                         if (message.getTagValue(FixConstants.FIX_TAG_ORDER_STATUS) == FixConstants.FIX_ORDER_STATUS_FILLED.ToString())
                         {
-							filledCount++;
+                            filledCount++;
                             Console.WriteLine(String.Format("{0} received a fill : {1} of {2}", fixClient.FixSession.SenderCompid, filledCount, orders.Count));
                         }
                     }
 
-                    if(filledCount == orders.Count)
+                    if (filledCount == orders.Count)
                     {
                         break;
                     }
@@ -748,7 +743,7 @@ function initialise()
 
         public void initialise(int numberOfClients, string fixOrdersFile, string fixVersion, string address, int port, string compIdBase, string targetCompid)
         {
-            for(int i = 0; i < numberOfClients; i++)
+            for (int i = 0; i < numberOfClients; i++)
             {
                 var orders = FixMessage.loadFromFile(fixOrdersFile);
                 string currentCompId = compIdBase + (i + 1).ToString();
@@ -762,7 +757,7 @@ function initialise()
         public void start()
         {
             int clientIndex = 0;
-            foreach(var fixClient in m_fixClients)
+            foreach (var fixClient in m_fixClients)
             {
                 System.Threading.Thread fixClientThread = new System.Threading.Thread(new System.Threading.ParameterizedThreadStart(fixThreadClient));
                 m_fixClientThreads.Add(fixClientThread);
@@ -772,8 +767,8 @@ function initialise()
         }
 
         public void join()
-        { 
-            foreach(var clientThread in m_fixClientThreads)
+        {
+            foreach (var clientThread in m_fixClientThreads)
             {
                 clientThread.Join();
             }
@@ -783,16 +778,16 @@ function initialise()
         {
             System.Text.StringBuilder builder = new System.Text.StringBuilder();
 
-            foreach(var fixClient in m_fixClients)
+            foreach (var fixClient in m_fixClients)
             {
                 builder.Append(fixClient.FixSession.SenderCompid);
-                
+
                 builder.Append(System.Environment.NewLine);
                 builder.Append(System.Environment.NewLine);
 
                 var execReports = fixClient.getExecutionReports();
 
-                foreach(var execReport in execReports)
+                foreach (var execReport in execReports)
                 {
                     builder.Append(execReport.toString(false));
                     builder.Append(System.Environment.NewLine);
@@ -802,14 +797,15 @@ function initialise()
                 builder.Append(System.Environment.NewLine);
             }
 
-            if(System.IO.File.Exists(fileName))
+            if (System.IO.File.Exists(fileName))
             {
-                 System.IO.File.Delete(fileName);
+                System.IO.File.Delete(fileName);
             }
 
             System.IO.File.WriteAllText(fileName, builder.ToString());
         }
-    };
+    }
+  
 "@
 
     Add-Type -TypeDefinition $source;

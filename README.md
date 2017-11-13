@@ -11,7 +11,7 @@
 	* [6. Server parameters and running the server](#ServerParams)
 	* [7. Offline order entry mode](#OfflineOrderEntry)
 	* [8. Example log messages with FIX ](#ExampleLog)
-	* [9. Functional testing](#FunctionalTesting)
+	* [9. Functional testing / FIX client automations](#FunctionalTesting)
 	* [10. Unit testing with GoogleTest](#UnitTesting)
 	* [11. Utility scripts](#UtilityScripts)
 	* [12. Coding and other guidelines](#CodingGuideline)
@@ -26,12 +26,12 @@ Features can be seen in the table below :
 
 | Feature                       | Details                                               |
 | ----------------------------- |:-----------------------------------------------------:|
-| Order entry					| FIX 4.2 & offline mode with files  			        |
+| Order entry					| FIX 4.2, offline mode with files  			        |
 | Order types                   | Limit                                                 |
 | Order message types           | NewOrder, Cancel                                      |
 | Exec report types			    | Accepted, Filled, PartiallyFilled, Rejected, Canceled |
 | TIF                           | Not supported       			                        |
-| Securities                    | Shares with RIC code                                  |
+| Symbology`                    | No validation, examples use RIC codes                 |
 
 Technical implementation details are as below : 
 
@@ -42,7 +42,7 @@ Technical implementation details are as below :
 | C++ Compiler Support  | GCC4.8 and MSVC120 (VS2013)									|
 | C++ Libraries         | STD, STL, QuickFix			                                |
 | C++ Platform APIs     | GNU LibC, POSIX, some POSIX NP ,WinAPI, MS CRT                |
-| IDEs supported        | Netbeans for Linux, VS2013 for Windows 						|
+| IDE projects provided | Netbeans for Linux, VS2013 for Windows 						|
 
 Watch server when working :
 
@@ -203,7 +203,7 @@ The default mode is FIX server mode. However, if you specify an order file in om
 					OFFLINE_ORDER_ENTRY_FILE=orders.txt
 					
 the order matcher will process all the orders in that file bypassing FIX protocol and produce offline_order_entry_results.txt as result file.
-For an example offlone order file see :
+For an example offline order file see :
 
 https://github.com/akhin/multithreaded_order_matching_engine/blob/master/bin/sample_offline_order_file.txt
 
@@ -256,7 +256,7 @@ The engine produces log messages below when it receives 1 buy order with quantit
     06-02-2016 20:16:09 : INFO , FIX Engine , Sending fix message : 8=FIX.4.29=13535=834=2649=OME52=20160206-20:16:09.34256=TEST_CLIENT16=111=114=117=11620=031=132=137=138=139=254=255=MSFT150=2151=010=002
     06-02-2016 20:16:11 : INFO , FIX Engine , Logout , session ID : FIX.4.2:OME->TEST_CLIENT1
 
-## <a name="FunctionalTesting">**9. Functional testing:** 
+## <a name="FunctionalTesting">**9. Functional testing / Fix client automations:** 
 
 Under "test_functional" directory :
 
