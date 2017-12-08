@@ -322,7 +322,7 @@ function initialise()
         private System.Net.Sockets.Socket m_socket = new System.Net.Sockets.Socket(System.Net.Sockets.AddressFamily.InterNetwork, System.Net.Sockets.SocketType.Stream, System.Net.Sockets.ProtocolType.Tcp);
         private System.Net.Sockets.Socket m_serverSocket = new System.Net.Sockets.Socket(System.Net.Sockets.AddressFamily.InterNetwork, System.Net.Sockets.SocketType.Stream, System.Net.Sockets.ProtocolType.Tcp);
         private System.Timers.Timer m_heartbeatTimer = new System.Timers.Timer();
-		private System.Threading.Mutex m_mutex = new System.Threading.Mutex();
+        private System.Threading.Mutex m_mutex = new System.Threading.Mutex();
 
         public bool Connected { get; set; }
         public string TargetAddress { get; set; }
@@ -486,12 +486,12 @@ function initialise()
             message.setTag(FixConstants.FIX_TAG_TARGET_COMPID, TargetCompid);
             var str = message.toString(true, true);
             byte[] bytes = System.Text.Encoding.ASCII.GetBytes(str);
-			//////////////////////////////////////////////////////////////
-			m_mutex.WaitOne();
+            //////////////////////////////////////////////////////////////
+            m_mutex.WaitOne();
             m_socket.Send(bytes);
             OutgoingSequenceNumber += 1;
-			m_mutex.ReleaseMutex();
-			//////////////////////////////////////////////////////////////
+            m_mutex.ReleaseMutex();
+            //////////////////////////////////////////////////////////////
         }
 
         private string recvString(int length)
