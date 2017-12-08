@@ -8,6 +8,7 @@ from sys import platform as _platform
 #using process instead to benefit from multicore : http://stackoverflow.com/questions/1182315/python-multicore-processing
 from multiprocessing import Process, Queue
 import threading
+from threading import Thread, Lock
 import time
 from datetime import datetime
 
@@ -316,6 +317,7 @@ class FixSession:
         self.socket.setblocking(True)
         self.socket.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
         self.heartbeatTimer = None
+        self.mutex = Lock()
 
     def getBaseMessage(self, messageType):
         message = FixMessage()
@@ -411,8 +413,10 @@ class FixSession:
         message.setTag(FixConstants.FIX_TAG_SEQUENCE_NUMBER, self.outgoingSequenceNumber)
         message.setTag(FixConstants.FIX_TAG_SENDER_COMPID, self.senderCompid)
         message.setTag(FixConstants.FIX_TAG_TARGET_COMPID, self.targetCompid)
+        self.mutex.acquire()
         self.socket.send( message.toString(True, True))
         self.outgoingSequenceNumber += 1
+        self.mutex.release()
         return
 
     def recvString(self, size):
