@@ -1,15 +1,16 @@
-#ifndef _SERVER_H_
-#define _SERVER_H_
+#ifndef _SERVER_FIX_H_
+#define _SERVER_FIX_H_
 
 #include <string>
 #include <vector>
+#include <memory>
 
 #include <core/noncopyable.h>
 
 #include <order_matcher/central_order_book.h>
 #include <order_matcher/central_order_book_observer.h>
 
-#include <server/cli.h>
+#include <server/command_line_interface.h>
 #include <server/server_configuration.h>
 #include <server/server_outgoing_message_processor.h>
 #include <server/server_incoming_message_dispatcher.h>
@@ -23,15 +24,13 @@
 #include <quickfix/fix42//NewOrderSingle.h>
 #include <quickfix/fix42/OrderCancelRequest.h>
 
-class Server : public core::NonCopyable, public FIX::Application, public FIX::MessageCracker
+class ServerFix : public core::NonCopyable, public FIX::Application, public FIX::MessageCracker
 {
     public:
-        Server(const std::string& fixEngineConfigFile, const ServerConfiguration& serverConfiguration);
-        ~Server();
+        ServerFix(const std::string& fixEngineConfigFile, const ServerConfiguration& serverConfiguration);
+        ~ServerFix();
         void run();
-
         order_matcher::CentralOrderBook& getCentralOrderBook() { return m_centralOrderBook;  }
-        static void onError(const std::string& message, ServerError error);
 
     private:
         // FIX Engine Application overloads

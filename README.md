@@ -26,7 +26,7 @@ Features can be seen in the table below :
 
 | Feature                       | Details                                               |
 | ----------------------------- |:-----------------------------------------------------:|
-| Order entry					| FIX 4.2, offline mode with files  			        |
+| Order entry					| FIX 4.2, offline mode with files with FIX messages    |
 | Order types                   | Limit                                                 |
 | Order message types           | NewOrder, Cancel                                      |
 | Exec report types			    | Accepted, Filled, PartiallyFilled, Rejected, Canceled |
@@ -75,13 +75,13 @@ The core of order matching layer is called a central order book, which keeps ord
 
 	* The thread pool will have N lockfree SPSC queues for N threads ( N = num of symbol ). The thread pool  also has the ability to pin threads to CPU cores. And based on configuration it can also avoid hyperthreading/logical processors by pinning threads only to CPU cores with even indexes.
 
-	* Central Order book also has 1 MPMC queue for outgoing messages.
+	* Central Order book also has N lockfree SPMC queues for outgoing messages.
 
 	* When a new message arrives ( new order, or cancel ) from the incoming message dispatcher, it will be submitted to corresponding thread`s queue in the thread pool of the central order book.
 
-3. Each thread in the thread pool will get message from their SPSC queue in the thread pool , and add them to corresponding order queue which is used by only itself and eventually trigger the order matching process for that queue. At the end of the order matching , worker threads will submit messages ( FILLED or PARTIALLY FILLED ) to the outgoing messages queue.
+3. Each thread in the thread pool will get message from their SPSC queue in the thread pool , and add them to corresponding order queue which is used by only itself and eventually trigger the order matching process for that queue. At the end of the order matching , worker threads will submit messages ( FILLED or PARTIALLY FILLED ) to the corresponding outgoing messages queues.
 
-4. Outgoing message processor which is a fine grained MPMC queue will process the outgoing messages and send responses back to the clients.
+4. Outgoing message processor will process messages from lockfree SPSC queues of central order book  and send responses back to the clients.
 
 ## <a name="BuildDependencies">**3. Build dependencies:** 
 
@@ -145,7 +145,8 @@ The engine executable looks for "ome.ini" file. Here is the list of things you c
 
 | Ini setting           							| Functionality                                                 |
 | --------------------------------------------------|:-------------------------------------------------------------:|
-| LOGGER_FILE_SINK      							| Enables/disables logging										|
+| LOGGER_FILE_SINK      							| Enables/disables logging to files								|
+| LOGGER_SHARED_MEMORY_SINK      					| Enables/disables logging to memory mapped files	 			|
 | LOGGER_CONSOLE_SINK   							| Enables/disables output to stdout                             |
 | LOGGER_BUFFER_SIZE 								| Maximum buffer size for the logging ring buffer				|
 | SINGLE_INSTANCE_TCP_PORT  						| Port used in single instance check , applies to Linux only    |
@@ -156,7 +157,8 @@ The engine executable looks for "ome.ini" file. Here is the list of things you c
 | CENTRAL_ORDER_BOOK_WORK_QUEUE_SIZE_PER_THREAD     | Queue size per worker thread in the thread pool               |
 | CENTRAL_ORDER_BOOK_THREAD_PRIORITY         		| OS-level priority of thread pool threads                      |
 | CENTRAL_ORDER_BOOK_THREAD_STACK_SIZE         		| Stack size for thread pool threads                            |
-| OFFLINE_ORDER_ENTRY_FILE							| Offline order entry mode see below for details 							|
+| OUTGOING_MESSAGE_QUEUE_SIZE_PER_THREAD     		| Queue size per worker thread for outgoing messages            |
+| OFFLINE_ORDER_ENTRY_FILE							| Offline order entry mode see below for details 				|
         
 You will also need to specify security symbols. The order matching engine`s thread pool will create a worker thread for each symbol.
 For specifying symbols in ini file, you need to use brackets as  below :
@@ -202,7 +204,7 @@ The default mode is FIX server mode. However, if you specify an order file in om
 
 					OFFLINE_ORDER_ENTRY_FILE=orders.txt
 					
-the order matcher will process all the orders in that file bypassing FIX protocol and produce offline_order_entry_results.txt as result file.
+Then the order matcher will process all the orders in that file bypassing FIX protocol and produce offline_order_entry_results.txt as result file.
 For an example offline order file see :
 
 https://github.com/akhin/multithreaded_order_matching_engine/blob/master/bin/sample_offline_order_file.txt
@@ -292,22 +294,7 @@ It internally uses C# to implement FIX protocol.
 
 The project uses GoogleTest 1.7. You can find a makefile and vcproj under "test_unit" directory.
     
-Building and running unit test on Linux : You have to build and install Google Test 1.7 first , the instructions for CentOS and Ubuntu :
-            
-            $ wget http://googletest.googlecode.com/files/gtest-1.7.0.zip
-            $ unzip gtest-1.7.0.zip
-            $ cd gtest-1.7.0
-            $ ./configure
-            $ make
-            $ sudo cp -a include/gtest /usr/include
-            
-            On CentOS
-            $ sudo cp -a lib/.libs/* /usr/lib64
-            
-            On Ubuntu
-            $ sudo cp -a lib/.libs/* /usr/lib/
-            
-            Then you can either use Makefile or Netbeans project files under "test_unit" directory.
+Building and running unit test on Linux : You can either use Makefile or Netbeans project files under "test_unit" directory.
 
 Building and running unit test on Windows : You can use VisualStudio solution in "test_unit" directory.
 

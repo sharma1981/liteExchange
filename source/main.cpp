@@ -15,11 +15,9 @@
 #include <core/logger/logger.h>
 #include <core/file_utility.h>
 
-#include <server/offline_order_entry.h>
-
-#include <server/server.h>
 #include <server/server_configuration.h>
-
+#include <server/server_offline.h>
+#include <server/server_fix.h>
 
 #include <server/server_error.h>
 #include <server/server_constants.h>
@@ -33,7 +31,7 @@ int main ()
     if (core::getCPUCacheLineSize() != CACHE_LINE_SIZE)
     {
         auto message = core::format("This executable compiled for cache line size %d , but you are running on a CPU with a cache line of %d", CACHE_LINE_SIZE, core::getCPUCacheLineSize());
-        Server::onError(message, ServerError::NON_SUPPORTED_EXECUTION);
+        onError(message, ServerError::NON_SUPPORTED_EXECUTION);
     }
 
     if (core::SelfProcess::amIAdmin() == false)
@@ -54,19 +52,19 @@ int main ()
     }
     catch (const std::invalid_argument & e)
     {
-        Server::onError(e.what(), ServerError::INVALID_CONFIG_FILE);
+        onError(e.what(), ServerError::INVALID_CONFIG_FILE);
     }
     catch (const std::runtime_error & e)
     {
-        Server::onError(e.what(), ServerError::INVALID_CONFIG_FILE);
+        onError(e.what(), ServerError::INVALID_CONFIG_FILE);
     }
     catch (const std::bad_alloc &)
     {
-        Server::onError("Insufficient memory", ServerError::INSUFFICIENT_MEMORY);
+        onError("Insufficient memory", ServerError::INSUFFICIENT_MEMORY);
     }
     catch (...)
     {
-        Server::onError("Unknown exception occured", ServerError::UNKNOWN_PROBLEM);
+        onError("Unknown exception occured", ServerError::UNKNOWN_PROBLEM);
     }
 
     // Single instance protection
@@ -74,7 +72,7 @@ int main ()
 
     if ( !singleton() )
     {
-        Server::onError("Ome process is running already.", ServerError::ALREADY_RUNNING);
+        onError("Ome process is running already.", ServerError::ALREADY_RUNNING);
     }
 
     // Set process priority
@@ -90,31 +88,31 @@ int main ()
         if ( serverConfiguration.getOfflineOrderEntryFile().length() == 0)
         {
             // FIX SERVER MODE
-            Server application(server_constants::FIX_ENGINE_CONFIG_FILE, serverConfiguration);
+            ServerFix application(server_constants::FIX_ENGINE_CONFIG_FILE, serverConfiguration);
             application.run();
         }
         else
         {
             // OFFLINE ORDER ENTRY MODE
-            OfflineOrderEntry application(serverConfiguration);
+            ServerOffline application(serverConfiguration);
             application.run();
         }
     }
     catch (const std::invalid_argument & e)
     {
-        Server::onError(e.what(), ServerError::RUNTIME_ERROR);
+        onError(e.what(), ServerError::RUNTIME_ERROR);
     }
     catch (const std::runtime_error & e)
     {
-        Server::onError(e.what(), ServerError::RUNTIME_ERROR);
+        onError(e.what(), ServerError::RUNTIME_ERROR);
     }
     catch (const std::bad_alloc & )
     {
-        Server::onError("Insufficient memory", ServerError::INSUFFICIENT_MEMORY);
+        onError("Insufficient memory", ServerError::INSUFFICIENT_MEMORY);
     }
     catch (...)
     {
-        Server::onError("Unknown exception occured", ServerError::UNKNOWN_PROBLEM);
+        onError("Unknown exception occured", ServerError::UNKNOWN_PROBLEM);
     }
     //////////////////////////////////////////
     // Application exit

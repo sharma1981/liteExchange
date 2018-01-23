@@ -84,7 +84,7 @@ class Utility:
     @staticmethod
     def writeInfoMessage(message):
         Utility.writeColorMessage(message, Utility.CONSOLE_YELLOW)
-        
+
 class StopWatch:
     def __init__(self):
         self.startTime = 0
@@ -298,7 +298,7 @@ class FixMessage:
         if sendingAsMessage is True:
             checksumValue = FixMessage.calculateChecksum(self.messageAsString)
             self.appendToMessageAsString(FixConstants.FIX_TAG_BODY_CHECKSUM, checksumValue)
-        
+
         return self.messageAsString
 
 class FixSession:

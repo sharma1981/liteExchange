@@ -11,13 +11,14 @@ SOURCES =  test.cpp \
 	   $(SOURCE_DIR_CORE_CONCURRENT)/thread_pool.cpp \
 	   $(SOURCE_DIR_CORE)/config_file.cpp \
 	   $(SOURCE_DIR_CORE)/stopwatch.cpp \
-	   $(SOURCE_DIR_CORE)/timer.cpp \
 	   $(SOURCE_DIR_CORE_LOGGER)/logger.cpp \
 	   $(SOURCE_DIR_CORE)/single_instance.cpp \
 	   $(SOURCE_DIR_ORDER_MATCHER)/order.cpp \
 	   $(SOURCE_DIR_ORDER_MATCHER)/order_book.cpp \
 	   $(SOURCE_DIR_ORDER_MATCHER)/security_manager.cpp \
 	   $(SOURCE_DIR_ORDER_MATCHER)/central_order_book.cpp 
+#GoogleTest static library file
+GTEST_LIB=../dependencies/gtest-1.7.0/lib/gtest_main.a
 #Include Directories
 INCLUDE_DIR = ./
 INCLUDE_DIR_PROJECT = ../source
@@ -31,7 +32,7 @@ EXECUTABLE = ./ome_unit_test
 #Compiler flags
 CFLAGS= -I$(INCLUDE_DIR) -I$(INCLUDE_DIR_GTEST)	 -I$(INCLUDE_DIR_PROJECT) -I$(INCLUDE_DIR_BOOST) -std=c++11 -c -DDEBUG -g -Wall -fexceptions -frtti
 #Linker flags
-LFLAGS= -lstdc++ -pthread -lgtest -lgtest_main
+LFLAGS= -lstdc++ -pthread $(GTEST_LIB)
 
 all: $(OBJECTS) $(EXECUTABLE)
 

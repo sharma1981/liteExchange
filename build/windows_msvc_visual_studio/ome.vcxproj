@@ -94,8 +94,10 @@
     <ClCompile Include="..\..\source\core\concurrency\thread_pool.cpp" />
     <ClCompile Include="..\..\source\core\config_file.cpp" />
     <ClCompile Include="..\..\source\core\logger\logger.cpp" />
+    <ClCompile Include="..\..\source\core\shared_memory.cpp" />
     <ClCompile Include="..\..\source\core\single_instance.cpp" />
     <ClCompile Include="..\..\source\core\stopwatch.cpp" />
+    <ClCompile Include="..\..\source\fix\fix_message.cpp" />
     <ClCompile Include="..\..\source\main.cpp" />
     <ClCompile Include="..\..\source\order_matcher\central_order_book.cpp" />
     <ClCompile Include="..\..\source\order_matcher\order.cpp" />
@@ -105,8 +107,8 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="..\..\source\server\offline_order_entry.cpp" />
-    <ClCompile Include="..\..\source\server\server.cpp" />
+    <ClCompile Include="..\..\source\server\server_fix.cpp" />
+    <ClCompile Include="..\..\source\server\server_offline.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\source\core\callstack.h" />
@@ -156,6 +158,7 @@
     <ClInclude Include="..\..\source\core\logger\logger_sink_factory.hpp" />
     <ClInclude Include="..\..\source\core\logger\log_entry.hpp" />
     <ClInclude Include="..\..\source\core\logger\log_levels.h" />
+    <ClInclude Include="..\..\source\core\logger\shared_memory_sink.hpp" />
     <ClInclude Include="..\..\source\core\memory\cpu_memory.h" />
     <ClInclude Include="..\..\source\core\memory\heap_memory.h" />
     <ClInclude Include="..\..\source\core\memory\stack_memory.h" />
@@ -163,10 +166,13 @@
     <ClInclude Include="..\..\source\core\noncopyable.h" />
     <ClInclude Include="..\..\source\core\pretty_exception.h" />
     <ClInclude Include="..\..\source\core\self_process.h" />
+    <ClInclude Include="..\..\source\core\shared_memory.h" />
     <ClInclude Include="..\..\source\core\single_instance.h" />
     <ClInclude Include="..\..\source\core\stopwatch.h" />
     <ClInclude Include="..\..\source\core\string_utility.h" />
     <ClInclude Include="..\..\source\core\trace.h" />
+    <ClInclude Include="..\..\source\fix\fix_constants.h" />
+    <ClInclude Include="..\..\source\fix\fix_message.h" />
     <ClInclude Include="..\..\source\order_matcher\base_message.h" />
     <ClInclude Include="..\..\source\order_matcher\central_order_book.h" />
     <ClInclude Include="..\..\source\order_matcher\central_order_book_observer.h" />
@@ -177,14 +183,14 @@
     <ClInclude Include="..\..\source\order_matcher\outgoing_message.h" />
     <ClInclude Include="..\..\source\order_matcher\security_manager.h" />
     <ClInclude Include="..\..\source\precompiled_header.h" />
-    <ClInclude Include="..\..\source\server\cli.h" />
-    <ClInclude Include="..\..\source\server\offline_order_entry.h" />
+    <ClInclude Include="..\..\source\server\command_line_interface.h" />
     <ClInclude Include="..\..\source\server\quickfix_converter.h" />
-    <ClInclude Include="..\..\source\server\server.h" />
+    <ClInclude Include="..\..\source\server\server_fix.h" />
     <ClInclude Include="..\..\source\server\server_configuration.h" />
     <ClInclude Include="..\..\source\server\server_constants.h" />
     <ClInclude Include="..\..\source\server\server_error.h" />
     <ClInclude Include="..\..\source\server\server_incoming_message_dispatcher.h" />
+    <ClInclude Include="..\..\source\server\server_offline.h" />
     <ClInclude Include="..\..\source\server\server_outgoing_message_processor.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

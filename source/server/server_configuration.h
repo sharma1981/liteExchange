@@ -19,7 +19,7 @@ class ServerConfiguration
     public :
 
         ServerConfiguration()
-        : m_singleInstanceTCPPortNumber{ 0 }, m_isMatchingMultithreaded{ false }
+        : m_singleInstanceTCPPortNumber{ 0 }, m_outgoingMessageQueueSizePerThread{ 0 }, m_isMatchingMultithreaded{ false }
         {
         }
 
@@ -77,9 +77,13 @@ class ServerConfiguration
                 m_threadPoolArguments.m_threadStackSize = configuration.getIntValue(server_constants::CONFIGURATION_FILE_CENTRAL_ORDER_BOOK_THREAD_STACK_SIZE, server_constants::CONFIGURATION_DEFAULT_CENTRAL_ORDER_BOOK_THREAD_STACK_SIZE);
                 m_threadPoolArguments.m_threadPriority = core::getThreadPriorityFromString(configuration.getStringValue(server_constants::CONFIGURATION_FILE_CENTRAL_ORDER_BOOK_THREAD_PRIORITY, server_constants::CONFIGURATION_DEFAULT_CENTRAL_ORDER_BOOK_THREAD_PRIORITY));
             }
+
+            // Get outgoing message processor configuration
+            m_outgoingMessageQueueSizePerThread = configuration.getIntValue(server_constants::CONFIGURATION_FILE_OUTGOING_MESSAGE_QUEUE_SIZE_PER_THREAD, server_constants::CONFIGURATION_DEFAULT_OUTGOING_MESSAGE_QUEUE_SIZE_PER_THREAD);
         }
 
         int getSingleInstancePortNumber() const{ return m_singleInstanceTCPPortNumber; }
+        int getOutgoingMessageQueueSizePerThread()const { return m_outgoingMessageQueueSizePerThread; }
         std::string getProcessPriority() const { return m_processPriority;  }
         bool getMatchingMultithreadingMode() const { return m_isMatchingMultithreaded; }
         core::ThreadPoolArguments getThreadPoolArguments() const { return m_threadPoolArguments; }
@@ -88,6 +92,7 @@ class ServerConfiguration
 
     private :
         int m_singleInstanceTCPPortNumber;
+        int m_outgoingMessageQueueSizePerThread;
         std::string m_processPriority;
         std::string m_offlineOrderEntryFile;
         bool m_isMatchingMultithreaded;

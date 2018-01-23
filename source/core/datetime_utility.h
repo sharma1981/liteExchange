@@ -9,32 +9,52 @@
 #include <iomanip>
 #include "string_utility.h"
 
+#if __linux__
+#include <sys/time.h>
+#endif
+
 namespace core
 {
+
+enum class DateTimeFormat
+{
+    NON_UTC_SECONDS,
+    NON_UTC_MILLISECONDS,
+    NON_UTC_MICROSECONDS,
+    UTC_SECONDS,
+    UTC_MILLISECONDS,
+    UTC_MICROSECONDS
+};
 
 // Could use anonymous namespace or static keyword since C++11 removed deprecation
 // Even though functions here don`t operate on static data
 // preferred inline to avoid code bloat
 
-// If format = %d-%m-%Y %H:%M:%S        , date time with just seconds
-// If format = %d-%m-%Y %H:%M:"%S:%%03u , date time with milliseconds
-// If format = %d-%m-%Y %H:%M:%S:%%06u    , date time with microseconds
-inline std::string getCurrentDateTime(const char* format = "%d-%m-%Y %H:%M:%S:%%06u")
+inline std::string getCurrentDateTime(const std::string format, bool universalTime)
 {
     std::stringstream ss;
+    std::string formatWithoutSubSeconds = core::split(format, 'S')[0] + 'S';
+
 #if defined( _MSC_VER ) || ( __GNUC__ > 4 )
     auto now = std::chrono::system_clock::now();
     auto inTimeT = std::chrono::system_clock::to_time_t(now);
 
-    ss << std::put_time(std::localtime(&inTimeT), "%d-%m-%Y %H:%M:%S");
+    if (universalTime)
+    {
+        ss << std::put_time(std::gmtime(&inTimeT), formatWithoutSubSeconds.c_str());
+    }
+    else
+    {
+        ss << std::put_time(std::localtime(&inTimeT), formatWithoutSubSeconds.c_str());
+    }
 
-    if (core::contains(format, "%S:%%03u") == true )
+    if (core::contains(format, "%%03u") == true )
     {
         // Add milliseconds
         auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()) % 1000;
         ss << '.' << std::setfill('0') << std::setw(3) << ms.count();
     }
-    else if (core::contains(format, "%S:%%06u") == true)
+    else if (core::contains(format, "%%06u") == true)
     {
         // Add microseconds
         auto ms = std::chrono::duration_cast<std::chrono::microseconds>(now.time_since_epoch()) % 1000000;
@@ -49,12 +69,19 @@ inline std::string getCurrentDateTime(const char* format = "%d-%m-%Y %H:%M:%S:%%
     char buffer[buffer_size];
 
     time(&rawTime);
-    timeInfo = localtime(&rawTime);
+    if (universalTime)
+    {
+        timeInfo = gmtime(&rawTime);
+    }
+    else
+    {
+        timeInfo = localtime(&rawTime);
+    }
 
-    strftime(buffer, buffer_size, "%d-%m-%Y %H:%M:%S", timeInfo);
+    strftime(buffer, buffer_size, formatWithoutSubSeconds.c_str(), timeInfo);
     ss << buffer;
 
-    if (core::contains(format, "%S:%%03u") == true )
+    if (core::contains(format, "%%03u") == true )
     {
         // Add milliseconds
         timeval curTime;
@@ -62,7 +89,7 @@ inline std::string getCurrentDateTime(const char* format = "%d-%m-%Y %H:%M:%S:%%
         int milli = curTime.tv_usec / 1000;
         ss << '.' << std::setfill('0') << std::setw(3) << milli;
     }
-    else if (core::contains(format, "%S:%%06u") == true)
+    else if (core::contains(format, "%%06u") == true)
     {
         // Add microseconds
         timeval curTime;
@@ -72,6 +99,33 @@ inline std::string getCurrentDateTime(const char* format = "%d-%m-%Y %H:%M:%S:%%
     }
 #endif
     return ss.str();
+}
+
+inline std::string getCurrentDateTime(DateTimeFormat format, bool universalTime)
+{
+    std::string ret;
+    switch (format)
+    {
+        case DateTimeFormat::NON_UTC_SECONDS:
+            ret = getCurrentDateTime("%d-%m-%Y %H:%M:%S", universalTime);
+            break;
+        case DateTimeFormat::NON_UTC_MILLISECONDS:
+            ret = getCurrentDateTime("%d-%m-%Y %H:%M:%S:%%03u", universalTime);
+            break;
+        case DateTimeFormat::NON_UTC_MICROSECONDS:
+            ret = getCurrentDateTime("%d-%m-%Y %H:%M:%S:%%06u", universalTime);
+            break;
+        case DateTimeFormat::UTC_SECONDS:
+            ret = getCurrentDateTime("%Y%m%d-%H:%M:%S", universalTime);
+            break;
+        case DateTimeFormat::UTC_MILLISECONDS:
+            ret = getCurrentDateTime("%Y%m%d-%H:%M:%S.%%03u", universalTime);
+            break;
+        case DateTimeFormat::UTC_MICROSECONDS:
+            ret = getCurrentDateTime("%Y%m%d-%H:%M:%S.%%06u", universalTime);
+            break;
+    }
+    return ret;
 }
 
 }// namespace

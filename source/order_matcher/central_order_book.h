@@ -10,11 +10,12 @@
 #include <queue>
 #include <cstddef>
 #include <unordered_map>
+#include <memory>
 
 #include <core/noncopyable.h>
-
 #include <core/concurrency/thread.h>
-#include <core/concurrency/queue_mpmc.hpp>
+#include <core/concurrency/ring_buffer_spsc_lockfree.hpp>
+
 #include <core/concurrency/thread_pool.h>
 #include <core/design_patterns/visitor.hpp>
 #include <core/design_patterns/observer.hpp>
@@ -24,7 +25,7 @@
 namespace order_matcher
 {
 
-using OutgoingMessageQueue = core::QueueMPMC<OutgoingMessage>;
+using OutgoingMessageQueue = std::vector<std::unique_ptr<core::RingBufferSPSCLockFree<OutgoingMessage>>>;
 
 class CentralOrderBook : public core::NonCopyable, public core::Visitable<Order>, public core::Observable<CentralOrderBook>
 {
@@ -36,10 +37,13 @@ class CentralOrderBook : public core::NonCopyable, public core::Visitable<Order>
             m_orderBookThreadPool.shutdown();
         }
 
-        void setSymbols(const std::vector<std::string> symbols);
+
         void accept(core::Visitor<Order>& v) override;
 
+        void setSymbols(const std::vector<std::string>& symbols);
         void initialiseMultithreadedMatching(core::ThreadPoolArguments& args);
+        void initialiseOutgoingMessageQueues(int numberOfThreads, int outgoingMessageProcessorQueueSize);
+
         bool isMatchingMultithreaded() const { return m_isMatchingMultithreaded; }
 
         bool addOrder(const Order& order);
@@ -50,10 +54,11 @@ class CentralOrderBook : public core::NonCopyable, public core::Visitable<Order>
 
     private:
         std::unordered_map<std::size_t, OrderBook> m_orderBookDictionary; // SecurityId - OrderBook dictionary
-        std::unordered_map<std::size_t, int> m_queueIDDictionary; // SecurityId - Queue ID dictionary
+        std::unordered_map<std::size_t, int> m_queueIDDictionary; // SecurityId - Queue ID dictionary , queue ids refer to both thread pool worker queues and outgoing message processor queues
 
         bool m_isMatchingMultithreaded;
         std::vector<std::size_t> m_securityIds;
+
         OutgoingMessageQueue m_outgoingMessages;
 
         core::ThreadPool m_orderBookThreadPool;

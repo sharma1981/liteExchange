@@ -7,6 +7,7 @@ SOURCE_DIR_CORE_MEMORY= $(SOURCE_DIR_CORE)/memory
 SOURCE_DIR_CORE_CONCURRENT= $(SOURCE_DIR_CORE)/concurrency
 SOURCE_DIR_CORE_LOGGER= $(SOURCE_DIR_CORE)/logger
 SOURCE_DIR_CORE_DESIGN_PATTERNS= $(SOURCE_DIR_CORE)/design_patterns
+SOURCE_DIR_FIX= $(SOURCE_DIR)/fix
 SOURCE_DIR_ORDER_MATCHER= $(SOURCE_DIR)/order_matcher
 SOURCE_DIR_SERVER= $(SOURCE_DIR)/server
 SOURCES =  $(SOURCE_DIR_CORE_CONCURRENT)/thread.cpp \
@@ -14,14 +15,15 @@ SOURCES =  $(SOURCE_DIR_CORE_CONCURRENT)/thread.cpp \
 		$(SOURCE_DIR_CORE)/config_file.cpp \
 		$(SOURCE_DIR_CORE)/stopwatch.cpp \
 		$(SOURCE_DIR_CORE)/single_instance.cpp \
-		$(SOURCE_DIR_CORE)/timer.cpp \
+		$(SOURCE_DIR_CORE)/shared_memory.cpp \
 		$(SOURCE_DIR_CORE_LOGGER)/logger.cpp \
+		$(SOURCE_DIR_FIX)/fix_message.cpp \
 		$(SOURCE_DIR_ORDER_MATCHER)/order.cpp \
 		$(SOURCE_DIR_ORDER_MATCHER)/security_manager.cpp \
 		$(SOURCE_DIR_ORDER_MATCHER)/order_book.cpp \
 		$(SOURCE_DIR_ORDER_MATCHER)/central_order_book.cpp \
-		$(SOURCE_DIR_SERVER)/server.cpp \
-		$(SOURCE_DIR_SERVER)/offline_order_entry.cpp \
+		$(SOURCE_DIR_SERVER)/server_fix.cpp \
+		$(SOURCE_DIR_SERVER)/server_offline.cpp \
 		$(SOURCE_DIR)/main.cpp
 #Include Directories
 INCLUDE_DIR = $(SOURCE_DIR)/

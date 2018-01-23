@@ -3,14 +3,11 @@
 #pragma warning( disable : 4503 4355 4786 )
 #endif
 
-#include <server/server.h>
+#include <server/server_fix.h>
 
-#include <iostream>
 #include <algorithm>
 #include <ctype.h>
-#include <cstdlib>
 #include <cstddef>
-#include <type_traits>
 
 #include <quickfix/FileStore.h>
 #include <quickfix/SocketInitiator.h>
@@ -30,7 +27,7 @@ using namespace order_matcher;
 
 using namespace std;
 
-Server::Server(const string& fixEngineConfigFile, const ServerConfiguration& serverConfiguration)
+ServerFix::ServerFix(const string& fixEngineConfigFile, const ServerConfiguration& serverConfiguration)
 : m_fixEngineConfigFile( fixEngineConfigFile )
 {
     if (!core::doesFileExist(m_fixEngineConfigFile))
@@ -39,14 +36,18 @@ Server::Server(const string& fixEngineConfigFile, const ServerConfiguration& ser
     }
 
     // Central order book initialisation
-    m_centralOrderBook.setSymbols(serverConfiguration.getSymbols());
+    auto symbols = serverConfiguration.getSymbols();
+    auto symbolCount = symbols.size();
+    m_centralOrderBook.setSymbols(symbols);
 
     if (serverConfiguration.getMatchingMultithreadingMode() == true)
     {
         core::ThreadPoolArguments args = serverConfiguration.getThreadPoolArguments();
-        args.m_threadNames = serverConfiguration.getSymbols();
+        args.m_threadNames = symbols;
         m_centralOrderBook.initialiseMultithreadedMatching(args);
     }
+
+    m_centralOrderBook.initialiseOutgoingMessageQueues(symbolCount, serverConfiguration.getOutgoingMessageQueueSizePerThread());
 
     // Attach central order book observer to the central order book
     m_centralOrderBook.attach(m_centralOrderBookObserver);
@@ -56,14 +57,14 @@ Server::Server(const string& fixEngineConfigFile, const ServerConfiguration& ser
     m_dispatcher.start();
 
     // Outgoing message processor initialisation
-    m_outgoingMessageProcessor.setMessageQueue(m_centralOrderBook.getOutgoingMessageQueue());
+    m_outgoingMessageProcessor.setMessageQueue(m_centralOrderBook.getOutgoingMessageQueue(), symbolCount);
     m_outgoingMessageProcessor.start();
 
     //CLI
     m_commandLineInterface.setParentCentralOrderbook(&m_centralOrderBook);
 }
 
-void Server::run()
+void ServerFix::run()
 {
     // FIX engine initialisation
     FIX::SessionSettings settings(m_fixEngineConfigFile);
@@ -81,59 +82,46 @@ void Server::run()
     LOG_INFO("FIX Engine", "Acceptor stopped")
 }
 
-Server::~Server()
+ServerFix::~ServerFix()
 {
     m_outgoingMessageProcessor.shutdown();
     m_dispatcher.shutdown();
 }
 
-void Server::onError(const string& message, ServerError error)
-{
-    std::cerr << message << std::endl;
-    auto exit_code = static_cast<std::underlying_type<ServerError>::type >(error);
-
-    if (core::Logger::getInstance()->isAlive())
-    {
-        LOG_ERROR("Main thread", "Ending")
-        core::Logger::getInstance()->shutdown();
-    }
-    std::exit(exit_code);
-}
-
-void Server::onCreate(const FIX::SessionID& sessionID)
+void ServerFix::onCreate(const FIX::SessionID& sessionID)
 {
 }
 
-void Server::fromAdmin(const FIX::Message& message, const FIX::SessionID& sessionID) throw(FIX::FieldNotFound, FIX::IncorrectDataFormat, FIX::IncorrectTagValue, FIX::RejectLogon)
+void ServerFix::fromAdmin(const FIX::Message& message, const FIX::SessionID& sessionID) throw(FIX::FieldNotFound, FIX::IncorrectDataFormat, FIX::IncorrectTagValue, FIX::RejectLogon)
 {
 }
 
-void Server::toAdmin(FIX::Message& message, const FIX::SessionID& sessionID)
+void ServerFix::toAdmin(FIX::Message& message, const FIX::SessionID& sessionID)
 {
 }
 
-void Server::onLogon( const FIX::SessionID& sessionID )
+void ServerFix::onLogon(const FIX::SessionID& sessionID)
 {
     LOG_INFO("FIX Engine", "New logon , session ID : " + sessionID.toString())
 }
 
-void Server::onLogout( const FIX::SessionID& sessionID )
+void ServerFix::onLogout(const FIX::SessionID& sessionID)
 {
     LOG_INFO("FIX Engine", "Logout , session ID : " + sessionID.toString())
 }
 
-void Server::toApp( FIX::Message& message, const FIX::SessionID& sessionID ) throw( FIX::DoNotSend )
+void ServerFix::toApp(FIX::Message& message, const FIX::SessionID& sessionID) throw(FIX::DoNotSend)
 {
     LOG_INFO("FIX Engine", "Sending fix message : " + message.toString() )
 }
 
-void Server::fromApp( const FIX::Message& message, const FIX::SessionID& sessionID )throw( FIX::FieldNotFound, FIX::IncorrectDataFormat, FIX::IncorrectTagValue, FIX::UnsupportedMessageType )
+void ServerFix::fromApp(const FIX::Message& message, const FIX::SessionID& sessionID)throw(FIX::FieldNotFound, FIX::IncorrectDataFormat, FIX::IncorrectTagValue, FIX::UnsupportedMessageType)
 {
     LOG_INFO("FIX Engine", "Receiving fix message : " + message.toString())
     crack(message, sessionID);
 }
 
-void Server::onMessage(const FIX42::NewOrderSingle& message, const FIX::SessionID& sessionID)
+void ServerFix::onMessage(const FIX42::NewOrderSingle& message, const FIX::SessionID& sessionID)
 {
     LOG_INFO("FIX Engine", "New order message received :" + message.toString())
 
@@ -186,7 +174,7 @@ void Server::onMessage(const FIX42::NewOrderSingle& message, const FIX::SessionI
     m_dispatcher.pushMessage(incomingMessage);
 }
 
-void Server::onMessage(const FIX42::OrderCancelRequest& message, const FIX::SessionID&)
+void ServerFix::onMessage(const FIX42::OrderCancelRequest& message, const FIX::SessionID&)
 {
     LOG_INFO("FIX Engine", "Cancel order message received :" + message.toString())
 

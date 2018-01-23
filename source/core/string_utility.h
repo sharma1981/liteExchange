@@ -58,6 +58,15 @@ inline std::vector<std::string> split(const std::string& input, char seperator)
     return ret;
 }
 
+inline void padLeft(std::string& input, std::size_t number, char padChar)
+{
+    auto inputSize = input.size();
+    if (number > inputSize)
+    {
+        input.insert(0, number - inputSize, padChar);
+    }
+}
+
 template <typename T>
 inline T toLower(const T& input)
 {

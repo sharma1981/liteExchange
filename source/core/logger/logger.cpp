@@ -64,7 +64,7 @@ void* Logger::run()
             break;
         }
 
-        applyWaitStrategy(50000); // 50 milliseconds wait
+        applyWaitStrategy(1000); // 50 milliseconds wait
     }
 
     m_sinks.closeEnabledSinks();

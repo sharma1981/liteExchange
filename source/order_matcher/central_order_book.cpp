@@ -19,12 +19,14 @@ void CentralOrderBook::accept(Visitor<Order>& v)
     }
 }
 
-void CentralOrderBook::setSymbols(const std::vector<std::string>symbols)
+void CentralOrderBook::setSymbols(const std::vector<std::string>& symbols)
 {
+    int queueID = -1;
     for (auto symbol : symbols)
     {
         auto currentSecurityId = SecurityManager::getInstance()->addSecurity(symbol);
         m_securityIds.push_back(currentSecurityId);
+        m_queueIDDictionary.insert(make_pair(currentSecurityId, ++queueID));
     }
 }
 
@@ -35,32 +37,35 @@ void CentralOrderBook::initialiseMultithreadedMatching(core::ThreadPoolArguments
 
     m_isMatchingMultithreaded = true;
 
-    int queueID = -1;
-
     // Thread names in args are also symbol names
     for (auto itr : m_securityIds)
     {
         auto securityId = itr;
-
         OrderBook currentOrderBook;
         m_orderBookDictionary.insert(make_pair(securityId, currentOrderBook));
-
-        m_queueIDDictionary.insert(make_pair(securityId, ++queueID));
     }
 
     m_orderBookThreadPool.initialise(args);
 }
 
+void CentralOrderBook::initialiseOutgoingMessageQueues(int numberOfThreads, int outgoingMessageProcessorQueueSize)
+{
+    for (auto i(0); i < numberOfThreads; i++)
+    {
+        unique_ptr<core::RingBufferSPSCLockFree<OutgoingMessage>> outgoingMessageQueue(new core::RingBufferSPSCLockFree<OutgoingMessage>(outgoingMessageProcessorQueueSize));
+        m_outgoingMessages.push_back(std::move(outgoingMessageQueue));
+    }
+}
+
 bool CentralOrderBook::addOrder(const Order& order)
 {
     size_t securityId = order.getSecurityId();
-
     int queueID = m_queueIDDictionary[securityId];
 
     // SEND ACCEPTED MESSAGE TO THE CLIENT
     notify( core::format("New order accepted, client %s, client order ID %d ", order.getOwner(), order.getClientID()));
     OutgoingMessage message(order, OutgoingMessageType::ACCEPTED);
-    m_outgoingMessages.enqueue(message);
+    m_outgoingMessages[queueID]->push(message);
 
     if (likely(m_isMatchingMultithreaded))
     {
@@ -82,6 +87,7 @@ void* CentralOrderBook::taskNewOrder(const Order& order)
     watch.start();
     ////////////////////////////////////////////////////////////////
     size_t securityId = order.getSecurityId();
+    int queueID = m_queueIDDictionary[securityId];
 
     m_orderBookDictionary[securityId].insert(order);
 
@@ -99,7 +105,7 @@ void* CentralOrderBook::taskNewOrder(const Order& order)
 
         // SEND FILLED OR PARTIALLY FILLED MESSAGE TO THE CLIENT
         OutgoingMessage message(order, order.isFilled() ? OutgoingMessageType::FILLED : OutgoingMessageType::PARTIALLY_FIELD);
-        m_outgoingMessages.enqueue(message);
+        m_outgoingMessages[queueID]->push(message);
     }
 
     ////////////////////////////////////////////////////////////////
@@ -112,7 +118,9 @@ void CentralOrderBook::rejectOrder(const Order& order, const std::string& messag
 {
     notify(core::format("Order being rejected, client %s, client ID %d", order.getOwner(), order.getClientID()));
     OutgoingMessage outgoingMessage(order, OutgoingMessageType::REJECTED, message);
-    m_outgoingMessages.enqueue(outgoingMessage);
+    size_t securityId = order.getSecurityId();
+    int queueID = m_queueIDDictionary[securityId];
+    m_outgoingMessages[queueID]->push(outgoingMessage);
 }
 
 void CentralOrderBook::cancelOrder(const Order& order, const std::string& origClientOrderID)
@@ -122,11 +130,11 @@ void CentralOrderBook::cancelOrder(const Order& order, const std::string& origCl
     // NOTIFY THE CLIENT
     notify(core::format("Order being canceled, client %s, client ID %d", owner, origClientOrderID));
 
-    int queueID = m_queueIDDictionary[securityId];
     core::Task cancelOrderTask(&CentralOrderBook::taskCancelOrder, this, order, origClientOrderID);
 
-    if (m_isMatchingMultithreaded)
+    if (likely(m_isMatchingMultithreaded))
     {
+        int queueID = m_queueIDDictionary[securityId];
         // MULTITHREADED MODE :SUBMIT CANCEL TASK TO THE THREADPOOL
         m_orderBookThreadPool.submitTask(cancelOrderTask, queueID);
     }
@@ -141,6 +149,7 @@ void* CentralOrderBook::taskCancelOrder(const Order& order, const std::string& o
 {
     const string& owner = order.getOwner();
     size_t securityId = order.getSecurityId();
+    int queueID = m_queueIDDictionary[securityId];
     const OrderSide& side = order.getSide();
     Order* orderBeingCanceled = nullptr;
 
@@ -148,7 +157,7 @@ void* CentralOrderBook::taskCancelOrder(const Order& order, const std::string& o
     {
         orderBeingCanceled->cancel();
         OutgoingMessage outgoingMessage(*orderBeingCanceled, OutgoingMessageType::CANCELED, "Order canceled");
-        m_outgoingMessages.enqueue(outgoingMessage);
+        m_outgoingMessages[queueID]->push(outgoingMessage);
         m_orderBookDictionary[securityId].erase(*orderBeingCanceled);
     }
     else

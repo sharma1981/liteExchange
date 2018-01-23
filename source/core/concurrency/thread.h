@@ -99,13 +99,13 @@ class Thread : public core::NonCopyable
         unsigned long m_threadID;
         ThreadPriority m_priority;
 
-    #ifdef __linux__
+#ifdef __linux__
         pthread_attr_t m_threadAttr;
         static int pinToCPUCoreInternal(int coreId, unsigned long threadID);
-    #elif _WIN32
+#elif _WIN32
         HANDLE m_threadHandle;
         static int pinToCPUCoreInternal(int coreID, HANDLE handle);
-    #endif
+#endif
 
         bool isJoiningOk() const;
 

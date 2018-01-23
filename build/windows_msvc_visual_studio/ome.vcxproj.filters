@@ -10,9 +10,6 @@
     <ClCompile Include="..\..\source\order_matcher\central_order_book.cpp">
       <Filter>order_matcher</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\server\server.cpp">
-      <Filter>server</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\source\precompiled_header.cpp" />
     <ClCompile Include="..\..\source\core\config_file.cpp">
       <Filter>core</Filter>
@@ -29,9 +26,6 @@
     <ClCompile Include="..\..\source\order_matcher\security_manager.cpp">
       <Filter>order_matcher</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\server\offline_order_entry.cpp">
-      <Filter>server</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\source\core\concurrency\thread.cpp">
       <Filter>core\concurrency</Filter>
     </ClCompile>
@@ -39,6 +33,18 @@
       <Filter>core\concurrency</Filter>
     </ClCompile>
     <ClCompile Include="..\..\source\main.cpp" />
+    <ClCompile Include="..\..\source\server\server_fix.cpp">
+      <Filter>server</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\server\server_offline.cpp">
+      <Filter>server</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\fix\fix_message.cpp">
+      <Filter>fix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\core\shared_memory.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\source\order_matcher\order.h">
@@ -51,9 +57,6 @@
       <Filter>order_matcher</Filter>
     </ClInclude>
     <ClInclude Include="..\..\source\precompiled_header.h" />
-    <ClInclude Include="..\..\source\server\server.h">
-      <Filter>server</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\source\order_matcher\outgoing_message.h">
       <Filter>order_matcher</Filter>
     </ClInclude>
@@ -213,12 +216,6 @@
     <ClInclude Include="..\..\source\order_matcher\base_message.h">
       <Filter>order_matcher</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\server\offline_order_entry.h">
-      <Filter>server</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\server\cli.h">
-      <Filter>server</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\source\core\noncopyable.h">
       <Filter>core</Filter>
     </ClInclude>
@@ -270,6 +267,27 @@
     <ClInclude Include="..\..\source\core\concurrency\thread_wait_strategy.h">
       <Filter>core\concurrency</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\source\server\command_line_interface.h">
+      <Filter>server</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\server\server_fix.h">
+      <Filter>server</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\server\server_offline.h">
+      <Filter>server</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\fix\fix_constants.h">
+      <Filter>fix</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\fix\fix_message.h">
+      <Filter>fix</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\shared_memory.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\logger\shared_memory_sink.hpp">
+      <Filter>core\logger</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="order_matcher">
@@ -295,6 +313,9 @@
     </Filter>
     <Filter Include="core\concurrency">
       <UniqueIdentifier>{09befdce-9098-4869-b853-4fa003799909}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="fix">
+      <UniqueIdentifier>{a4df6701-15f6-4558-9fb6-e48c6bfa7cb7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

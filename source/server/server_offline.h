@@ -1,5 +1,5 @@
-#ifndef _OFFLINE_ORDER_ENTRY_
-#define _OFFLINE_ORDER_ENTRY_
+#ifndef _SERVER_OFFLINE_H_
+#define _SERVER_OFFLINE_H_
 
 #include <string>
 #include <vector>
@@ -11,17 +11,16 @@
 
 #include <server/server_configuration.h>
 #include <server/server_outgoing_message_processor.h>
-#include <server/cli.h>
+#include <server/command_line_interface.h>
 
-class OfflineOrderEntry
+class ServerOffline
 {
     public :
-        explicit OfflineOrderEntry(const ServerConfiguration& serverConfiguration);
+        explicit ServerOffline(const ServerConfiguration& serverConfiguration);
         void run();
 
     private :
         void loadOrders();
-        void loadOrder(const std::string& line);
 
         std::string m_file;
         std::vector<order_matcher::IncomingMessage> m_orders;

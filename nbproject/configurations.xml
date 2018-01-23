@@ -15,9 +15,13 @@
             <in>aligned_memory.cpp</in>
           </df>
           <in>config_file.cpp</in>
+          <in>shared_memory.cpp</in>
           <in>single_instance.cpp</in>
           <in>stopwatch.cpp</in>
           <in>timer.cpp</in>
+        </df>
+        <df name="fix">
+          <in>fix_message.cpp</in>
         </df>
         <df name="order_matcher">
           <in>central_order_book.cpp</in>
@@ -28,6 +32,8 @@
         <df name="server">
           <in>offline_order_entry.cpp</in>
           <in>server.cpp</in>
+          <in>server_fix.cpp</in>
+          <in>server_offline.cpp</in>
         </df>
         <in>main.cpp</in>
       </df>
@@ -101,6 +107,14 @@
           </incDir>
         </ccTool>
       </folder>
+      <folder path="0/source/fix">
+        <ccTool>
+          <incDir>
+            <pElem>dependencies/quickfix/include</pElem>
+            <pElem>build/linux_gcc</pElem>
+          </incDir>
+        </ccTool>
+      </folder>
       <folder path="0/source/order_matcher">
         <ccTool>
           <incDir>
@@ -147,6 +161,14 @@
         <ccTool flags="0">
         </ccTool>
       </item>
+      <item path="source/core/shared_memory.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>dependencies/quickfix/include</pElem>
+            <pElem>build/linux_gcc</pElem>
+          </incDir>
+        </ccTool>
+      </item>
       <item path="source/core/single_instance.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
           <incDir>
@@ -169,6 +191,10 @@
             <pElem>dependencies/quickfix/include</pElem>
             <pElem>build/linux_gcc</pElem>
           </incDir>
+        </ccTool>
+      </item>
+      <item path="source/fix/fix_message.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
         </ccTool>
       </item>
       <item path="source/main.cpp" ex="false" tool="1" flavor2="8">
@@ -212,6 +238,14 @@
         </ccTool>
       </item>
       <item path="source/server/server.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="source/server/server_fix.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="source/server/server_offline.cpp" ex="false" tool="1" flavor2="8">
         <ccTool flags="0">
         </ccTool>
       </item>

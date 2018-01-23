@@ -4,6 +4,7 @@
 #include <cassert>
 #include <string>
 #include <memory>
+#include <vector>
 
 #include <quickfix/Session.h>
 #include <quickfix/fix42/ExecutionReport.h>
@@ -29,7 +30,7 @@ class OutgoingMessageProcessor : public Actor, public YieldWaitStrategy
 {
     public:
 
-        OutgoingMessageProcessor() : Actor("OutgoingWorker"), m_messageQueue{ nullptr }, m_execID{ 0 }, m_offlineMode{false}
+        OutgoingMessageProcessor() : Actor("OutgoingWorker"), m_messageQueue{ nullptr }, m_numberOfQueues{ 0 }, m_execID{ 0 }, m_offlineMode{ false }
         // We can`t have more than 16 characters in Linux for a pthread name ,that is why compacted the thread name...
         {
         }
@@ -40,10 +41,11 @@ class OutgoingMessageProcessor : public Actor, public YieldWaitStrategy
             m_offlineModeOutputFile = offlineModeOutputFile;
         }
 
-        void setMessageQueue(OutgoingMessageQueue* queue)
+        void setMessageQueue(OutgoingMessageQueue* queue, int numberOfQueues)
         {
             assert( queue != nullptr );
             m_messageQueue = queue;
+            m_numberOfQueues = numberOfQueues;
         }
 
         void* run() override
@@ -75,17 +77,18 @@ class OutgoingMessageProcessor : public Actor, public YieldWaitStrategy
                     break;
                 }
 
-                {//Creating scope for the smart ptr
-                    std::unique_ptr<OutgoingMessage> message{ new OutgoingMessage };
-                    if (m_messageQueue->dequeue(message.get()) == true)
+                for (auto i(0); i < m_numberOfQueues; i++)
+                {
+                    OutgoingMessage message;
+                    if ((*m_messageQueue)[i]->tryPop(&message) == true)
                     {
-                        const Order& order = message->getOrder();
+                        const Order& order = message.getOrder();
 
-						LOG_INFO("Outgoing message processor", core::format("Processing %s for order : %s ", message->toString(), order.toString()))
+                        LOG_INFO("Outgoing message processor", core::format("Processing %s for order : %s ", message.toString(), order.toString()))
 
                         FIX::TargetCompID targetCompID(order.getOwner());
                         FIX::SenderCompID senderCompID(order.getTarget());
-                        auto status = convertToQuickFixOutgoingMessageType(message->getType());
+                        auto status = convertToQuickFixOutgoingMessageType(message.getType());
 
                         FIX42::ExecutionReport fixOrder
                             (FIX::OrderID(order.getClientID()),
@@ -113,7 +116,7 @@ class OutgoingMessageProcessor : public Actor, public YieldWaitStrategy
                         {
                             // OFFLINE ORDER ENTRY MODE
                             auto executionReportContent = fixOrder.toString();
-                            core::appendTextToFile(m_offlineModeOutputFile, core::getCurrentDateTime() + '\n', true);
+                            core::appendTextToFile(m_offlineModeOutputFile, core::getCurrentDateTime(core::DateTimeFormat::NON_UTC_MICROSECONDS, false) + '\n', true);
                             core::appendTextToFile(m_offlineModeOutputFile, executionReportContent + '\n', true);
                         }
                         else
@@ -129,12 +132,7 @@ class OutgoingMessageProcessor : public Actor, public YieldWaitStrategy
                             }
                         }
                     }
-                    else
-                    {
-                        applyWaitStrategy(0);
-                    }
-                }//Scope for the smart pointer
-
+                }
 
             }// while
 
@@ -144,8 +142,8 @@ class OutgoingMessageProcessor : public Actor, public YieldWaitStrategy
         }
 
     private:
-
         OutgoingMessageQueue* m_messageQueue = nullptr;
+        int m_numberOfQueues;
         int m_execID;
         bool m_offlineMode;
         std::string m_offlineModeOutputFile;
