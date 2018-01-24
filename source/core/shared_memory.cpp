@@ -53,6 +53,7 @@ void SharedMemory::close()
     {
         CloseHandle(m_fileHandle);
     }
+
     m_handle = INVALID_HANDLE_VALUE;
     m_fileHandle = INVALID_HANDLE_VALUE;
 #endif

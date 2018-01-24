@@ -25,7 +25,9 @@ class SharedMemory
         void write(void* buffer , std::size_t size);
         void close();
 
-        std::size_t getSize() const { return m_size;  }
+        std::size_t getSize() const { return m_size; }
+        std::size_t getWrittenSize() const { return m_writtenSize; }
+
         bool isOpen() const
         {
             bool ret = false;

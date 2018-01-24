@@ -1,4 +1,4 @@
-#include <core/config_file.h>
+#include <core/configuration.h>
 #include <core/single_instance.h>
 #include <core/string_utility.h>
 #include <core/concurrency/thread.h>
@@ -15,8 +15,8 @@ TEST(Utility, SingleInstance)
 
 TEST(Utility, ConfigFile)
 {
-    core::ConfigFile x;
-    x.loadFromFile("./test_config.txt");
+    core::Configuration x;
+    core::Configuration::loadFromFile("./test_config.txt", x);
 
     string val;
     val = x.getStringValue("THREAD_STACK_SIZE");

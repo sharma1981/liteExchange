@@ -25,40 +25,15 @@ class LogEntry
     {
     }
 
-    LogEntry(const LogLevel level, const std::string sender, const std::string message, const std::string sourceCode, const std::string sourceCodeLineNumber, const std::string exclusiveSink)
-    : LogEntry(level, sender, message, sourceCode, sourceCodeLineNumber)// CPP11 Constructor delegation
-    {
-        m_exclusiveSink = exclusiveSink;
-    }
-
     friend std::ostream& operator<<(std::ostream& os, LogEntry& entry)
     {
         std::string logLevel;
-
-        switch (entry.m_logLevel)
-        {
-            case LogLevel::LEVEL_INFO:
-                logLevel = "INFO";
-                break;
-
-            case LogLevel::LEVEL_WARNING:
-                logLevel = "WARNING";
-                break;
-
-            case LogLevel::LEVEL_ERROR:
-                logLevel = "ERROR";
-                break;
-        }
+        logLevelToString(entry.m_logLevel, logLevel);
 
         os << core::format("[ %s : %s ]",  entry.m_sourceCode, entry.m_sourceCodeLineNumber);
         os << std::endl;
         os << core::format("%s : %s , %s , %s", getCurrentDateTime(core::DateTimeFormat::NON_UTC_MICROSECONDS, false), logLevel, entry.m_sender, entry.m_message);
         return os;
-    }
-
-    const std::string getExclusiveSink() const
-    {
-        return m_exclusiveSink;
     }
 
     const std::string toString() const
@@ -79,7 +54,6 @@ class LogEntry
         std::string m_message;
         std::string m_sourceCode;
         std::string m_sourceCodeLineNumber;
-        std::string m_exclusiveSink; // If set this log will be processed by only one sink
 };
 
 }

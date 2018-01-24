@@ -147,6 +147,7 @@ The engine executable looks for "ome.ini" file. Here is the list of things you c
 | --------------------------------------------------|:-------------------------------------------------------------:|
 | LOGGER_FILE_SINK      							| Enables/disables logging to files								|
 | LOGGER_SHARED_MEMORY_SINK      					| Enables/disables logging to memory mapped files	 			|
+| LOGGER_SHARED_MEMORY_SINK_RESOURCE_SIZE			| Set memory mapped file size for log rotation					|
 | LOGGER_CONSOLE_SINK   							| Enables/disables output to stdout                             |
 | LOGGER_BUFFER_SIZE 								| Maximum buffer size for the logging ring buffer				|
 | SINGLE_INSTANCE_TCP_PORT  						| Port used in single instance check , applies to Linux only    |

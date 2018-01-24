@@ -1,19 +1,24 @@
-#include "config_file.h"
-#include <core/string_utility.h>
+#include "configuration.h"
 #include <fstream>
 #include <algorithm>
 #include <ctype.h>
 #include <cstddef>
 #include <core/pretty_exception.h>
+#include <core/string_utility.h>
 using namespace std;
 
 namespace core
 {
 
-void ConfigFile::loadFromFile(const string& fileName)
+void Configuration::addAttribute(const std::string& attribute, const std::string& value)
+{
+    m_dictionary.insert(std::make_pair(attribute, value));
+}
+
+void Configuration::loadFromFile(const string& fileName, Configuration& config)
 {
     // For reusability
-    m_dictionary.clear();
+    config.m_dictionary.clear();
 
     ifstream file(fileName); // ifstream dtor also closes the file so no need for using a smart ptr to close the file
 
@@ -58,13 +63,13 @@ void ConfigFile::loadFromFile(const string& fileName)
         auto tokens = core::split(line, '=');
         string attribute = tokens[0];
         string value = tokens[1];
-        m_dictionary.insert( std::make_pair(attribute, value) );
+        config.addAttribute(attribute, value);
     }
 
     file.close();
 }
 
-bool ConfigFile::doesAttributeExist(const std::string& attribute) const
+bool Configuration::doesAttributeExist(const std::string& attribute) const
 {
     auto element = m_dictionary.find(attribute);
     if (element == m_dictionary.end())
@@ -74,7 +79,7 @@ bool ConfigFile::doesAttributeExist(const std::string& attribute) const
     return true;
 }
 
-const string ConfigFile::getStringValue(const string& attribute, string defaultVal) const
+const string Configuration::getStringValue(const string& attribute, string defaultVal) const
 {
     if (doesAttributeExist(attribute) == false)
     {
@@ -85,7 +90,7 @@ const string ConfigFile::getStringValue(const string& attribute, string defaultV
     return element->second;
 }
 
-bool ConfigFile::getBoolValue(const string& attribute, bool defaultVal) const
+bool Configuration::getBoolValue(const string& attribute, bool defaultVal) const
 {
     if (doesAttributeExist(attribute) == false)
     {
@@ -97,7 +102,7 @@ bool ConfigFile::getBoolValue(const string& attribute, bool defaultVal) const
     return (stringVal == "true") ? true : false;
 }
 
-int ConfigFile::getIntValue(const string& attribute, int defaultVal) const
+int Configuration::getIntValue(const string& attribute, int defaultVal) const
 {
     if (doesAttributeExist(attribute) == false)
     {
@@ -107,7 +112,7 @@ int ConfigFile::getIntValue(const string& attribute, int defaultVal) const
     return std::stoi(getStringValue(attribute));
 }
 
-vector<string> ConfigFile::getArray(const string& attribute)
+vector<string> Configuration::getArray(const string& attribute)
 {
     vector<string> ret;
     string actualAttribute = attribute + "[]";
@@ -121,6 +126,21 @@ vector<string> ConfigFile::getArray(const string& attribute)
     );
 
     return ret;
+}
+
+Configuration Configuration::getSubConfiguration(const string& attributeSubString)
+{
+    Configuration subConfiguration;
+
+    for (const auto& attribute : m_dictionary)
+    {
+        if (core::contains(attribute.first, attributeSubString))
+        {
+            subConfiguration.addAttribute(attribute.first, attribute.second);
+        }
+    }
+
+    return subConfiguration;
 }
 
 }//namespace

@@ -74,7 +74,7 @@
   <ItemGroup>
     <ClCompile Include="..\source\core\concurrency\thread.cpp" />
     <ClCompile Include="..\source\core\concurrency\thread_pool.cpp" />
-    <ClCompile Include="..\source\core\config_file.cpp" />
+    <ClCompile Include="..\source\core\configuration.cpp" />
     <ClCompile Include="..\source\core\logger\logger.cpp" />
     <ClCompile Include="..\source\core\single_instance.cpp" />
     <ClCompile Include="..\source\core\stopwatch.cpp" />

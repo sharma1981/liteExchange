@@ -82,7 +82,9 @@ int main ()
     try
     {
         // Start logger
+        core::Logger::getInstance()->initialise(serverConfiguration.getLoggerConfiguration());
         core::Logger::getInstance()->start();
+
         LOG_INFO("Main thread", "starting")
 
         if ( serverConfiguration.getOfflineOrderEntryFile().length() == 0)

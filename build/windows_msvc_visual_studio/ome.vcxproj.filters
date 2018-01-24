@@ -11,9 +11,6 @@
       <Filter>order_matcher</Filter>
     </ClCompile>
     <ClCompile Include="..\..\source\precompiled_header.cpp" />
-    <ClCompile Include="..\..\source\core\config_file.cpp">
-      <Filter>core</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\source\core\single_instance.cpp">
       <Filter>core</Filter>
     </ClCompile>
@@ -43,6 +40,9 @@
       <Filter>fix</Filter>
     </ClCompile>
     <ClCompile Include="..\..\source\core\shared_memory.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\core\configuration.cpp">
       <Filter>core</Filter>
     </ClCompile>
   </ItemGroup>
@@ -85,9 +85,6 @@
       <Filter>server</Filter>
     </ClInclude>
     <ClInclude Include="..\..\source\core\callstack.h">
-      <Filter>core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\core\config_file.h">
       <Filter>core</Filter>
     </ClInclude>
     <ClInclude Include="..\..\source\core\console_utility.h">
@@ -287,6 +284,9 @@
     </ClInclude>
     <ClInclude Include="..\..\source\core\logger\shared_memory_sink.hpp">
       <Filter>core\logger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\configuration.h">
+      <Filter>core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

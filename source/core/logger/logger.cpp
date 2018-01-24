@@ -4,10 +4,48 @@ using namespace std;
 namespace core
 {
 
-void Logger::initialise(size_t bufferSize)
+void Logger::initialise(const core::Configuration& configuration)
 {
-    assert(bufferSize>0);
+    // LOGGER BUFFER SIZE
+    auto bufferSize = configuration.getIntValue("LOGGER_BUFFER_SIZE");
+    if (bufferSize == 0)
+    {
+        bufferSize = DEFAULT_LOGGER_RING_BUFFER_SIZE;
+    }
+
     m_buffer.reset(new core::RingBufferMPMC<LogEntry>(bufferSize));
+
+    // LOGGER SINKS
+    for (auto& sinkName : LOGGER_SINKS)
+    {
+        std::string configSinkName = "LOGGER_" + std::string(sinkName);
+        if (configuration.doesAttributeExist(configSinkName) == true)
+        {
+            if (configuration.getBoolValue(configSinkName) == true)
+            {
+                auto sink = m_sinks.getSink(sinkName);
+
+                // ENABLE SINK
+                sink->setEnabled(true);
+
+                // SET SINK RESOURCE NAME
+                std::string resourceNameAttribute = "LOGGER_" + std::string(sinkName) + "_RESOURCE_NAME";
+                if (configuration.doesAttributeExist(resourceNameAttribute))
+                {
+                    auto resourceName = configuration.getStringValue(resourceNameAttribute);
+                    sink->setResourceName(resourceName);
+                }
+
+                // SET SINK SIZE
+                std::string resourceSizeAttribute = "LOGGER_" + std::string(sinkName) + "_RESOURCE_SIZE";
+                if (configuration.doesAttributeExist(resourceSizeAttribute))
+                {
+                    auto resourceSize = configuration.getIntValue(resourceSizeAttribute);
+                    sink->setSize(resourceSize);
+                }
+            }
+        }
+    }
 }
 
 void Logger::log(const LogLevel level, const string& sender, const string& message, const string& sourceCode, const string& sourceCodeLineNumber)
@@ -15,15 +53,6 @@ void Logger::log(const LogLevel level, const string& sender, const string& messa
     if (m_sinks.noSinksEnabled() == false)
     {
         LogEntry entry(level, sender, message, sourceCode, sourceCodeLineNumber);
-        pushLogToLogBuffer(entry);
-    }
-}
-
-void Logger::logForExclusiveSink(const LogLevel level, const string& sender, const string& message, const string& sourceCode, const string& sourceCodeLineNumber, const string& exclusiveSink)
-{
-    if (m_sinks.noSinksEnabled() == false)
-    {
-        LogEntry entry(level, sender, message, sourceCode, sourceCodeLineNumber, exclusiveSink);
         pushLogToLogBuffer(entry);
     }
 }

@@ -9,7 +9,7 @@ SOURCE_DIR_CORE_LOGGER= $(SOURCE_DIR_CORE)/logger
 SOURCES =  test.cpp \
 	   $(SOURCE_DIR_CORE_CONCURRENT)/thread.cpp \
 	   $(SOURCE_DIR_CORE_CONCURRENT)/thread_pool.cpp \
-	   $(SOURCE_DIR_CORE)/config_file.cpp \
+	   $(SOURCE_DIR_CORE)/configuration.cpp \
 	   $(SOURCE_DIR_CORE)/stopwatch.cpp \
 	   $(SOURCE_DIR_CORE_LOGGER)/logger.cpp \
 	   $(SOURCE_DIR_CORE)/single_instance.cpp \

@@ -26,13 +26,14 @@ class LoggerSinks
             closeEnabledSinks();
         }
 
-        void setSinkResourceName(const std::string& sinkName, const std::string& resourceName)
+        BaseLoggerSink* getSink(const std::string& sinkName)
         {
             auto sink = m_sinks.find(sinkName);
             if (sink != m_sinks.end())
             {
-                sink->second->setResourceName(resourceName);
+                return sink->second.get();
             }
+            return nullptr;
         }
 
         void setSinkEnabled(const std::string& sinkName, bool value)
@@ -69,25 +70,11 @@ class LoggerSinks
 
         void processEnabledSinks(const LogEntry& logEntry)
         {
-            auto exclusiveSink = logEntry.getExclusiveSink();
-            if (exclusiveSink.length() == 0)
+            for (auto& sink : m_sinks)
             {
-                // No exclusive sink for this log, so send it to all sinks
-                for (auto& sink : m_sinks)
+                if (sink.second->enabled())
                 {
-                    if (sink.second->enabled())
-                    {
-                        sink.second->process(logEntry);
-                    }
-                }
-            }
-            else
-            {
-                // Send this log to only one exclusive sink
-                auto sink = m_sinks.find(exclusiveSink);
-                if (sink != m_sinks.end())
-                {
-                    sink->second->process(logEntry);
+                    sink.second->process(logEntry);
                 }
             }
         }

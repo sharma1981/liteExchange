@@ -24,10 +24,9 @@ inline void onError(const std::string& message, ServerError error)
     if (core::Logger::getInstance()->isAlive())
     {
         LOG_ERROR("Main thread", "Ending")
-            core::Logger::getInstance()->shutdown();
+        core::Logger::getInstance()->shutdown();
     }
     std::exit(exit_code);
 }
-
 
 #endif

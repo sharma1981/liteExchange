@@ -16,10 +16,10 @@ namespace core
 {
 
 #define SHARED_MEMORY_SINK "SHARED_MEMORY_SINK"
-#define SHARED_MEMORY_SINK_SIZE 10240000
+#define DEFAULT_SHARED_MEMORY_SINK_SIZE 10240000
 
-    class SharedMemorySink : public BaseLoggerSink
-    {
+class SharedMemorySink : public BaseLoggerSink
+{
     public:
 
         SharedMemorySink() : BaseLoggerSink(SHARED_MEMORY_SINK, true)
@@ -30,17 +30,28 @@ namespace core
         {
             assert(m_resourceName.length() > 0);
 
-            m_logFile.open(m_resourceName, SHARED_MEMORY_SINK_SIZE, true);
-
-            if (!m_logFile.isOpen())
+            if (core::contains(m_resourceName, "."))
             {
-                THROW_PRETTY_RUNTIME_EXCEPTION(core::format("Log file %s can`t be opened", m_resourceName.c_str()))
+                auto resourceNameParts = core::split(m_resourceName, '.');
+                m_originalResourceName = resourceNameParts[0];
+                m_resourceExtension = resourceNameParts[1];
             }
+            else
+            {
+                m_originalResourceName = m_resourceName;
+            }
+
+            if( m_resourceSize == 0)
+            {
+                m_resourceSize = DEFAULT_SHARED_MEMORY_SINK_SIZE;
+            }
+
+            openMemoryMappedFile();
         }
 
         void close() override
         {
-            m_logFile.close();
+            closeMemoryMappedFile();
         }
 
         void process(LogEntry entry)
@@ -48,12 +59,50 @@ namespace core
             std::stringstream stream;
             stream << entry << std::endl;
             auto entryAsString = stream.str();
+
+            if (m_logFile.getSize() <= m_logFile.getWrittenSize() + entryAsString.length())
+            {
+                rotate();
+            }
+
             m_logFile.write(static_cast<void *>(&entryAsString[0]), entryAsString.length());
         }
 
+        void rotate() override
+        {
+            BaseLoggerSink::rotate();
+
+            m_resourceName = m_originalResourceName + "_" + std::to_string(m_rotationId);
+
+            if (m_resourceExtension.length() > 0)
+            {
+                m_resourceName += "." + m_resourceExtension;
+            }
+
+            closeMemoryMappedFile();
+            openMemoryMappedFile();
+        }
+
     private:
+        std::string m_originalResourceName;
+        std::string m_resourceExtension;
         core::SharedMemory m_logFile;
-    };
+
+        void openMemoryMappedFile()
+        {
+            m_logFile.open(m_resourceName, m_resourceSize, true);
+
+            if (!m_logFile.isOpen())
+            {
+                THROW_PRETTY_RUNTIME_EXCEPTION(core::format("Log file %s can`t be opened", m_resourceName.c_str()))
+            }
+        }
+
+        void closeMemoryMappedFile()
+        {
+            m_logFile.close();
+        }
+};
 
 } // namespace
 

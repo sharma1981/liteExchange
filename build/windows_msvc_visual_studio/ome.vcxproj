@@ -92,7 +92,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\source\core\concurrency\thread.cpp" />
     <ClCompile Include="..\..\source\core\concurrency\thread_pool.cpp" />
-    <ClCompile Include="..\..\source\core\config_file.cpp" />
+    <ClCompile Include="..\..\source\core\configuration.cpp" />
     <ClCompile Include="..\..\source\core\logger\logger.cpp" />
     <ClCompile Include="..\..\source\core\shared_memory.cpp" />
     <ClCompile Include="..\..\source\core\single_instance.cpp" />
@@ -139,7 +139,7 @@
     <ClInclude Include="..\..\source\core\concurrency\thread_pool_observer.h" />
     <ClInclude Include="..\..\source\core\concurrency\thread_priority.h" />
     <ClInclude Include="..\..\source\core\concurrency\thread_wait_strategy.h" />
-    <ClInclude Include="..\..\source\core\config_file.h" />
+    <ClInclude Include="..\..\source\core\configuration.h" />
     <ClInclude Include="..\..\source\core\console_utility.h" />
     <ClInclude Include="..\..\source\core\datetime_utility.h" />
     <ClInclude Include="..\..\source\core\design_patterns\factory.hpp" />

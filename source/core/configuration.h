@@ -1,5 +1,5 @@
-#ifndef _CONFIG_FILE_H_
-#define _CONFIG_FILE_H_
+#ifndef _CONFIGURATION_H_
+#define _CONFIGURATION_H_
 
 #include<string>
 #include<vector>
@@ -8,17 +8,21 @@
 namespace core
 {
 
-class ConfigFile
+class Configuration
 {
     public :
 
-        void loadFromFile(const std::string& fileName);
+        static void loadFromFile(const std::string& fileName, Configuration& config);
+
         bool doesAttributeExist(const std::string& attribute) const;
+        void addAttribute(const std::string& attribute, const std::string& value);
 
         const std::string getStringValue(const std::string& attribute, std::string defaultVal="") const;
         bool getBoolValue(const std::string& attribute, bool defaultVal=false) const;
         int getIntValue(const std::string& attribute, int defaultVal=0) const;
         std::vector<std::string> getArray(const std::string& attribute);
+
+        Configuration getSubConfiguration(const std::string& attributeSubString);
 
     private:
 

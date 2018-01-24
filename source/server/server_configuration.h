@@ -6,7 +6,7 @@
 
 #include <server/server_constants.h>
 
-#include <core/config_file.h>
+#include <core/configuration.h>
 #include <core/logger/logger_sink_factory.hpp>
 
 #include <core/concurrency/thread_pool_arguments.h>
@@ -25,8 +25,8 @@ class ServerConfiguration
 
         void load(const std::string& configurationFile)
         {
-            core::ConfigFile configuration;
-            configuration.loadFromFile(configurationFile);
+            core::Configuration configuration;
+            core::Configuration::loadFromFile(configurationFile, configuration);
 
             m_singleInstanceTCPPortNumber = configuration.getIntValue(server_constants::CONFIGURATION_FILE_SINGLE_INSTANCE_TCP_PORT, server_constants::CONFIFURATION_DEFAULT_SINGLE_INSTANCE_TCP_PORT);
             m_processPriority = configuration.getStringValue(server_constants::CONFIGURATION_FILE_PROCESS_PRIORITY, server_constants::CONFIGURATION_DEFAULT_PROCESS_PRIORITY);
@@ -36,30 +36,12 @@ class ServerConfiguration
                 m_offlineOrderEntryFile = configuration.getStringValue(server_constants::CONFIGURATION_FILE_OFFLINE_ORDER_ENTRY_FILE);
             }
 
-            // Get logging related configurations, the loop is for per logger sink
-            core::Logger::getInstance()->initialise(configuration.getIntValue(server_constants::CONFIGURATION_FILE_LOGGER_BUFFER_SIZE));
-
-            for (auto& sinkName : core::LOGGER_SINKS)
-            {
-                std::string configSinkName = "LOGGER_" + std::string(sinkName);
-                if (configuration.doesAttributeExist(configSinkName) == true)
-                {
-                    if (configuration.getBoolValue(configSinkName) == true)
-                    {
-                        core::Logger::getInstance()->setSinkEnabled(sinkName, true);
-
-                        std::string resourceNameAttribute = "LOGGER_" + std::string(sinkName) + "_RESOURCE_NAME";
-                        if (configuration.doesAttributeExist(resourceNameAttribute))
-                        {
-                            auto resourceName = configuration.getStringValue(resourceNameAttribute);
-                            core::Logger::getInstance()->setSinkResourceName(sinkName, resourceName);
-                        }
-                    }
-                }
-            }
+            // Get logger configuration
+            m_loggerConfiguration = configuration.getSubConfiguration("LOGGER_");
 
             // Get symbol configuration
             m_symbols = configuration.getArray(server_constants::CONFIGURATION_FILE_SYMBOL_ARRAY);
+
             if (m_symbols.size() == 0)
             {
                 THROW_PRETTY_RUNTIME_EXCEPTION("No symbol found in the ini file");
@@ -89,6 +71,7 @@ class ServerConfiguration
         core::ThreadPoolArguments getThreadPoolArguments() const { return m_threadPoolArguments; }
         std::vector<std::string> getSymbols() const { return m_symbols;  }
         std::string getOfflineOrderEntryFile() const { return m_offlineOrderEntryFile; }
+        core::Configuration getLoggerConfiguration() const { return m_loggerConfiguration; }
 
     private :
         int m_singleInstanceTCPPortNumber;
@@ -98,6 +81,7 @@ class ServerConfiguration
         bool m_isMatchingMultithreaded;
         core::ThreadPoolArguments m_threadPoolArguments;
         std::vector<std::string> m_symbols;
+        core::Configuration m_loggerConfiguration;
 };
 
 
