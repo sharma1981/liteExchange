@@ -108,6 +108,7 @@ class FixConstants:
     FIX_TAG_BODY_LENGTH = 9
     FIX_TAG_BODY_CHECKSUM = 10
     FIX_TAG_CLIENT_ORDER_ID = 11
+    FIX_TAG_EXEC_ID = 17
     FIX_TAG_EXEC_INST = 18
     FIX_TAG_HAND_INST = 21
     FIX_TAG_SEQUENCE_NUMBER = 34
@@ -214,9 +215,10 @@ class FixMessage:
         fixMessages = []
         with open(fileName, "r") as fileContent:
             for line in fileContent:
-                fixMessage = FixMessage()
-                fixMessage.loadFromString(line)
-                fixMessages.append(fixMessage)
+                if line.startswith('#') is False:
+                    fixMessage = FixMessage()
+                    fixMessage.loadFromString(line)
+                    fixMessages.append(fixMessage)
         return fixMessages
 
     @staticmethod
@@ -509,7 +511,7 @@ def fixClientAutomationClientThread(resultsQueue, ordersFile, fixVersion, addres
     if connected is True:
         print( senderCompId + " connected" )
 
-        filledCount = 0
+        processedCount = 0
 
         for order  in orders:
             fixClient.send(order)
@@ -531,10 +533,14 @@ def fixClientAutomationClientThread(resultsQueue, ordersFile, fixVersion, addres
             if message.hasTag(FixConstants.FIX_TAG_ORDER_STATUS):
                 orderStatus = message.getTagValue(FixConstants.FIX_TAG_ORDER_STATUS)
                 if orderStatus is FixConstants.FIX_ORDER_STATUS_FILLED:
-                    filledCount += 1
-                    print( senderCompId + " received a fill :" + str(filledCount) + " of " + str(ordersCount) )
+                    processedCount += 1
+                    print( senderCompId + " received a fill :" + str(processedCount) + " of " + str(ordersCount) )
+                if orderStatus is FixConstants.FIX_ORDER_STATUS_CANCELED:
+                    processedCount += 1
+                    ordersCount -= 1
+                    print( senderCompId + " received a cancel :" + str(processedCount) + " of " + str(ordersCount) )
 
-            if filledCount == ordersCount:
+            if processedCount == ordersCount:
                 break
 
         fixClient.disconnect()

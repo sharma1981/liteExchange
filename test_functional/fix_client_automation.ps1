@@ -13,6 +13,7 @@ function initialise()
         public const int FIX_TAG_BODY_LENGTH = 9;
         public const int FIX_TAG_BODY_CHECKSUM = 10;
         public const int FIX_TAG_CLIENT_ORDER_ID = 11;
+        public const int FIX_TAG_EXEC_ID = 17;
         public const int FIX_TAG_EXEC_INST = 18;
         public const int FIX_TAG_HAND_INST = 21;
         public const int FIX_TAG_SEQUENCE_NUMBER = 34;
@@ -213,9 +214,12 @@ function initialise()
 
                     while ((line = file.ReadLine()) != null)
                     {
-                        FixMessage currentMessage = new FixMessage();
-                        currentMessage.loadFromString(line);
-                        ret.Add(currentMessage);
+                        if( line.StartsWith("#") == false )
+                        {
+                            FixMessage currentMessage = new FixMessage();
+                            currentMessage.loadFromString(line);
+                            ret.Add(currentMessage);
+                        }
                     }
                 }
             }
@@ -418,57 +422,6 @@ function initialise()
             return result;
         }
 
-        public void accept()
-        {
-            try
-            {
-                System.Net.IPHostEntry ipHostInfo = System.Net.Dns.GetHostEntry(System.Net.Dns.GetHostName());
-                System.Net.IPAddress ipAddress = ipHostInfo.AddressList[0];
-                System.Net.IPEndPoint localEndPoint = new System.Net.IPEndPoint(Convert.ToInt32(TargetAddress), TargetPort);
-
-                m_serverSocket.Bind(localEndPoint);
-                m_serverSocket.Listen(100);
-
-                m_socket = m_serverSocket.Accept();
-
-                FixMessage message = recv();
-
-                if (message != null)
-                {
-                    if (message.hasTag(FixConstants.FIX_TAG_MESSAGE_TYPE))
-                    {
-                        var value = message.getTagValue(FixConstants.FIX_TAG_MESSAGE_TYPE);
-                        if (value == FixConstants.FIX_MESSAGE_LOG_ON.ToString())
-                        {
-                            if (message.hasTag(FixConstants.FIX_TAG_SEQUENCE_NUMBER))
-                            {
-                                Connected = true;
-                                IncomingSequenceNumber = System.Convert.ToInt32(message.getTagValue(FixConstants.FIX_TAG_SEQUENCE_NUMBER));
-                                HeartbeatInterval = System.Convert.ToInt32(message.getTagValue(FixConstants.FIX_TAG_HEARBEAT_INTERVAL));
-                                TargetCompid = message.getTagValue(FixConstants.FIX_TAG_TARGET_COMPID);
-                                FixVersion = message.getTagValue(FixConstants.FIX_TAG_VERSION);
-
-                                if (message.hasTag(FixConstants.FIX_TAG_ENCRYPT_METHOD))
-                                {
-                                    EncryptionMethod = System.Convert.ToInt32(message.getTagValue(FixConstants.FIX_TAG_ENCRYPT_METHOD));
-                                }
-
-                                m_heartbeatTimer.Interval = HeartbeatInterval * 1000;
-                                m_heartbeatTimer.Elapsed += new System.Timers.ElapsedEventHandler(heartbeatTimerFunction);
-                                m_heartbeatTimer.Start();
-
-                                send(getLogonMessage());
-                            }
-                        }
-                    }
-                }
-            }
-            catch (System.Exception e)
-            {
-                System.Console.WriteLine(e.Message);
-            }
-        }
-
         private void heartbeatTimerFunction(object sender, System.EventArgs e)
         {
             try
@@ -590,35 +543,6 @@ function initialise()
 
     }
 
-    public class FixServer
-    {
-        private FixSession m_session = new FixSession();
-        public FixSession FixSession { get { return m_session; } }
-
-        public void start(int port, string compId)
-        {
-            m_session.TargetPort = port;
-            m_session.SenderCompid = compId;
-            m_session.restoreSequenceNumberFromFile();
-            m_session.accept();
-        }
-
-        public void disconnect()
-        {
-            m_session.disconnect();
-        }
-
-        public void send(FixMessage message)
-        {
-            m_session.send(message);
-        }
-
-        public FixMessage recv()
-        {
-            return m_session.recv();
-        }
-    }
-
     public class FixClient
     {
         private int m_orderId = 0;
@@ -697,7 +621,8 @@ function initialise()
                 Console.WriteLine(String.Format("{0} connected", fixClient.FixSession.SenderCompid));
                 // Fire all orders
                 var orders = fixClient.getOrders();
-                int filledCount = 0;
+                var ordersCount = orders.Count;
+                int processedCount = 0;
 
                 foreach (var order in orders)
                 {
@@ -728,14 +653,23 @@ function initialise()
 
                     if (message.hasTag(FixConstants.FIX_TAG_ORDER_STATUS))
                     {
-                        if (message.getTagValue(FixConstants.FIX_TAG_ORDER_STATUS) == FixConstants.FIX_ORDER_STATUS_FILLED.ToString())
+                        string orderStatus = message.getTagValue(FixConstants.FIX_TAG_ORDER_STATUS);
+                        
+                        if( orderStatus == FixConstants.FIX_ORDER_STATUS_CANCELED.ToString() )
                         {
-                            filledCount++;
-                            Console.WriteLine(String.Format("{0} received a fill : {1} of {2}", fixClient.FixSession.SenderCompid, filledCount, orders.Count));
+                            processedCount++;
+                            ordersCount--;
+                            Console.WriteLine(String.Format("{0} processed a message : {1} of {2}", fixClient.FixSession.SenderCompid, processedCount, orders.Count));
+                        }
+                        
+                        if ( orderStatus == FixConstants.FIX_ORDER_STATUS_FILLED.ToString() )
+                        {
+                            processedCount++;
+                            Console.WriteLine(String.Format("{0} processed a message : {1} of {2}", fixClient.FixSession.SenderCompid, processedCount, orders.Count));
                         }
                     }
 
-                    if (filledCount == orders.Count)
+                    if (processedCount == ordersCount)
                     {
                         break;
                     }
