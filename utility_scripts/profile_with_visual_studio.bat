@@ -25,7 +25,7 @@ REM MSDN Link that shows how to install profiling tools standalone : https://msd
 REM 
 cd /d %DRIVE_LETTER%:
 cd %~dp0
-SET TARGET_EXECUTABLE_DIRECTORY=%~dp0..\..\bin
+SET TARGET_EXECUTABLE_DIRECTORY=%~dp0..\bin
 echo %TARGET_EXECUTABLE_DIRECTORY%
 REM
 REM By default, performance data is sampled every 10,000,000 non-halted processor clock cycles.
