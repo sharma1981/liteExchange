@@ -75,7 +75,7 @@ The core of order matching layer is called a central order book, which keeps ord
 
 	* The thread pool will have N lockfree SPSC queues for N threads ( N = num of symbol ). The thread pool  also has the ability to pin threads to CPU cores. And based on configuration it can also avoid hyperthreading/logical processors by pinning threads only to CPU cores with even indexes.
 
-	* Central Order book also has N lockfree SPMC queues for outgoing messages.
+	* Central Order book also has N lockfree SPSC queues for outgoing messages.
 
 	* When a new message arrives ( new order, or cancel ) from the incoming message dispatcher, it will be submitted to corresponding thread`s queue in the thread pool of the central order book.
 
@@ -145,11 +145,12 @@ The engine executable looks for "ome.ini" file. Here is the list of things you c
 
 | Ini setting           							| Functionality                                                 |
 | --------------------------------------------------|:-------------------------------------------------------------:|
-| LOGGER_FILE_SINK      							| Enables/disables logging to files								|
-| LOGGER_SHARED_MEMORY_SINK      					| Enables/disables logging to memory mapped files	 			|
-| LOGGER_SHARED_MEMORY_SINK_RESOURCE_SIZE			| Set memory mapped file size for log rotation					|
-| LOGGER_CONSOLE_SINK   							| Enables/disables output to stdout                             |
 | LOGGER_BUFFER_SIZE 								| Maximum buffer size for the logging ring buffer				|
+| LOGGER_WRITE_PERIOD_MILLISECONDS 					| Logging period in milliseconds								|
+| LOGGER_MEMORY_MAPPED_FILE							| Sets log file													|
+| LOGGER_ROTATION_SIZE_IN_BYTES      				| Log fue rotation size in bytes					 			|
+| LOGGER_LOG_LEVEL									| Log level, supported values : ERROR WARNING INFO				|
+| LOGGER_COPY_TO_STDOUT   							| If enabled all logs will be printed in console	            |
 | SINGLE_INSTANCE_TCP_PORT  						| Port used in single instance check , applies to Linux only    |
 | PROCESS_PRIORITY         							| Sets OS level priority of the main process                    |
 | CENTRAL_ORDER_BOOK_MULTITHREADED_ORDER_MATCHING	| Toggles multithreading for order matching                     |
@@ -311,10 +312,12 @@ You can find them under "utility_scripts" directory :
 | build_with_thread_sanitizer.sh	| build with GCC thread sanitizer												|
 | build_with_address_sanitizer.sh	| build with GCC address sanitizer    											|
 | build_for_gprof.sh       			| build for gprof profiling                    									|
-| profile_with_gprof.sh				| profile with gprof                     										|
+| profile_with_callgrind.sh			| profile with Valgrind callgrind          										|
 | profiler_windows_visual_studio	| profile with Visual Studio`s vsperf											|
 | leak_detector_drmemory.bat		| memory leak detection with Dr.Memory 											|
 | tcpdump_capture.sh				| gets a tcpdump capture that you can view with Wireshark               		|
+| valgrind_hellgrind.sh				| runs Valgrind concurrency analysis						             		|
+| valgrind_cachegrind.sh			| runs Valgrind CPU cache usage analysis					             		|
     
 Viewing tcpdump captures with Wireshark :
 

@@ -129,9 +129,12 @@ void FixMessage::loadFromFile(const string& input, vector<FixMessage>& messages)
 
     while (std::getline(file, line))
     {
-        FixMessage message;
-        message.loadFromString(line);
-        messages.emplace_back(message);
+        if (core::startsWith(line, '#') == false)
+        {
+            FixMessage message;
+            message.loadFromString(line);
+            messages.emplace_back(message);
+        }
     }
 
     file.close();
@@ -143,7 +146,6 @@ void FixMessage::toString(bool sendingAsMessage, bool updateTransactionTime, str
                             {
                                 string value;
                                 getTagValue(tag, value);
-
                                 stringOutput += std::to_string(tag) + FixConstants::FIX_EQUALS + value + FixConstants::FIX_DELIMITER;
                             };
 
@@ -158,7 +160,7 @@ void FixMessage::toString(bool sendingAsMessage, bool updateTransactionTime, str
     // FIX SENDING TIME AND TRANSACTION, have to be before body length calculation ,but not appended for the correct order
     if (sendingAsMessage)
     {
-        auto currentUTCDateTime = core::getCurrentDateTime(core::DateTimeFormat::UTC_MICROSECONDS, true);
+        auto currentUTCDateTime = core::getUtcDatetime(core::Subseconds::MICROSECONDS);
 
         setTag(FixConstants::FIX_TAG_SENDING_TIME, currentUTCDateTime);
 

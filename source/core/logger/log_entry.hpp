@@ -32,7 +32,7 @@ class LogEntry
 
         os << core::format("[ %s : %s ]",  entry.m_sourceCode, entry.m_sourceCodeLineNumber);
         os << std::endl;
-        os << core::format("%s : %s , %s , %s", getCurrentDateTime(core::DateTimeFormat::NON_UTC_MICROSECONDS, false), logLevel, entry.m_sender, entry.m_message);
+        os << core::format("%s : %s , %s , %s", core::getUtcDatetime(core::Subseconds::MICROSECONDS), logLevel, entry.m_sender, entry.m_message);
         return os;
     }
 

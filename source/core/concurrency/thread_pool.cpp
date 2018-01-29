@@ -59,7 +59,7 @@ void ThreadPool::initialise(const ThreadPoolArguments& args)
 
             if (useProcessorsWithEvenIndex)
             {
-                // If we want to avoid HT
+                // If we want to avoid hyperthreading
                 // that means we previously halved down num cores so that it is only physical cores
                 // Also still we need to use even indexes , as odd indexes are logical cores
                 coreID *= 2;

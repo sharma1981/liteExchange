@@ -54,7 +54,8 @@ class CentralOrderBook : public core::NonCopyable, public core::Visitable<Order>
 
     private:
         std::unordered_map<std::size_t, OrderBook> m_orderBookDictionary; // SecurityId - OrderBook dictionary
-        std::unordered_map<std::size_t, int> m_queueIDDictionary; // SecurityId - Queue ID dictionary , queue ids refer to both thread pool worker queues and outgoing message processor queues
+        std::unordered_map<std::size_t, int> m_queueIDDictionary; // SecurityId - Queue ID dictionary , queue ids refer to both thread pool worker queues
+                                                                  // and outgoing message processor queues
 
         bool m_isMatchingMultithreaded;
         std::vector<std::size_t> m_securityIds;

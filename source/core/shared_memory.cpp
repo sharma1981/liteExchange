@@ -14,7 +14,7 @@ using namespace std;
 namespace core
 {
 
-SharedMemory::SharedMemory() : m_buffer(nullptr), m_size(0), m_writtenSize(0)
+SharedMemory::SharedMemory() : m_buffer{ nullptr }, m_size{ 0 }, m_writtenSize{ 0 }, m_readSize{ 0 }
 {
 #ifdef __linux__
     m_fileDescriptor = 0;
@@ -150,14 +150,30 @@ bool SharedMemory::open(string name, size_t maxSize, bool createFile, bool ipc, 
     return ret;
 }
 
-void SharedMemory::write(void* buffer, size_t size)
+void SharedMemory::append(void* buffer, size_t size)
+{
+    write(buffer, size, m_writtenSize % m_size);
+}
+
+void SharedMemory::write(void* buffer, size_t size, size_t writeOffset)
+{
+    copyMemory(buffer, m_buffer + writeOffset, size);
+    m_writtenSize += size;
+}
+
+void SharedMemory::read(void* buffer, size_t size, size_t readOffset)
+{
+    copyMemory(m_buffer + readOffset, buffer,size);
+    m_readSize += size;
+}
+
+void SharedMemory::copyMemory(void* from, void* to, std::size_t size)
 {
 #ifdef __linux__
-    std::memcpy(m_buffer + (m_writtenSize % m_size), buffer, size);
+    std::memcpy(to, from, size);
 #elif _WIN32
-    CopyMemory(m_buffer + (m_writtenSize % m_size), buffer, size);
+    CopyMemory(to, from, size);
 #endif
-    m_writtenSize += size;
 }
 
 } // namespace

@@ -11,6 +11,7 @@ SOURCES =  test.cpp \
 	   $(SOURCE_DIR_CORE_CONCURRENT)/thread_pool.cpp \
 	   $(SOURCE_DIR_CORE)/configuration.cpp \
 	   $(SOURCE_DIR_CORE)/stopwatch.cpp \
+	   $(SOURCE_DIR_CORE)/shared_memory.cpp \
 	   $(SOURCE_DIR_CORE_LOGGER)/logger.cpp \
 	   $(SOURCE_DIR_CORE)/single_instance.cpp \
 	   $(SOURCE_DIR_ORDER_MATCHER)/order.cpp \

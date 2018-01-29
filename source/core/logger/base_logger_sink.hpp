@@ -14,44 +14,24 @@ namespace core
 class BaseLoggerSink
 {
     public:
-        BaseLoggerSink(const std::string& sinkName, bool requiresResource)
-        : m_enabled{ false }, m_requiresResourceName{ requiresResource }, m_sinkName(sinkName), m_resourceSize{ 0 }, m_rotationId{1}
+        BaseLoggerSink()
+        : m_rotationId{1}
         {
         }
 
-        void setEnabled(bool value)
+        std::size_t getRotationSize() const
         {
-            m_enabled = value;
+            return m_rotationSize;
         }
 
-        bool enabled() const
+        void setRotationSize(std::size_t size)
         {
-            return m_enabled;
+            m_rotationSize = size;
         }
 
-        const std::string& getSinkName() const
+        void setResourceName(const std::string& name)
         {
-            return m_sinkName;
-        }
-
-        void setResourceName(const std::string& resourceName)
-        {
-            m_resourceName = resourceName;
-        }
-
-        bool requiresResourceName() const
-        {
-            return m_requiresResourceName;
-        }
-
-        std::size_t getSize() const
-        {
-            return m_resourceSize;
-        }
-
-        void setSize(std::size_t size)
-        {
-            m_resourceSize = size;
+            m_resourceName = name;
         }
 
         //Abstract methods
@@ -65,14 +45,8 @@ class BaseLoggerSink
             m_rotationId++;
         }
 
-    private:
-        bool m_enabled;
-        bool m_requiresResourceName ;
-        std::string m_sinkName;
-
-
     protected:
-        std::size_t m_resourceSize;
+        std::size_t m_rotationSize;
         unsigned int m_rotationId;
         std::string m_resourceName;
 };

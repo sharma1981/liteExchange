@@ -2,6 +2,7 @@
 
 #include <core/file_utility.h>
 #include <core/string_utility.h>
+#include <core/logger/logger.h>
 
 #include <fix/fix_constants.h>
 #include <fix/fix_message.h>
@@ -10,35 +11,14 @@
 
 #include <server/server_constants.h>
 
-#include <iostream>
 #include <fstream>
 #include <vector>
 using namespace std;
 
-ServerOffline::ServerOffline(const ServerConfiguration& serverConfiguration)
+ServerOffline::ServerOffline(const ServerConfiguration& serverConfiguration) :ServerBase(serverConfiguration)
 {
-    m_file = serverConfiguration.getOfflineOrderEntryFile();
-    // Central order book initialisation
-    auto symbols = serverConfiguration.getSymbols();
-    auto symbolCount = symbols.size();
-    m_centralOrderBook.setSymbols(symbols);
-
-    if (serverConfiguration.getMatchingMultithreadingMode() == true)
-    {
-        core::ThreadPoolArguments args = serverConfiguration.getThreadPoolArguments();
-        args.m_threadNames = symbols;
-        m_centralOrderBook.initialiseMultithreadedMatching(args);
-    }
-
-    m_centralOrderBook.initialiseOutgoingMessageQueues(symbolCount, serverConfiguration.getOutgoingMessageQueueSizePerThread());
-
-    // Outgoing message processor initialisation
     m_outgoingMessageProcessor.setOfflineMode(server_constants::OFFLINE_ORDER_ENTRY_RESULTS_FILE);
-    m_outgoingMessageProcessor.setMessageQueue(m_centralOrderBook.getOutgoingMessageQueue(), symbolCount);
-    m_outgoingMessageProcessor.start();
-
-    // Command line interface
-    m_commandLineInterface.setParentCentralOrderbook(&m_centralOrderBook);
+    m_file = serverConfiguration.getOfflineOrderEntryFile();
 }
 
 void ServerOffline::loadOrders()
@@ -117,18 +97,14 @@ void ServerOffline::run()
 {
     loadOrders();
 
-    cout << "Loaded all orders into memory" << endl << endl;
+    LOG_INFO("Offline Server", "Loaded all orders into memory")
 
     for (auto& order : m_orders)
     {
-        // Currently not supporting cancel orders for offline mode
-        if (order.getType() == IncomingMessageType::NEW_ORDER)
-        {
-            m_centralOrderBook.addOrder(order.getOrder());
-        }
+        m_centralOrderBook.addOrder(order.getOrder());
     }
 
-    cout << "Submitted all orders to the central order book" << endl << endl;
+    LOG_INFO("Offline Server", "Submitted all orders to the central order book")
 
     m_commandLineInterface.run();
 }

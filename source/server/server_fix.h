@@ -5,10 +5,7 @@
 #include <vector>
 #include <memory>
 
-#include <core/noncopyable.h>
-
-#include <order_matcher/central_order_book.h>
-#include <order_matcher/central_order_book_observer.h>
+#include <server/server_base.h>
 
 #include <server/command_line_interface.h>
 #include <server/server_configuration.h>
@@ -24,12 +21,12 @@
 #include <quickfix/fix42//NewOrderSingle.h>
 #include <quickfix/fix42/OrderCancelRequest.h>
 
-class ServerFix : public core::NonCopyable, public FIX::Application, public FIX::MessageCracker
+class ServerFix : public ServerBase, public FIX::Application, public FIX::MessageCracker
 {
     public:
         ServerFix(const std::string& fixEngineConfigFile, const ServerConfiguration& serverConfiguration);
         ~ServerFix();
-        void run();
+        void run() override;
         order_matcher::CentralOrderBook& getCentralOrderBook() { return m_centralOrderBook;  }
 
     private:
@@ -47,12 +44,7 @@ class ServerFix : public core::NonCopyable, public FIX::Application, public FIX:
         void onMessage(const FIX42::OrderCancelRequest&, const FIX::SessionID&);
 
         std::string m_fixEngineConfigFile;
-        order_matcher::CentralOrderBook m_centralOrderBook;
-        order_matcher::CentralOrderBookObserver m_centralOrderBookObserver;
-        OutgoingMessageProcessor m_outgoingMessageProcessor;
         IncomingMessageDispatcher m_dispatcher;
-
-        CommandLineInterface m_commandLineInterface;
 };
 
 #endif

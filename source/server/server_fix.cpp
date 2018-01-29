@@ -28,40 +28,16 @@ using namespace order_matcher;
 using namespace std;
 
 ServerFix::ServerFix(const string& fixEngineConfigFile, const ServerConfiguration& serverConfiguration)
-: m_fixEngineConfigFile( fixEngineConfigFile )
+: m_fixEngineConfigFile(fixEngineConfigFile), ServerBase(serverConfiguration)
 {
     if (!core::doesFileExist(m_fixEngineConfigFile))
     {
         THROW_PRETTY_RUNTIME_EXCEPTION(core::format("FIX configuration file %s does not exist", m_fixEngineConfigFile))
     }
 
-    // Central order book initialisation
-    auto symbols = serverConfiguration.getSymbols();
-    auto symbolCount = symbols.size();
-    m_centralOrderBook.setSymbols(symbols);
-
-    if (serverConfiguration.getMatchingMultithreadingMode() == true)
-    {
-        core::ThreadPoolArguments args = serverConfiguration.getThreadPoolArguments();
-        args.m_threadNames = symbols;
-        m_centralOrderBook.initialiseMultithreadedMatching(args);
-    }
-
-    m_centralOrderBook.initialiseOutgoingMessageQueues(symbolCount, serverConfiguration.getOutgoingMessageQueueSizePerThread());
-
-    // Attach central order book observer to the central order book
-    m_centralOrderBook.attach(m_centralOrderBookObserver);
-
     // Incoming message dispatcher initialisation
     m_dispatcher.setCentralOrderBook(&m_centralOrderBook);
     m_dispatcher.start();
-
-    // Outgoing message processor initialisation
-    m_outgoingMessageProcessor.setMessageQueue(m_centralOrderBook.getOutgoingMessageQueue(), symbolCount);
-    m_outgoingMessageProcessor.start();
-
-    //CLI
-    m_commandLineInterface.setParentCentralOrderbook(&m_centralOrderBook);
 }
 
 void ServerFix::run()

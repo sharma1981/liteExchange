@@ -1,56 +1,49 @@
+#include <utility>
+#include <algorithm>
+#include <type_traits>
+
 #include "logger.h"
+
+#include <core/logger/console_sink.hpp>
+#include <core/logger/memory_mapped_file_sink.hpp>
+
 using namespace std;
 
 namespace core
 {
 
-void Logger::initialise(const core::Configuration& configuration)
+void Logger::initialise(const LoggerArguments& configuration)
 {
-    // LOGGER BUFFER SIZE
-    auto bufferSize = configuration.getIntValue("LOGGER_BUFFER_SIZE");
-    if (bufferSize == 0)
+    // Disc write period
+    m_writePeriodInMicroseconds = configuration.m_writePeriodInMilliSeconds * 1000;
+
+    // Ring buffer size
+    m_buffer.reset(new core::RingBufferMPMC<LogEntry>(configuration.m_bufferSize));
+
+    // Log level
+    m_logLevel = static_cast<std::underlying_type<LogLevel>::type >(configuration.m_logLevel);
+
+    // Memory mapped file sink
+    if (configuration.m_memoryMappedFileName.length() > 0)
     {
-        bufferSize = DEFAULT_LOGGER_RING_BUFFER_SIZE;
+        auto memoryMappedFileSink = new MemoryMappedFileSink();
+        memoryMappedFileSink->setResourceName(configuration.m_memoryMappedFileName);
+        memoryMappedFileSink->setRotationSize(configuration.m_rotationSizeInBytes);
+        m_sinks.emplace_back(std::move(memoryMappedFileSink));
     }
 
-    m_buffer.reset(new core::RingBufferMPMC<LogEntry>(bufferSize));
-
-    // LOGGER SINKS
-    for (auto& sinkName : LOGGER_SINKS)
+    // Console sink if specified
+    if (configuration.m_copyToStdout)
     {
-        std::string configSinkName = "LOGGER_" + std::string(sinkName);
-        if (configuration.doesAttributeExist(configSinkName) == true)
-        {
-            if (configuration.getBoolValue(configSinkName) == true)
-            {
-                auto sink = m_sinks.getSink(sinkName);
-
-                // ENABLE SINK
-                sink->setEnabled(true);
-
-                // SET SINK RESOURCE NAME
-                std::string resourceNameAttribute = "LOGGER_" + std::string(sinkName) + "_RESOURCE_NAME";
-                if (configuration.doesAttributeExist(resourceNameAttribute))
-                {
-                    auto resourceName = configuration.getStringValue(resourceNameAttribute);
-                    sink->setResourceName(resourceName);
-                }
-
-                // SET SINK SIZE
-                std::string resourceSizeAttribute = "LOGGER_" + std::string(sinkName) + "_RESOURCE_SIZE";
-                if (configuration.doesAttributeExist(resourceSizeAttribute))
-                {
-                    auto resourceSize = configuration.getIntValue(resourceSizeAttribute);
-                    sink->setSize(resourceSize);
-                }
-            }
-        }
+        m_sinks.emplace_back(std::move(new  ConsoleSink));
     }
 }
 
 void Logger::log(const LogLevel level, const string& sender, const string& message, const string& sourceCode, const string& sourceCodeLineNumber)
 {
-    if (m_sinks.noSinksEnabled() == false)
+    auto logLevel = static_cast<std::underlying_type<LogLevel>::type >(level);
+
+    if (m_logLevel >= logLevel)
     {
         LogEntry entry(level, sender, message, sourceCode, sourceCodeLineNumber);
         pushLogToLogBuffer(entry);
@@ -62,41 +55,31 @@ void Logger::pushLogToLogBuffer(const LogEntry& log)
     m_buffer->push(log);
 }
 
-bool Logger::processLogs()
-{
-    bool processedAny{ false };
-
-    if (m_sinks.noSinksEnabled() == false)
-    {
-
-        while (m_buffer->count() > 0)
-        {
-            processedAny = true;
-            auto log = m_buffer->pop();
-            m_sinks.processEnabledSinks(log);
-        }
-    }
-
-    return processedAny;
-}
-
 void* Logger::run()
 {
-    m_sinks.openEnabledSinks();
+    // Open all sinks
+    std::for_each(m_sinks.begin(), m_sinks.end(), [](std::unique_ptr<BaseLoggerSink>& sink){sink->open(); });
 
     while ( true )
     {
-        processLogs();
+        while (m_buffer->count() > 0)
+        {
+            auto log = m_buffer->pop();
+            // Process all sinks
+            std::for_each(m_sinks.begin(), m_sinks.end(), [&log](std::unique_ptr<BaseLoggerSink>& sink){sink->process(log); });
+        }
 
         if (isFinishing() == true)
         {
             break;
         }
 
-        applyWaitStrategy(1000); // 50 milliseconds wait
+        applyWaitStrategy(m_writePeriodInMicroseconds);
     }
 
-    m_sinks.closeEnabledSinks();
+    // Close all sinks
+    std::for_each(m_sinks.begin(), m_sinks.end(), [](std::unique_ptr<BaseLoggerSink>& sink){sink->close(); });
+
     return nullptr;
 }
 

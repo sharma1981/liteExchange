@@ -8,13 +8,11 @@
 namespace core
 {
 
-#define CONSOLE_SINK "CONSOLE_SINK"
-
 class ConsoleSink : public BaseLoggerSink
 {
     public:
 
-        ConsoleSink() : BaseLoggerSink(CONSOLE_SINK, false)
+        ConsoleSink() : BaseLoggerSink()
         {
         }
 

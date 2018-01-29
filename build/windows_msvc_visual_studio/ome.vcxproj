@@ -152,13 +152,11 @@
     <ClInclude Include="..\..\source\core\file_utility.h" />
     <ClInclude Include="..\..\source\core\logger\base_logger_sink.hpp" />
     <ClInclude Include="..\..\source\core\logger\console_sink.hpp" />
-    <ClInclude Include="..\..\source\core\logger\file_sink.hpp" />
     <ClInclude Include="..\..\source\core\logger\logger.h" />
-    <ClInclude Include="..\..\source\core\logger\logger_sinks.hpp" />
-    <ClInclude Include="..\..\source\core\logger\logger_sink_factory.hpp" />
+    <ClInclude Include="..\..\source\core\logger\logger_arguments.h" />
     <ClInclude Include="..\..\source\core\logger\log_entry.hpp" />
     <ClInclude Include="..\..\source\core\logger\log_levels.h" />
-    <ClInclude Include="..\..\source\core\logger\shared_memory_sink.hpp" />
+    <ClInclude Include="..\..\source\core\logger\memory_mapped_file_sink.hpp" />
     <ClInclude Include="..\..\source\core\memory\cpu_memory.h" />
     <ClInclude Include="..\..\source\core\memory\heap_memory.h" />
     <ClInclude Include="..\..\source\core\memory\stack_memory.h" />
@@ -185,6 +183,7 @@
     <ClInclude Include="..\..\source\precompiled_header.h" />
     <ClInclude Include="..\..\source\server\command_line_interface.h" />
     <ClInclude Include="..\..\source\server\quickfix_converter.h" />
+    <ClInclude Include="..\..\source\server\server_base.h" />
     <ClInclude Include="..\..\source\server\server_fix.h" />
     <ClInclude Include="..\..\source\server\server_configuration.h" />
     <ClInclude Include="..\..\source\server\server_constants.h" />

@@ -1,5 +1,5 @@
-#ifndef _SHARED_MEMORY_SINK_H_
-#define _SHARED_MEMORY_SINK_H_
+#ifndef _MEMORY_MAPPED_FILE_SINK_H_
+#define _MEMORY_MAPPED_FILE_SINK_H_
 
 #include <cassert>
 #include <sstream>
@@ -15,14 +15,11 @@
 namespace core
 {
 
-#define SHARED_MEMORY_SINK "SHARED_MEMORY_SINK"
-#define DEFAULT_SHARED_MEMORY_SINK_SIZE 10240000
-
-class SharedMemorySink : public BaseLoggerSink
+class MemoryMappedFileSink : public BaseLoggerSink
 {
     public:
 
-        SharedMemorySink() : BaseLoggerSink(SHARED_MEMORY_SINK, true)
+        MemoryMappedFileSink() : BaseLoggerSink()
         {
         }
 
@@ -39,11 +36,6 @@ class SharedMemorySink : public BaseLoggerSink
             else
             {
                 m_originalResourceName = m_resourceName;
-            }
-
-            if( m_resourceSize == 0)
-            {
-                m_resourceSize = DEFAULT_SHARED_MEMORY_SINK_SIZE;
             }
 
             openMemoryMappedFile();
@@ -65,7 +57,7 @@ class SharedMemorySink : public BaseLoggerSink
                 rotate();
             }
 
-            m_logFile.write(static_cast<void *>(&entryAsString[0]), entryAsString.length());
+            m_logFile.append(static_cast<void *>(&entryAsString[0]), entryAsString.length());
         }
 
         void rotate() override
@@ -90,7 +82,7 @@ class SharedMemorySink : public BaseLoggerSink
 
         void openMemoryMappedFile()
         {
-            m_logFile.open(m_resourceName, m_resourceSize, true);
+            m_logFile.open(m_resourceName, m_rotationSize, true);
 
             if (!m_logFile.isOpen())
             {

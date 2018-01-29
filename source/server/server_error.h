@@ -20,12 +20,6 @@ inline void onError(const std::string& message, ServerError error)
 {
     std::cerr << message << std::endl;
     auto exit_code = static_cast<std::underlying_type<ServerError>::type >(error);
-
-    if (core::Logger::getInstance()->isAlive())
-    {
-        LOG_ERROR("Main thread", "Ending")
-        core::Logger::getInstance()->shutdown();
-    }
     std::exit(exit_code);
 }
 

@@ -13,27 +13,53 @@
 #include <sys/time.h>
 #endif
 
-namespace core
-{
-
-enum class DateTimeFormat
-{
-    NON_UTC_SECONDS,
-    NON_UTC_MILLISECONDS,
-    NON_UTC_MICROSECONDS,
-    UTC_SECONDS,
-    UTC_MILLISECONDS,
-    UTC_MICROSECONDS
-};
-
 // Could use anonymous namespace or static keyword since C++11 removed deprecation
 // Even though functions here don`t operate on static data
 // preferred inline to avoid code bloat
 
-inline std::string getCurrentDateTime(const std::string format, bool universalTime)
+namespace core
 {
-    std::stringstream ss;
-    std::string formatWithoutSubSeconds = core::split(format, 'S')[0] + 'S';
+
+enum class Subseconds
+{
+    NONE,
+    MILLISECONDS,
+    MICROSECONDS
+};
+
+inline long long getMilliseconds()
+{
+    long long ret{ 0 };
+#if defined( _MSC_VER ) || ( __GNUC__ > 4 )
+    auto now = std::chrono::system_clock::now();
+    auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()) % 1000;
+    ret = ms.count();
+#else
+    timeval curTime;
+    gettimeofday(&curTime, NULL);
+    ret = curTime.tv_usec / 1000;
+#endif
+    return ret;
+}
+
+inline long long getMicroseconds()
+{
+    long long ret{ 0 };
+#if defined( _MSC_VER ) || ( __GNUC__ > 4 )
+    auto now = std::chrono::system_clock::now();
+    auto ms = std::chrono::duration_cast<std::chrono::microseconds>(now.time_since_epoch()) % 1000000;
+    ret = ms.count();
+#else
+    timeval curTime;
+    gettimeofday(&curTime, NULL);
+    ret = curTime.tv_usec;
+#endif
+    return ret;
+}
+
+inline const std::string getCurrentDateTime(const std::string format, bool universalTime, Subseconds subseconds)
+{
+    std::stringstream stringBuilder;
 
 #if defined( _MSC_VER ) || ( __GNUC__ > 4 )
     auto now = std::chrono::system_clock::now();
@@ -41,24 +67,11 @@ inline std::string getCurrentDateTime(const std::string format, bool universalTi
 
     if (universalTime)
     {
-        ss << std::put_time(std::gmtime(&inTimeT), formatWithoutSubSeconds.c_str());
+        stringBuilder << std::put_time(std::gmtime(&inTimeT), format.c_str());
     }
     else
     {
-        ss << std::put_time(std::localtime(&inTimeT), formatWithoutSubSeconds.c_str());
-    }
-
-    if (core::contains(format, "%%03u") == true )
-    {
-        // Add milliseconds
-        auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()) % 1000;
-        ss << '.' << std::setfill('0') << std::setw(3) << ms.count();
-    }
-    else if (core::contains(format, "%%06u") == true)
-    {
-        // Add microseconds
-        auto ms = std::chrono::duration_cast<std::chrono::microseconds>(now.time_since_epoch()) % 1000000;
-        ss << '.' << std::setfill('0') << std::setw(6) << ms.count();
+        stringBuilder << std::put_time(std::localtime(&inTimeT), format.c_str());
     }
 #else
     // In C++11 std::put_time does this more easily, but in my tests
@@ -78,54 +91,28 @@ inline std::string getCurrentDateTime(const std::string format, bool universalTi
         timeInfo = localtime(&rawTime);
     }
 
-    strftime(buffer, buffer_size, formatWithoutSubSeconds.c_str(), timeInfo);
-    ss << buffer;
-
-    if (core::contains(format, "%%03u") == true )
-    {
-        // Add milliseconds
-        timeval curTime;
-        gettimeofday(&curTime, NULL);
-        int milli = curTime.tv_usec / 1000;
-        ss << '.' << std::setfill('0') << std::setw(3) << milli;
-    }
-    else if (core::contains(format, "%%06u") == true)
-    {
-        // Add microseconds
-        timeval curTime;
-        gettimeofday(&curTime, NULL);
-        int micro = curTime.tv_usec;
-        ss << '.' << std::setfill('0') << std::setw(6) << micro;
-    }
+    strftime(buffer, buffer_size, format.c_str(), timeInfo);
+    stringBuilder << buffer;
 #endif
-    return ss.str();
+
+    // Add subseconds
+    if ( subseconds == Subseconds::MILLISECONDS )
+    {
+        // Milliseconds
+        stringBuilder << '.' << std::setfill('0') << std::setw(3) << getMilliseconds();
+    }
+    else if (subseconds == Subseconds::MICROSECONDS)
+    {
+        // Microseconds
+        stringBuilder << '.' << std::setfill('0') << std::setw(6) << getMicroseconds();
+    }
+
+    return stringBuilder.str();
 }
 
-inline std::string getCurrentDateTime(DateTimeFormat format, bool universalTime)
+inline const std::string getUtcDatetime(Subseconds subseconds)
 {
-    std::string ret;
-    switch (format)
-    {
-        case DateTimeFormat::NON_UTC_SECONDS:
-            ret = getCurrentDateTime("%d-%m-%Y %H:%M:%S", universalTime);
-            break;
-        case DateTimeFormat::NON_UTC_MILLISECONDS:
-            ret = getCurrentDateTime("%d-%m-%Y %H:%M:%S:%%03u", universalTime);
-            break;
-        case DateTimeFormat::NON_UTC_MICROSECONDS:
-            ret = getCurrentDateTime("%d-%m-%Y %H:%M:%S:%%06u", universalTime);
-            break;
-        case DateTimeFormat::UTC_SECONDS:
-            ret = getCurrentDateTime("%Y%m%d-%H:%M:%S", universalTime);
-            break;
-        case DateTimeFormat::UTC_MILLISECONDS:
-            ret = getCurrentDateTime("%Y%m%d-%H:%M:%S.%%03u", universalTime);
-            break;
-        case DateTimeFormat::UTC_MICROSECONDS:
-            ret = getCurrentDateTime("%Y%m%d-%H:%M:%S.%%06u", universalTime);
-            break;
-    }
-    return ret;
+    return getCurrentDateTime("%Y%m%d-%H:%M:%S", true, subseconds);
 }
 
 }// namespace

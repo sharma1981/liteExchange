@@ -117,9 +117,6 @@
     <ClInclude Include="..\..\source\core\logger\console_sink.hpp">
       <Filter>core\logger</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\core\logger\file_sink.hpp">
-      <Filter>core\logger</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\source\core\logger\log_entry.hpp">
       <Filter>core\logger</Filter>
     </ClInclude>
@@ -127,12 +124,6 @@
       <Filter>core\logger</Filter>
     </ClInclude>
     <ClInclude Include="..\..\source\core\logger\logger.h">
-      <Filter>core\logger</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\core\logger\logger_sink_factory.hpp">
-      <Filter>core\logger</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\core\logger\logger_sinks.hpp">
       <Filter>core\logger</Filter>
     </ClInclude>
     <ClInclude Include="..\..\source\core\design_patterns\factory.hpp">
@@ -282,11 +273,17 @@
     <ClInclude Include="..\..\source\core\shared_memory.h">
       <Filter>core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\core\logger\shared_memory_sink.hpp">
-      <Filter>core\logger</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\source\core\configuration.h">
       <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\logger\logger_arguments.h">
+      <Filter>core\logger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\logger\memory_mapped_file_sink.hpp">
+      <Filter>core\logger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\server\server_base.h">
+      <Filter>server</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

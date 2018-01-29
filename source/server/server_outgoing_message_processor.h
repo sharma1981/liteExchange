@@ -114,7 +114,7 @@ class OutgoingMessageProcessor : public Actor, public YieldWaitStrategy
                         {
                             // OFFLINE ORDER ENTRY MODE
                             auto executionReportContent = fixOrder.toString();
-                            core::appendTextToFile(m_offlineModeOutputFile, core::getCurrentDateTime(core::DateTimeFormat::NON_UTC_MICROSECONDS, false) + '\n', true);
+                            core::appendTextToFile(m_offlineModeOutputFile, core::getUtcDatetime(core::Subseconds::MICROSECONDS) + '\n', true);
                             core::appendTextToFile(m_offlineModeOutputFile, executionReportContent + '\n', true);
                         }
                         else

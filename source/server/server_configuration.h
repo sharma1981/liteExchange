@@ -7,10 +7,11 @@
 #include <server/server_constants.h>
 
 #include <core/configuration.h>
-#include <core/logger/logger_sink_factory.hpp>
 
 #include <core/concurrency/thread_pool_arguments.h>
 #include <core/concurrency/thread_priority.h>
+
+#include <core/logger/logger_arguments.h>
 
 #include <core/pretty_exception.h>
 
@@ -37,7 +38,12 @@ class ServerConfiguration
             }
 
             // Get logger configuration
-            m_loggerConfiguration = configuration.getSubConfiguration("LOGGER_");
+            m_loggerConfiguration.m_copyToStdout = configuration.getBoolValue(server_constants::CONFIGURATION_FILE_LOGGER_COPY_TO_STDOUT, false);
+            m_loggerConfiguration.m_bufferSize = configuration.getIntValue(server_constants::CONFIGURATION_FILE_LOGGER_BUFFER_SIZE, DEFAULT_LOGGER_RING_BUFFER_SIZE);
+            m_loggerConfiguration.m_writePeriodInMilliSeconds = configuration.getIntValue(server_constants::CONFIGURATION_FILE_LOGGER_WRITE_PERIOD_MILLISECONDS, DEFAULT_LOGGER_WRITE_PERIOD_MILLISECONDS);
+            m_loggerConfiguration.m_rotationSizeInBytes = configuration.getIntValue(server_constants::CONFIGURATION_FILE_LOGGER_ROTATION_SIZE_IN_BYTES, DEFAULT_LOGGER_ROTATION_SIZE_IN_BYTES);
+            m_loggerConfiguration.m_memoryMappedFileName = configuration.getStringValue(server_constants::CONFIGURATION_FILE_LOGGER_MEMORY_MAPPED_FILE, "");
+            m_loggerConfiguration.m_logLevel = core::logLevelFromString( configuration.getStringValue(server_constants::CONFIGURATION_FILE_LOGGER_LOG_LEVEL, "") );
 
             // Get symbol configuration
             m_symbols = configuration.getArray(server_constants::CONFIGURATION_FILE_SYMBOL_ARRAY);
@@ -71,7 +77,7 @@ class ServerConfiguration
         core::ThreadPoolArguments getThreadPoolArguments() const { return m_threadPoolArguments; }
         std::vector<std::string> getSymbols() const { return m_symbols;  }
         std::string getOfflineOrderEntryFile() const { return m_offlineOrderEntryFile; }
-        core::Configuration getLoggerConfiguration() const { return m_loggerConfiguration; }
+        core::LoggerArguments getLoggerConfiguration() const { return m_loggerConfiguration; }
 
     private :
         int m_singleInstanceTCPPortNumber;
@@ -81,7 +87,7 @@ class ServerConfiguration
         bool m_isMatchingMultithreaded;
         core::ThreadPoolArguments m_threadPoolArguments;
         std::vector<std::string> m_symbols;
-        core::Configuration m_loggerConfiguration;
+        core::LoggerArguments m_loggerConfiguration;
 };
 
 

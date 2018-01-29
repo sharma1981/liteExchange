@@ -4,8 +4,7 @@
 #include <cstddef>
 #include <string>
 #include <memory>
-
-#include <core/configuration.h>
+#include <vector>
 
 #include <core/concurrency/actor.h>
 #include <core/concurrency/thread_wait_strategy.h>
@@ -13,9 +12,10 @@
 
 #include <core/design_patterns/singleton_dclp.hpp>
 
+#include <core/logger/logger_arguments.h>
 #include <core/logger/log_levels.h>
 #include <core/logger/log_entry.hpp>
-#include <core/logger/logger_sinks.hpp>
+#include <core/logger/base_logger_sink.hpp>
 
 namespace core
 {
@@ -27,8 +27,6 @@ namespace core
 #define LOG_WARNING(SENDER, MESSAGE) (core::Logger::getInstance()->log(core::LogLevel::LEVEL_WARNING,(SENDER),(MESSAGE),(__FILE__),(STRINGIFY(__LINE__))));
 #define LOG_ERROR(SENDER, MESSAGE) (core::Logger::getInstance()->log(core::LogLevel::LEVEL_ERROR,(SENDER),(MESSAGE),(__FILE__),(STRINGIFY(__LINE__))));
 
-#define DEFAULT_LOGGER_RING_BUFFER_SIZE 819200
-
 using LogBuffer = std::unique_ptr< core::RingBufferMPMC<LogEntry> >;
 
 class Logger : public core::Actor, public SingletonDCLP<Logger>, public SleepWaitStrategy
@@ -37,19 +35,22 @@ class Logger : public core::Actor, public SingletonDCLP<Logger>, public SleepWai
         Logger() : Actor("LoggerThread") {}
         ~Logger() { shutdown(); }
 
-        void initialise(const core::Configuration& configuration);
+        void initialise(const LoggerArguments&);
         void log(const LogLevel level, const std::string& sender, const std::string& message, const std::string& sourceCode, const std::string& sourceCodeLineNumber);
         void* run() override;
 
     private:
         void pushLogToLogBuffer(const LogEntry& log);
+
         // Move ctor deletion
         Logger(Logger&& other) = delete;
         // Move assignment operator deletion
         Logger& operator=(Logger&& other) = delete;
-        bool processLogs();
+
         LogBuffer m_buffer;
-        LoggerSinks m_sinks;
+        std::vector<std::unique_ptr<BaseLoggerSink>> m_sinks;
+        std::size_t m_writePeriodInMicroseconds = DEFAULT_LOGGER_WRITE_PERIOD_MILLISECONDS*1000;
+        int m_logLevel = 0;
 };
 
 }//namespace
