@@ -148,7 +148,7 @@ The engine executable looks for "ome.ini" file. Here is the list of things you c
 | LOGGER_BUFFER_SIZE 								| Maximum buffer size for the logging ring buffer				|
 | LOGGER_WRITE_PERIOD_MILLISECONDS 					| Logging period in milliseconds								|
 | LOGGER_MEMORY_MAPPED_FILE							| Sets log file													|
-| LOGGER_ROTATION_SIZE_IN_BYTES      				| Log fue rotation size in bytes					 			|
+| LOGGER_ROTATION_SIZE_IN_BYTES      				| Log rotation size in bytes						 			|
 | LOGGER_LOG_LEVEL									| Log level, supported values : ERROR WARNING INFO				|
 | LOGGER_COPY_TO_STDOUT   							| If enabled all logs will be printed in console	            |
 | SINGLE_INSTANCE_TCP_PORT  						| Port used in single instance check , applies to Linux only    |
