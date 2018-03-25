@@ -1,5 +1,6 @@
-#Concurrent Order Matching Engine
+# Concurrent Order Matching Engine
 <td><img src="https://img.shields.io/badge/LICENCE-PUBLIC%20DOMAIN-green.svg" alt="Licence badge"></td>
+
 | - | Linux GCC | Windows MSVC |
 |:------:|:------:|:------:|
 |Build|[![Build Status](https://travis-ci.org/akhin/concurrent-order-matching-engine.svg?branch=master)](https://travis-ci.org/akhin/concurrent-order-matching-engine)|[![Build status](https://ci.appveyor.com/api/projects/status/hw8s5o46kcgr388l?svg=true)](https://ci.appveyor.com/project/akhin/cpp-multithreaded-order-matching-engine)|
