@@ -1,7 +1,8 @@
+#Concurrent Order Matching Engine
 <td><img src="https://img.shields.io/badge/LICENCE-PUBLIC%20DOMAIN-green.svg" alt="Licence badge"></td>
-
-Linux [![Build Status](https://travis-ci.org/akhin/concurrent-order-matching-engine.svg?branch=master)](https://travis-ci.org/akhin/concurrent-order-matching-engine)
-Windows [![Build status](https://ci.appveyor.com/api/projects/status/hw8s5o46kcgr388l?svg=true)](https://ci.appveyor.com/project/akhin/cpp-multithreaded-order-matching-engine)
+| - | Linux GCC | Windows MSVC |
+|:------:|:------:|:------:|
+|Build|[![Build Status](https://travis-ci.org/akhin/concurrent-order-matching-engine.svg?branch=master)](https://travis-ci.org/akhin/concurrent-order-matching-engine)|[![Build status](https://ci.appveyor.com/api/projects/status/hw8s5o46kcgr388l?svg=true)](https://ci.appveyor.com/project/akhin/cpp-multithreaded-order-matching-engine)|
 
 * Sections
 	* [1. Introduction and features](#Introduction)
@@ -72,33 +73,33 @@ and required tags.
 
 ## <a name="LowLatency">**3. Low latency features and how it can be improved:** 
 
-Non-configurable low latency features are as below : 
+* Non-configurable low latency features are as below : 
 
-	- Network IO model : Using Epoll to avoid context switching costs
+	* Network IO model : Using Epoll to avoid context switching costs
 
-	- Memory allocations : Allocations in critical path are aligned to CPU cache line size.
+	* Memory allocations : Allocations in critical path are aligned to CPU cache line size to avoid false sharing
 	
-	- Logger : Logger uses memory mapped file/shared memory
+	* Logger : Logger uses memory mapped file/shared memory
 	
-	- Lockfree thread safe containers : It uses bounded SPSC lockfree. Currently only logger uses a lock based MPMC unbounded queue.
+	* Lockfree thread safe containers : Uses bounded SPSC lockfree. Currently only logger uses a lock based MPMC unbounded queue.
 
-The project has some configurable low latency features :
+* The project has some configurable low latency features :
 
-	- TCP sockets : socket buffer sizes, Nagle algorithm , TCP quick ack
+	* TCP sockets : socket buffer sizes, Nagle algorithm , TCP quick ack are configurable in ini file
 	
-	- TCP Epoll settings : Max number of events , epoll timeout
+	* TCP Epoll settings : Max number of events , epoll timeout are configurable in ini file
 	
-	- Threads : You can pin each thread to CPU , set thread stack size and specify OS-level thread priority
+	* Threads : Pinning threads to specified CPU cores , setting thread stack size and specifying OS-level thread priority are configurable in ini file
 
-	- Locks : Project mostly uses spinlock. Its waiting strategy ( busy-wait or sleep ) is configurable in code
+	* Locks : Project mostly uses spinlock. Its waiting strategy ( busy-wait, sleep or yield ) is configurable in code
 
-However there are so many more that can be improved , some very obvious ones :
+* However there are so many more that can be improved , some very obvious ones :
 
-	- Object pools : Currently no pooling for FIX message or order object instances
+	* Object pools : Currently no pooling for FIX message or order object instances
 	
-	- Memory allocations : Project could benefit from preallocating everything in critical path.
+	* Memory allocations : Project can benefit from preallocating everything in critical path.
 	
-	- Data oriented design : Currenty order class in order books suffers from cache misses. If the order class is split into core order ( price-side-symbol ) and other order data,	the matching engine would gain a lot of speed by avoiding cache misses
+	* Data oriented design : Currenty order class in order books suffers from cache misses. If the order class is split into core order ( price-side-symbol ) and other order data,	the matching engine would gain a lot of speed by avoiding cache misses
 
 ## <a name="Dependencies">**4. Build and runtime dependencies:** 
 
