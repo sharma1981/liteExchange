@@ -5,16 +5,17 @@
 #include <iostream>
 
 #include <core/string_utility.h>
+#include <core/concurrency/actor.h>
 
 #include <order_matcher/central_order_book.h>
 #include <order_matcher/central_order_book_visitor.h>
 
 
-class CommandLineInterface
+class CommandLineInterface : public core::Actor
 {
     public :
 
-        CommandLineInterface() : m_parentCentralOrderBook{ nullptr }
+        CommandLineInterface() : core::Actor("AdminInterface"), m_parentCentralOrderBook{ nullptr }
         {
 
         }
@@ -24,9 +25,10 @@ class CommandLineInterface
             m_parentCentralOrderBook = parent;
         }
 
-        void run()
+        virtual void* run() override
         {
             displayUsage();
+
             while (true)
             {
                 std::string value;
@@ -43,6 +45,7 @@ class CommandLineInterface
                 else if (value == "quit")
                 {
                     outputMessage("Quit message received");
+                    sendFinishSignal();
                     break;
                 }
                 else
@@ -53,19 +56,13 @@ class CommandLineInterface
 
                 std::cout << std::endl;
             }
+
+            return nullptr;
         }
 
     private :
 
         order_matcher::CentralOrderBook* m_parentCentralOrderBook;
-
-
-        std::string getAllOrderBookAsString()
-        {
-            order_matcher::CentralOrderBookVisitor visitor;
-            m_parentCentralOrderBook->accept(visitor);
-            return visitor.toString();
-        }
 
         void displayUsage()
         {
@@ -75,6 +72,13 @@ class CommandLineInterface
             outputMessage("\tdisplay : Shows all order books in the central order book");
             outputMessage("\tquit : Shutdowns the server");
             outputMessage("");
+        }
+
+        std::string getAllOrderBookAsString()
+        {
+            order_matcher::CentralOrderBookVisitor visitor;
+            m_parentCentralOrderBook->accept(visitor);
+            return visitor.toString();
         }
 
         void outputMessage(const std::string& message)

@@ -1,15 +1,3 @@
-// QUICKFIX
-#include <quickfix/Application.h>
-#include <quickfix/MessageCracker.h>
-#include <quickfix/ThreadedSocketAcceptor.h>
-#include <quickfix/FileStore.h>
-#include <quickfix/SocketInitiator.h>
-#include <quickfix/SessionSettings.h>
-#include <quickfix/Log.h>
-#include <quickfix/Session.h>
-#include <quickfix/Values.h>
-#include <quickfix/fix42/ExecutionReport.h>
-#include <quickfix/fix42/OrderCancelRequest.h>
 // STD
 #include <type_traits>
 #include <functional>
@@ -63,9 +51,21 @@
 #include <netinet/in.h>
 #include <sys/stat.h>
 #include <sys/mman.h>
+#include <sys/select.h>
+#include <sys/epoll.h>
+#include <sys/socket.h>
+#include <arpa/inet.h>
+#include <netinet/tcp.h>
+#include <netdb.h>
+#include <fcntl.h>
+#include <errno.h>
+#include <execinfo.h>
 #endif
 // WINDOWS
 #ifdef _WIN32
+#include <direct.h>
+#include <Ws2tcpip.h>
 #include <windows.h>
 #include <malloc.h>
+#include <Dbghelp.h>
 #endif

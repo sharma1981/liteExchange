@@ -6,10 +6,16 @@ using namespace std;
 #include <core/compiler/likely.h>
 #include <core/stopwatch.h>
 #include <core/string_utility.h>
+#include <core/logger/logger.h>
 using namespace core;
 
 namespace order_matcher
 {
+
+CentralOrderBook::CentralOrderBook() : m_isMatchingMultithreaded{ false }
+{
+    m_orderNumber.store(0);
+}
 
 void CentralOrderBook::accept(Visitor<Order>& v)
 {
@@ -32,8 +38,7 @@ void CentralOrderBook::setSymbols(const std::vector<std::string>& symbols)
 
 void CentralOrderBook::initialiseMultithreadedMatching(core::ThreadPoolArguments& args)
 {
-    m_orderBookThreadPool.attach(m_threadPoolObserver);
-    notify(core::format("Initialising thread pool, work queue size per thread %d", args.m_workQueueSizePerThread) );
+    LOG_INFO("Central Order Book", core::format("Initialising thread pool, work queue size per thread %d", args.m_workQueueSizePerThread).c_str())
 
     m_isMatchingMultithreaded = true;
 
@@ -57,14 +62,15 @@ void CentralOrderBook::initialiseOutgoingMessageQueues(int numberOfThreads, int 
     }
 }
 
-bool CentralOrderBook::addOrder(const Order& order)
+bool CentralOrderBook::addOrder(Order& order)
 {
+    order.setOrderId(++m_orderNumber);
+
     size_t securityId = order.getSecurityId();
     int queueID = m_queueIDDictionary[securityId];
 
     // SEND ACCEPTED MESSAGE TO THE CLIENT
-    notify( core::format("New order accepted, client %s, client order ID %d ", order.getOwner(), order.getClientID()));
-    OutgoingMessage message(order, OutgoingMessageType::ACCEPTED);
+    OutgoingMessage message(order, OrderStatus::ACCEPTED);
     m_outgoingMessages[queueID]->push(message);
 
     if (likely(m_isMatchingMultithreaded))
@@ -81,7 +87,7 @@ bool CentralOrderBook::addOrder(const Order& order)
     return true;
 }
 
-void* CentralOrderBook::taskNewOrder(const Order& order)
+void* CentralOrderBook::taskNewOrder(Order& order)
 {
     StopWatch watch;
     watch.start();
@@ -94,8 +100,6 @@ void* CentralOrderBook::taskNewOrder(const Order& order)
     queue<Order> processedOrders;
     m_orderBookDictionary[securityId].processMatching(processedOrders);
 
-    auto processedOrderNum = processedOrders.size();
-
     // Append messages to outgoing queue
     // to let the clients know whether orders filled or partially filled
     while (processedOrders.size())
@@ -104,31 +108,34 @@ void* CentralOrderBook::taskNewOrder(const Order& order)
         processedOrders.pop();
 
         // SEND FILLED OR PARTIALLY FILLED MESSAGE TO THE CLIENT
-        OutgoingMessage message(order, order.isFilled() ? OutgoingMessageType::FILLED : OutgoingMessageType::PARTIALLY_FIELD);
+        OutgoingMessage message(order, order.isFilled() ? OrderStatus::FILLED : OrderStatus::PARTIALLY_FILLED);
+
+        if (message.getOrder().getOrderStatus() == OrderStatus::FILLED)
+        {
+            LOG_INFO("Central OrderBook", core::format("PUSHING FILLED ORDER TO OUTGOING MESSAGE PROCESSOR, SESSION ID : %d , CLIENT ORDER ID : %s", order.getSessionId(), order.getClientID()).c_str())
+        }
+
         m_outgoingMessages[queueID]->push(message);
     }
 
     ////////////////////////////////////////////////////////////////
     watch.stop();
-    notify(core::format("Order processing for symbol %s took %07ld microseconds , num of processed orders : %d", SecurityManager::getInstance()->getSecurityName(securityId), watch.getElapsedTimeMicroseconds(), processedOrderNum));
     return nullptr;
 }
 
-void CentralOrderBook::rejectOrder(const Order& order, const std::string& message)
+void CentralOrderBook::rejectOrder(Order& order, const std::string& message)
 {
-    notify(core::format("Order being rejected, client %s, client ID %d", order.getOwner(), order.getClientID()));
-    OutgoingMessage outgoingMessage(order, OutgoingMessageType::REJECTED, message);
+    LOG_INFO("Central Order Book", core::format("ORDER BEING REJECTED, SESSION ID : %d , CLIENT ORDER ID : %s", order.getSessionId(), order.getClientID()).c_str())
+    OutgoingMessage outgoingMessage(order, OrderStatus::REJECTED, message);
     size_t securityId = order.getSecurityId();
     int queueID = m_queueIDDictionary[securityId];
     m_outgoingMessages[queueID]->push(outgoingMessage);
 }
 
-void CentralOrderBook::cancelOrder(const Order& order, const std::string& origClientOrderID)
+void CentralOrderBook::cancelOrder(Order& order, const std::string& origClientOrderID)
 {
-    const string& owner = order.getOwner();
+    auto sessionId = order.getSessionId();
     size_t securityId = order.getSecurityId();
-    // NOTIFY THE CLIENT
-    notify(core::format("Order being canceled, client %s, client ID %d", owner, origClientOrderID));
 
     core::Task cancelOrderTask(&CentralOrderBook::taskCancelOrder, this, order, origClientOrderID);
 
@@ -145,25 +152,25 @@ void CentralOrderBook::cancelOrder(const Order& order, const std::string& origCl
     }
 }
 
-void* CentralOrderBook::taskCancelOrder(const Order& order, const std::string& origClientOrderID)
+void* CentralOrderBook::taskCancelOrder(Order& order, const std::string& origClientOrderID)
 {
-    const string& owner = order.getOwner();
+    auto sessionId = order.getSessionId();
     size_t securityId = order.getSecurityId();
     int queueID = m_queueIDDictionary[securityId];
     const OrderSide& side = order.getSide();
     Order* orderBeingCanceled = nullptr;
 
-    if (m_orderBookDictionary[securityId].find(&orderBeingCanceled, owner, origClientOrderID, side) == true)
+    if (m_orderBookDictionary[securityId].find(&orderBeingCanceled, origClientOrderID, sessionId, side) == true)
     {
         orderBeingCanceled->cancel();
-        OutgoingMessage outgoingMessage(*orderBeingCanceled, OutgoingMessageType::CANCELED, "Order canceled");
+        OutgoingMessage outgoingMessage(*orderBeingCanceled, OrderStatus::CANCELED, "Order canceled");
         m_outgoingMessages[queueID]->push(outgoingMessage);
         m_orderBookDictionary[securityId].erase(*orderBeingCanceled);
     }
     else
     {
-        string message = core::format("Order to cancel could not be found, client %s, client ID %d", owner, origClientOrderID);
-        notify(message);
+        string message = core::format("Order to cancel could not be found, client session %d, client ID %d", sessionId, origClientOrderID);
+        LOG_INFO("Central Order Book", message.c_str())
         rejectOrder(order, message);
     }
 

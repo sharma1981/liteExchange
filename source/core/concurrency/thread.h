@@ -12,6 +12,8 @@
 #include <utility>
 #include <string>
 #include <memory>
+#include <vector>
+
 #include <core/noncopyable.h>
 
 #include "thread_priority.h"
@@ -49,6 +51,7 @@ class Thread : public core::NonCopyable
         bool setPriority(ThreadPriority priority);
         ThreadPriority getAssignedPriority() const { return m_priority; }
         int getRealPriority();
+        std::exception_ptr getException() const { return m_task->getException(); }
 
         std::string getName() const { return m_name; }
 
@@ -84,6 +87,8 @@ class Thread : public core::NonCopyable
             }
 #endif
         }
+
+        static std::vector<Thread*> THREADS;
 
     private:
 

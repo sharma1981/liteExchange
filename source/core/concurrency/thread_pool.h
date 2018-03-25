@@ -14,7 +14,6 @@
 #include <core/concurrency/thread.h>
 #include <core/concurrency/thread_wait_strategy.h>
 #include <core/concurrency/thread_pool_arguments.h>
-#include <core/design_patterns/observer.hpp>
 #include <core/concurrency/ring_buffer_spsc_lockfree.hpp>
 
 namespace core
@@ -23,7 +22,7 @@ namespace core
 using ThreadPoolQueue = core::RingBufferSPSCLockFree<core::Task>;
 using ThreadPoolQueuePtr = std::unique_ptr<ThreadPoolQueue>;
 
-class ThreadPool : public core::NonCopyable, public core::Observable<core::ThreadPool>, public YieldWaitStrategy
+class ThreadPool : public core::NonCopyable, public YieldWaitStrategy
 {
     public :
         ThreadPool() : m_numOfThreads(0) { m_isShuttingDown.store(false); }

@@ -4,7 +4,7 @@
 #include <cstddef>
 #include <string>
 #include "order.h"
-#include <core/memory/heap_memory.h>
+#include <core/memory/heap_memory_cache_aligned_allocators.hpp>
 
 namespace order_matcher
 {

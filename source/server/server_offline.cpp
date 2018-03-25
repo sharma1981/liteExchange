@@ -3,6 +3,7 @@
 #include <core/file_utility.h>
 #include <core/string_utility.h>
 #include <core/logger/logger.h>
+#include <core/concurrency/thread.h>
 
 #include <fix/fix_constants.h>
 #include <fix/fix_message.h>
@@ -11,14 +12,17 @@
 
 #include <server/server_constants.h>
 
+#include <exception>
 #include <fstream>
-#include <vector>
 using namespace std;
+using namespace order_matcher;
 
 ServerOffline::ServerOffline(const ServerConfiguration& serverConfiguration) :ServerBase(serverConfiguration)
 {
-    m_outgoingMessageProcessor.setOfflineMode(server_constants::OFFLINE_ORDER_ENTRY_RESULTS_FILE);
+    // INPUT FILE
     m_file = serverConfiguration.getOfflineOrderEntryFile();
+    // OUTPUT FILE
+    m_outgoingMessageProcessor.enableOfflineMode(serverConfiguration.getOfflineOrderEntryOutputFile());
 }
 
 void ServerOffline::loadOrders()
@@ -37,11 +41,11 @@ void ServerOffline::loadOrders()
         auto messageType = fixMessage.getMessageType();
 
         // ORDER MESSAGE TYPE
-        if (messageType == fix::FixConstants::FIX_MESSAGE_NEW_ORDER)
+        if (messageType == fix::FixConstants::MessageType::NEW_ORDER)
         {
             type = IncomingMessageType::NEW_ORDER;
         }
-        else if (messageType == fix::FixConstants::FIX_MESSAGE_CANCEL_ORDER)
+        else if (messageType == fix::FixConstants::MessageType::CANCEL)
         {
             type = IncomingMessageType::CANCEL_ORDER;
         }
@@ -52,21 +56,18 @@ void ServerOffline::loadOrders()
         }
 
         //  SYMBOL
-        string symbol;
-        fixMessage.getTagValue(fix::FixConstants::FIX_TAG_SYMBOL, symbol);
+        string symbol = fixMessage.getTagValue(fix::FixConstants::FIX_TAG_SYMBOL);
         auto securityId = SecurityManager::getInstance()->getSecurityId(symbol);
 
         // ORDER SIDE
-        string side;
-        fixMessage.getTagValue(fix::FixConstants::FIX_TAG_ORDER_SIDE, side);
-        int actualSide = std::stoi(side);
+        auto side = fixMessage.getTagValueAsInt(fix::FixConstants::FIX_TAG_ORDER_SIDE);
         OrderSide orderSide;
 
-        if (actualSide == fix::FixConstants::FIX_ORDER_SIDE_BUY)
+        if (side == fix::FixConstants::FIX_ORDER_SIDE_BUY)
         {
             orderSide = OrderSide::BUY;
         }
-        else if (actualSide == fix::FixConstants::FIX_ORDER_SIDE_SELL)
+        else if (side == fix::FixConstants::FIX_ORDER_SIDE_SELL)
         {
             orderSide = OrderSide::SELL;
         }
@@ -77,16 +78,12 @@ void ServerOffline::loadOrders()
         }
 
         // PRICE
-        string tempPrice;
-        fixMessage.getTagValue(fix::FixConstants::FIX_TAG_ORDER_PRICE, tempPrice);
-        double price = std::stod(tempPrice);
+        double price = fixMessage.getTagValueAsDouble(fix::FixConstants::FIX_TAG_ORDER_PRICE);
 
         // QUANTITY
-        string tempQuantity;
-        fixMessage.getTagValue(fix::FixConstants::FIX_TAG_ORDER_QUANTITY, tempQuantity);
-        long quantity = std::stol(tempQuantity);
+        auto quantity = fixMessage.getTagValueAsLong(fix::FixConstants::FIX_TAG_ORDER_QUANTITY);
 
-        Order order("", securityId, "", "", orderSide, OrderType::LIMIT, price, quantity);
+        Order order(0, "", securityId, 0, orderSide, OrderType::LIMIT, price, quantity);
         IncomingMessage message(order, type);
         m_orders.emplace_back(message);
     }
@@ -95,6 +92,7 @@ void ServerOffline::loadOrders()
 
 void ServerOffline::run()
 {
+    m_commandLineInterface.start();
     loadOrders();
 
     LOG_INFO("Offline Server", "Loaded all orders into memory")
@@ -106,5 +104,22 @@ void ServerOffline::run()
 
     LOG_INFO("Offline Server", "Submitted all orders to the central order book")
 
-    m_commandLineInterface.run();
+    while (true)
+    {
+        // Exit if interface returns false , it means we are exiting
+        if (m_commandLineInterface.isFinishing())
+        {
+            break;
+        }
+
+        for (auto& thread : core::Thread::THREADS)
+        {
+            auto threadException = thread->getException();
+            if (threadException)
+            {
+                LOG_ERROR("Offline Server", "Unhandled exception in thread : " + thread->getName())
+                    std::rethrow_exception(threadException);
+            }
+        }
+    }
 }

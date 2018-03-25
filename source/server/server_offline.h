@@ -12,7 +12,7 @@ class ServerOffline : public ServerBase
 {
     public :
         explicit ServerOffline(const ServerConfiguration& serverConfiguration);
-        void run() override;
+        virtual void run() override;
 
     private :
         void loadOrders();

@@ -36,8 +36,8 @@ class Lock : public BaseLock
 {
     public :
 
-        Lock(const std::string lockName, unsigned long spinCount)
-        : BaseLock(lockName), m_spinCount{ spinCount }, m_lockType(LockType::DEFAULT), m_robustness{false}
+        Lock(unsigned long spinCount)
+        : m_spinCount{ spinCount }, m_lockType(LockType::DEFAULT), m_robustness{false}
         {
             assert(m_spinCount > 0);
 #ifdef __linux__
@@ -47,11 +47,7 @@ class Lock : public BaseLock
 #endif
         }
 
-        Lock() : Lock("", BaseLock::DEFAULT_SPIN_COUNT) // CPP11 Constructor delegation
-        {
-        }
-
-        explicit Lock(const std::string lockName) : Lock(lockName, DEFAULT_SPIN_COUNT) // CPP11 Constructor delegation
+        Lock() : Lock(BaseLock::DEFAULT_SPIN_COUNT) // CPP11 Constructor delegation
         {
         }
 

@@ -3,8 +3,7 @@
 
 #include <core/memory/virtual_memory.h>
 
-#ifdef __linux__
-#elif _WIN32
+#ifdef _WIN32
 #include <windows.h>
 #endif
 

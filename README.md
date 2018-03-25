@@ -4,110 +4,123 @@
 
 * Sections
 	* [1. Introduction and features](#Introduction)
-    * [2. Overview of multithreading system](#Overview)
-    * [3. Build dependencies](#BuildDependencies)
-	* [4. Runtime dependencies](#RuntimeDependencies)
+    * [2. Overview of architecture and multithreading system](#Overview)
+	* [3. Low latency features and how it can be improved] (#LowLatency)
+    * [4. Build and runtime dependencies](#Dependencies)
 	* [5. How to build](#HowToBuild)
-	* [6. Server parameters and running the server](#ServerParams)
+	* [6. Configuring and running the server](#Configuration)
 	* [7. Offline order entry mode](#OfflineOrderEntry)
-	* [8. Example log messages with FIX ](#ExampleLog)
-	* [9. Functional testing / FIX client automations](#FunctionalTesting)
-	* [10. Unit testing with GoogleTest](#UnitTesting)
-	* [11. Utility scripts](#UtilityScripts)
-	* [12. Coding and other guidelines](#CodingGuideline)
+	* [8. Test harness / FIX client automations](#TestHarness)
+	* [9. Unit tests](#UnitTesting)
+	* [10. Utility scripts](#UtilityScripts)
+	* [11. Coding and other guidelines](#CodingGuideline)
+	* [12. Code structure](#CodeStructure)
 	* [13. Continous integration](#ContinousIntegration)
           
 ## <a name="Introduction"></a>**1. Introduction:** 
-A multithreaded order matching engine written in C++11 using FIX protocol. For limit orders and matching engines , see https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/documentation/README_Orders_MatchingEngines.md
+It is a cross platform (Linux/Windows) multithreaded order matching engine written in C++11 using FIX protocol. 
+
+Currently supports only limit orders. For limit orders and matching engines , see https://money.stackexchange.com/questions/15156/how-do-exchanges-match-limit-orders
 
 For FIX protocol , see https://en.wikipedia.org/wiki/Financial_Information_eXchange
 
-Features can be seen in the table below :
+It does not use any 3rd party libraries and uses its own concurrency and network/FIX libraries. It also comes with own FIX client automation test harnesses writtten in stock Python and Powershell.
+
+Its core libraries such as concurrency and networking is designed to be as configurable as possible for low latency purposes. 
+
+Some features can be seen in the table below :
 
 | Feature                       | Details                                               |
 | ----------------------------- |:-----------------------------------------------------:|
-| Order entry					| FIX 4.2, offline mode with files with FIX messages    |
+| FIX order entry				| Using version agnostic custom FIX library			    |
+| Order entry from FIX files	| Providing that mode for debug/dev purposes			|
 | Order types                   | Limit                                                 |
 | Order message types           | NewOrder, Cancel                                      |
 | Exec report types			    | Accepted, Filled, PartiallyFilled, Rejected, Canceled |
 | TIF                           | Not supported       			                        |
-| Symbology                     | No validation, examples use RIC codes                 |
+| Symbology                     | Uses tag 55, no validations ,examples use RIC codes   |
+| FIX Admin messages			| Responds to heartbeats and test requests (35=1)       |
 
 Technical implementation details are as below : 
 
 | Feature               | Details                                                       |
 | ----------------------|:-------------------------------------------------------------:|
-| OS                    | Windows ( tested on 8.1), Linux ( tested on Ubuntu and CentOS)|
+| OS                    | Linux ( tested on Ubuntu and CentOS ),Windows ( tested on 10 )|
 | C++                   | C++11                                                         |
-| C++ Compiler Support  | GCC4.8 and MSVC120 (VS2013)									|
-| C++ Libraries         | STD, STL, QuickFix			                                |
+| C++ Compiler Support  | GCC4.8 and MSVC 141 (VS2017)									|
+| C++ Libraries         | STD, STL						                                |
 | C++ Platform APIs     | GNU LibC, POSIX, some POSIX NP ,WinAPI, MS CRT                |
-| IDE projects provided | Netbeans for Linux, VS2013 for Windows 						|
-
-Watch server when working :
-
-<a href="https://asciinema.org/a/929cs0jcbso3g7v7b3cd6g82f" target="_blank"><img src="https://asciinema.org/a/929cs0jcbso3g7v7b3cd6g82f.png" width="589"/></a>
-
-
-Client test automation when working :
-
-<a href="https://asciinema.org/a/29km7ksm8ylrne24zkv9ripxu" target="_blank"><img src="https://asciinema.org/a/29km7ksm8ylrne24zkv9ripxu.png" width="589"/></a>
+| Build systems         | Makefile, VSCode and VisualStudio2017 for Linux and Windows	|
                         
 
-## <a name="Overview">**2. Overview of multithreading system:** 
+## <a name="Overview">**2. Overview of architecture and multithreading system:** 
 
-The engine currently is using :
+Its architecture overview is as below :
 
-* A thread class which you can set stack size, set OS priority and set names for debugging
-* A thread pool with ability to pin threads to CPU cores and avoid hyperthreading
-* 1 lock free SPSC ring buffer
-* Other fine grained lock based ring buffer and queues
-* Actor pattern
-* Also the engine currently makes use of a set of CPU cache aligned allocators for memory allocations in order to avoid false sharing : https://github.com/akhin/cpp_multithreaded_order_matching_engine/tree/master/source/core/memory
+<p align="center">  
+<img src="https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/images/ome_architecture.png">       
+</p>
 
-For detailed low level implementation details please see https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/documentation/README_MultithreadingImplementationDetails.md
+The core of order matching layer is called the central order book, which keeps order books per security symbol.
 
-The core of order matching layer is called a central order book, which keeps order books per security symbol. Each order book has a table for bids and another table for asks.
+1. Main thread is a single-thread epoll FIX server which passes orders to the central order book`s SPSC lockfree queues per symbol
+2. Central order book uses a thread pool , processes messages and pushes results to SPSC queues of outgoing message processor per symbol.
+3. Outgoing message procesor sends execution reports to the FIX clients.
 
-1. The FIX engine will listen for session requests from the clients, and if a session is established then it listens for incoming ask/bid orders. If the order type is not supported, it sends “rejected” message. Otherwise the message will be submitted to an incoming message dispatcher which is a fine grained MPSC unbounded queue. ( The main reason being for MPSC here is the FIX engine being used is multithreaded and the worker queues in the thread pool are SPSC by design ) The incoming message dispatcher will submit messages to the central order book.
+Please note that FIX library is not a full implemenatation. It does minimal validations. The only validations done are sequence number checks 
+and required tags.
 
-2. Central Order book has a thread pool :
+## <a name="LowLatency">**3. Low latency features and how it can be improved:** 
 
-	* The thread pool will have N lockfree SPSC queues for N threads ( N = num of symbol ). The thread pool  also has the ability to pin threads to CPU cores. And based on configuration it can also avoid hyperthreading/logical processors by pinning threads only to CPU cores with even indexes.
+Non-configurable low latency features are as below : 
 
-	* Central Order book also has N lockfree SPSC queues for outgoing messages.
+	Network IO model : Using Epoll to avoid context switching costs
 
-	* When a new message arrives ( new order, or cancel ) from the incoming message dispatcher, it will be submitted to corresponding thread`s queue in the thread pool of the central order book.
+	Memory allocations : Allocations in critical path are aligned to CPU cache line size.
+	
+	Logger : Logger uses memory mapped file/shared memory
+	
+	Lockfree thread safe containers : It uses bounded SPSC lockfree. Currently only logger uses a lock based MPMC unbounded queue.
 
-3. Each thread in the thread pool will get message from their SPSC queue in the thread pool , and add them to corresponding order queue which is used by only itself and eventually trigger the order matching process for that queue. At the end of the order matching , worker threads will submit messages ( FILLED or PARTIALLY FILLED ) to the corresponding outgoing messages queues.
+The project has some configurable low latency features :
 
-4. Outgoing message processor will process messages from lockfree SPSC queues of central order book  and send responses back to the clients.
+	TCP sockets : socket buffer sizes, Nagle algorithm , TCP quick ack
+	
+	TCP Epoll settings : Max number of events , epoll timeout
+	
+	Threads : You can pin each thread to CPU , set thread stack size and specify OS-level thread priority
 
-## <a name="BuildDependencies">**3. Build dependencies:** 
+	Locks : Project mostly uses spinlock. Its waiting strategy ( busy-wait or sleep ) is configurable in code
 
-For Linux , the project is built and tested with GCC4.8 only on CentOS7. 
+However there are so many more that can be improved , some very obvious ones :
 
-As for Windows it is using MSVC1200(VS2013). An important note about VS2013 , its version shouldn`t be later then Update2 as the project is using C++11 curly brace initialisation in MILs and MSVC rollbacked that feature starting from Update3 :
+	Object pools : Currently no pooling for FIX message or order object instances
+	
+	Memory allocations : Project could benefit from preallocating everything in critical path.
+	
+	Data oriented design : Currenty order class in order books suffers from cache misses. If the order class is split into core order ( price-side-symbol ) and other order data,
+	the matching engine would gain a lot of speed by avoiding cache misses
 
-https://connect.microsoft.com/VisualStudio/feedbackdetail/view/938122/list-initialization-inside-member-initializer-list-or-non-static-data-member-initializer-is-not-implemented
+## <a name="Dependencies">**4. Build and runtime dependencies:** 
 
-In the libraries side :
+For Linux , the project is built and tested with GCC4.8 on CentOS7 and Ubuntu. 
 
-- QuickFix & its requirements : For Windows you don`t need to do anything as the static library for Windows is already in dependencies directory. For Linux you need to apply the steps on http://www.quickfixengine.org/quickfix/doc/html/install.html
+For running on Linux , make sure you have GNU Libstd C++ 6 runtime in your Linux distribution
+	
+		CentOS : 	First find out package name for your architecture
+		
+						yum whatprovides libstdc++.so.6
+				
+					Then yum install the package you found
+		
+		Ubuntu :	sudo apt-get install libstdc++6
 
-## <a name="RuntimeDependencies">**4. Runtime dependencies:** 
+As for Windows you can build with MSVC141(VS2017).
 
-For Windows, you need MSVC120 runtime. You can find them in the same directory with executables : bin
+For running on Windows , you need to install MSVC141 ( VS2017 ) C++ runtime :
 
-For Linux, you need GNU Libstd C++ 6 runtime and QuickFIX runtime.
-
-How to install Quickfix runtime on Linux ( tested on Ubuntu ) :
-
-        1. Navigate to dependencies/quickfix/linux_runtime
-        2. sudo chmod +x ./install_quickfix_runtime.sh
-        3. sudo ./install_quickfix_runtime.sh
-        
-Note : This script will copy shared object to library path, create soft links, will add library path to /etc/ld.so.conf and finally execute ldconfig.
+	Go to https://support.microsoft.com/en-gb/help/2977003/the-latest-supported-visual-c-downloads
+	Download and install VS2017 x86 version
 
 ## <a name="HowToBuild">**5. How to build:**
             
@@ -119,31 +132,77 @@ How to build the project on Linux :
     or if you want to make a parallel build :
     ./build_in_parallel.sh release
 
-How to build the project on Linux using Netbeans 8.0.2 C++ IDE:
+How to debug the project on Linux using VisualStudio code: Build the project for debug mode and open the source directory and VisualStudioCode. Source directory provides a launch.json supporting GCC on Linux and MSVC on Windows. Therefore choose GDB in VSCode debug options before starting debugging and then press F5.
 
-    Open Netbeans.
-    Open the project from the project directory. ( Choose "nbproject" directory )
-    Build the project inside Netbeans IDE.
+How to build the project on Linux from Windows with Visual Studio  : You will need to install Linux C++ feature during VS2017 installation. Then after making sure that your Linux has SSH, you will need your Linux machine SSH details to your Visual Studio. After that you will be able to build and debug on remote Linux. For details please see https://nativecoding.wordpress.com/2018/02/24/visual-studio-for-existing-remote-linux-c-projects/
 
-Why Netbeans : In Netbeans, it is too straightforward to setup remote debugging, therefore it is quite convenient to build and debug on Linux from Windows via SSH and Samba. You can see an article about this setup here in my blog. It is for Debian but it should be trivial to apply it to any other distribution : https://nativecoding.wordpress.com/2014/10/24/configuring-a-debian-virtual-machine-for-linux-c-development-via-windows-step-by-step/
-    
 How to build the project on Windows with Visual Studio  :
     
-    You can build with Visual Studio 2013
+    You can build with Visual Studio 2017
     Go to "build/windows_msvc_visual_studio" directory
     Use SLN file to launch VS with the project
     
 How to build the project on Windows with Visual Studio in command line :
     
-    You can build with Visual Studio 2013
+    You can build with Visual Studio 2017
     Go to "build/windows_msvc_command_line" directory
     Execute one of batch files : build_debug.bat or build_release.bat
 
-## <a name="ServerParams">**6. Server parameters and running the server :** 
+## <a name="Configuration">**6. Configuring and running the server :** 
 
-The engine executable looks for "ome.ini" file. Here is the list of things you can set :
+The engine executable looks for "ome.ini" file. There is a few categories of configuration parameters.
 
-| Ini setting           							| Functionality                                                 |
+
+| General and order entry mode						| Description                                                   |
+| --------------------------------------------------|:-------------------------------------------------------------:|
+| PROCESS_PRIORITY         							| Sets OS level priority of the main process                    |
+| ORDER_ENTRY_MODE									| It is either FIX or Offline									|
+| OFFLINE_ORDER_ENTRY_FILE							| If offline order entry mode , engine uses this file as input	|
+| OFFLINE_ORDER_ENTRY_OUTPUT_FILE					| If offline order entry mode , engine uses this file as output |
+
+
+| FIX server TCP settings  							| Description                                                   |
+| --------------------------------------------------|:-------------------------------------------------------------:|
+| TCP_DISABLE_NAGLE									| Disables Nagle algorithm					                    |
+| TCP_QUICK_ACK	        							| Enables quick ack , applies to Linux only						|
+| TCP_PENDING_CONNECTION_SIZE         				| Used by TCP connection acceptor 								|
+| TCP_SOCKET_OPTION_SEND_BUFFER_SIZE     			| Send buffer size for all sockets				       	        |
+| TCP_SOCKET_OPTION_RECV_BUFFER_SIZE         		| Receive buffer size for all sockets		                    |
+| TCP_POLL_TIMEOUT_MICROSECONDS         			| Epoll timeout	( select in Windows)	                        |
+| TCP_POLL_MAX_EVENTS         						| Epoll max number of events , applies only to Linux            |
+
+
+| FIX server settings      							| Description                                                   |
+| --------------------------------------------------|:-------------------------------------------------------------:|
+| FIX_SERVER_COMP_ID								| Sender compid for FIX server                     				|
+| FIX_SERVER_ADDRESS	        					| Address to bind												|
+| FIX_SERVER_PORT         							| Port to bind													|
+| FIX_SERVER_SEQUENCE_NUMBER_VALIDATION			    | Can be turned off for rapid development						|
+| FIX_SERVER_TIME_PRECISION     					| Applies to tag52 and tag60 : seconds,milliseconds,microseconds|
+| FIX_RECEIVE_CACHE_SIZE         					| Size of TCP receive buffer cache			                    |
+| REACTOR_THREAD_CPU_ID         					| If non -1, FIX server thread will be pinned to CPU            |
+| REACTOR_THREAD_PRIORITY         					| Os-level thread priority of FIX server thread                 |
+| REACTOR_THREAD_STACK_SIZE        					| Thread stack size of FIX server thread	                    |
+
+| Central order book settings    					| Description                                                   |
+| --------------------------------------------------|:-------------------------------------------------------------:|
+| CENTRAL_ORDER_BOOK_MULTITHREADED_ORDER_MATCHING	| Toggles multithreading for order matching                     |
+| CENTRAL_ORDER_BOOK_PIN_THREADS_TO_CORES	        | Whether to pin threads of the threadpool to CPU cores			|
+| CENTRAL_ORDER_BOOK_HYPER_THREADING         		| If hyperthreading is off it will use cores with an even index |
+| CENTRAL_ORDER_BOOK_WORK_QUEUE_SIZE_PER_THREAD     | Queue size per worker thread in the thread pool               |
+| CENTRAL_ORDER_BOOK_THREAD_PRIORITY         		| OS-level priority of thread pool threads                      |
+| CENTRAL_ORDER_BOOK_THREAD_STACK_SIZE         		| Stack size for thread pool threads                            |
+
+
+| Outgoing message processor settings    			| Description                                                   |
+| --------------------------------------------------|:-------------------------------------------------------------:|
+| OUTGOING_MESSAGE_QUEUE_SIZE_PER_THREAD     		| Queue size per worker thread for outgoing messages            |
+| OUTGOING_MESSAGE_PROCESSOR_THREAD_PRIORITY     	| OS-level priority of outgoing message processor thread        |
+| OUTGOING_MESSAGE_PROCESSOR_CPU_ID     			| If non -1 , outgoing message processor thread will be pinned  |
+| OUTGOING_MESSAGE_PROCESSOR_THREAD_STACK_SIZE     	| Thread stack size of outgoing message processor thread        |
+
+
+| Logger settings          							| Description                                                   |
 | --------------------------------------------------|:-------------------------------------------------------------:|
 | LOGGER_BUFFER_SIZE 								| Maximum buffer size for the logging ring buffer				|
 | LOGGER_WRITE_PERIOD_MILLISECONDS 					| Logging period in milliseconds								|
@@ -151,17 +210,8 @@ The engine executable looks for "ome.ini" file. Here is the list of things you c
 | LOGGER_ROTATION_SIZE_IN_BYTES      				| Log rotation size in bytes						 			|
 | LOGGER_LOG_LEVEL									| Log level, supported values : ERROR WARNING INFO				|
 | LOGGER_COPY_TO_STDOUT   							| If enabled all logs will be printed in console	            |
-| SINGLE_INSTANCE_TCP_PORT  						| Port used in single instance check , applies to Linux only    |
-| PROCESS_PRIORITY         							| Sets OS level priority of the main process                    |
-| CENTRAL_ORDER_BOOK_MULTITHREADED_ORDER_MATCHING	| Toggles multithreading for order matching                     |
-| CENTRAL_ORDER_BOOK_PIN_THREADS_TO_CORES	        | Whether to pin threads of the threadpool to CPU cores			|
-| CENTRAL_ORDER_BOOK_HYPER_THREADING         		| If hyperthreading is off it will use cores with an even index |
-| CENTRAL_ORDER_BOOK_WORK_QUEUE_SIZE_PER_THREAD     | Queue size per worker thread in the thread pool               |
-| CENTRAL_ORDER_BOOK_THREAD_PRIORITY         		| OS-level priority of thread pool threads                      |
-| CENTRAL_ORDER_BOOK_THREAD_STACK_SIZE         		| Stack size for thread pool threads                            |
-| OUTGOING_MESSAGE_QUEUE_SIZE_PER_THREAD     		| Queue size per worker thread for outgoing messages            |
-| OFFLINE_ORDER_ENTRY_FILE							| Offline order entry mode see below for details 				|
-        
+
+
 You will also need to specify security symbols. The order matching engine`s thread pool will create a worker thread for each symbol.
 For specifying symbols in ini file, you need to use brackets as  below :
 
@@ -170,8 +220,6 @@ For specifying symbols in ini file, you need to use brackets as  below :
         SYMBOL[]=INTC
         SYMBOL[]=GOOGL
         
-You will also need to have "quickfix_FIX42.xml" and "quickfix_server.cfg" files to be in the same directory with OME executable. You can find them in "bin" directory.
-
 Once you start the ome executable , initially you will see a screen like this :
 
         06-02-2016 16:22:00 : INFO , Main thread , starting
@@ -204,9 +252,11 @@ Once you start the ome executable , initially you will see a screen like this :
 
 The default mode is FIX server mode. However, if you specify an order file in ome.ini as below :
 
-					OFFLINE_ORDER_ENTRY_FILE=orders.txt
+					ORDER_ENTRY_MODE=OFFLINE
+					OFFLINE_ORDER_ENTRY_FILE=sample_offline_order_file.txt
+					OFFLINE_ORDER_ENTRY_OUTPUT_FILE=offline_order_entry_output.txt
 					
-Then the order matcher will process all the orders in that file bypassing FIX protocol and produce offline_order_entry_results.txt as result file.
+Then the order matcher will process all the orders in that file bypassing FIX protocol and produce offline_order_entry_output.txt as result file.
 For an example offline order file see :
 
 https://github.com/akhin/multithreaded_order_matching_engine/blob/master/bin/sample_offline_order_file.txt
@@ -223,46 +273,9 @@ The output of offline order matching will have timestamps with microsecond preci
 		8=FIX.4.29=7835=86=111=14=117=320=031=132=137=38=139=254=155=GOOGL150=2151=010=173
 		16-09-2017 03:12:27.777489
 			
+## <a name="TestHarness">**8. Test harness / Fix client automations:** 
 
-## <a name="ExampleLog">**8. Example log message from the engine:** 
-
-The engine produces log messages below when it receives 1 buy order with quantity 1 and 1 sell order with quantity 1 for the same symbol :
-
-    06-02-2016 20:16:09 : INFO , FIX Engine , New logon , session ID : FIX.4.2:OME->TEST_CLIENT1
-    06-02-2016 20:16:09 : INFO , FIX Engine , Sending fix message : 8=FIX.4.29=15435=834=543=Y49=OME52=20160206-20:16:09.29556=TEST_CLIENT1122=20160206-20:15:03.9556=011=414=017=1820=037=438=139=054=155=MSFT150=0151=110=000
-    06-02-2016 20:16:09 : INFO , FIX Engine , Sending fix message : 8=FIX.4.29=15535=834=643=Y49=OME52=20160206-20:16:09.29556=TEST_CLIENT1122=20160206-20:15:03.9556=011=514=017=1920=037=538=239=054=255=GOOGL150=0151=210=070
-    06-02-2016 20:16:09 : INFO , FIX Engine , Sending fix message : 8=FIX.4.29=15535=834=743=Y49=OME52=20160206-20:16:09.29556=TEST_CLIENT1122=20160206-20:15:03.9716=011=614=017=2020=037=638=139=054=155=GOOGL150=0151=110=060
-    06-02-2016 20:16:09 : INFO , FIX Engine , Sending fix message : 8=FIX.4.29=16435=834=843=Y49=OME52=20160206-20:16:09.29556=TEST_CLIENT1122=20160206-20:15:03.9716=111=414=117=2120=031=132=137=438=139=254=155=MSFT150=2151=010=168
-    06-02-2016 20:16:09 : INFO , FIX Engine , Sending fix message : 8=FIX.4.29=16435=834=943=Y49=OME52=20160206-20:16:09.29556=TEST_CLIENT1122=20160206-20:15:03.9716=111=314=117=2220=031=132=137=338=139=254=255=MSFT150=2151=010=169
-    06-02-2016 20:16:09 : INFO , FIX Engine , Sending fix message : 8=FIX.4.29=15635=834=1043=Y49=OME52=20160206-20:16:09.29556=TEST_CLIENT1122=20160206-20:15:03.9716=011=714=017=2320=037=738=139=054=155=GOOGL150=0151=110=108
-    06-02-2016 20:16:09 : INFO , FIX Engine , Sending fix message : 8=FIX.4.29=15435=834=1143=Y49=OME52=20160206-20:16:09.29556=TEST_CLIENT1122=20160206-20:15:03.9716=011=814=017=2420=037=838=139=854=155=xxx150=8151=110=110
-    06-02-2016 20:16:09 : INFO , FIX Engine , Sending fix message : 8=FIX.4.29=16635=834=1243=Y49=OME52=20160206-20:16:09.29556=TEST_CLIENT1122=20160206-20:15:03.9716=111=614=117=2520=031=132=137=638=139=254=155=GOOGL150=2151=010=027
-    06-02-2016 20:16:09 : INFO , FIX Engine , Sending fix message : 8=FIX.4.29=16635=834=1343=Y49=OME52=20160206-20:16:09.29556=TEST_CLIENT1122=20160206-20:15:03.9716=111=514=117=2620=031=132=137=538=239=154=255=GOOGL150=1151=110=028
-    06-02-2016 20:16:09 : INFO , FIX Engine , Sending fix message : 8=FIX.4.29=16635=834=1443=Y49=OME52=20160206-20:16:09.29556=TEST_CLIENT1122=20160206-20:15:03.9716=111=714=117=2720=031=132=137=738=139=254=155=GOOGL150=2151=010=033
-    06-02-2016 20:16:09 : INFO , FIX Engine , Sending fix message : 8=FIX.4.29=16635=834=1543=Y49=OME52=20160206-20:16:09.29556=TEST_CLIENT1122=20160206-20:15:03.9716=111=514=217=2820=031=132=137=538=239=254=255=GOOGL150=2151=010=034
-    06-02-2016 20:16:09 : INFO , FIX Engine , Receiving fix message : 8=FIX.4.29=12335=D34=1549=TEST_CLIENT152=20160206-20:16:09.34256=OME11=121=138=140=244=154=255=MSFT59=060=20160206-20:16:0910=124
-    06-02-2016 20:16:09 : INFO , FIX Engine , New order message received :8=FIX.4.29=12335=D34=1549=TEST_CLIENT152=20160206-20:16:09.34256=OME11=121=138=140=244=154=255=MSFT59=060=20160206-20:16:0910=124
-    06-02-2016 20:16:09 : INFO , Central Order Book , New order accepted, client TEST_CLIENT1, client order ID 1 
-    06-02-2016 20:16:09 : INFO , Outgoing message processor , Processing ACCEPTED for order : Client TEST_CLIENT1 Client ID 1 Symbol MSFT Side SELL 
-    06-02-2016 20:16:09 : INFO , Thread pool , MSFT thread got a new task to execute
-    06-02-2016 20:16:09 : INFO , FIX Engine , Sending fix message : 8=FIX.4.29=12535=834=2349=OME52=20160206-20:16:09.34256=TEST_CLIENT16=011=114=017=11320=037=138=139=054=255=MSFT150=0151=110=079
-    06-02-2016 20:16:09 : INFO , Central Order Book , Order processing for symbol MSFT took 0000000 milliseconds , num of processed orders : 0
-    06-02-2016 20:16:09 : INFO , FIX Engine , Receiving fix message : 8=FIX.4.29=12335=D34=1649=TEST_CLIENT152=20160206-20:16:09.34256=OME11=221=138=140=244=154=155=MSFT59=060=20160206-20:16:0910=125
-    06-02-2016 20:16:09 : INFO , FIX Engine , New order message received :8=FIX.4.29=12335=D34=1649=TEST_CLIENT152=20160206-20:16:09.34256=OME11=221=138=140=244=154=155=MSFT59=060=20160206-20:16:0910=125
-    06-02-2016 20:16:09 : INFO , Central Order Book , New order accepted, client TEST_CLIENT1, client order ID 2 
-    06-02-2016 20:16:09 : INFO , Outgoing message processor , Processing ACCEPTED for order : Client TEST_CLIENT1 Client ID 2 Symbol MSFT Side BUY 
-    06-02-2016 20:16:09 : INFO , Thread pool , MSFT thread got a new task to execute
-    06-02-2016 20:16:09 : INFO , FIX Engine , Sending fix message : 8=FIX.4.29=12535=834=2449=OME52=20160206-20:16:09.34256=TEST_CLIENT16=011=214=017=11420=037=238=139=054=155=MSFT150=0151=110=082
-    06-02-2016 20:16:09 : INFO , Central Order Book , Order processing for symbol MSFT took 0000000 milliseconds , num of processed orders : 2
-    06-02-2016 20:16:09 : INFO , Outgoing message processor , Processing FILLED for order : Client TEST_CLIENT1 Client ID 2 Symbol MSFT Side BUY 
-    06-02-2016 20:16:09 : INFO , FIX Engine , Sending fix message : 8=FIX.4.29=13535=834=2549=OME52=20160206-20:16:09.34256=TEST_CLIENT16=111=214=117=11520=031=132=137=238=139=254=155=MSFT150=2151=010=001
-    06-02-2016 20:16:09 : INFO , Outgoing message processor , Processing FILLED for order : Client TEST_CLIENT1 Client ID 1 Symbol MSFT Side SELL 
-    06-02-2016 20:16:09 : INFO , FIX Engine , Sending fix message : 8=FIX.4.29=13535=834=2649=OME52=20160206-20:16:09.34256=TEST_CLIENT16=111=114=117=11620=031=132=137=138=139=254=255=MSFT150=2151=010=002
-    06-02-2016 20:16:11 : INFO , FIX Engine , Logout , session ID : FIX.4.2:OME->TEST_CLIENT1
-
-## <a name="FunctionalTesting">**9. Functional testing / Fix client automations:** 
-
-Under "test_functional" directory :
+Under "test_harness" directory :
 
 For Linux, the project has a Python script which can send orders from FIX files using Fix protocol.
 
@@ -273,7 +286,7 @@ For Linux, the project has a Python script which can send orders from FIX files 
 3. You can set automation parameters in the commandline :
         
 <p align="center">  
-<img src="https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/documentation/testfunctional_linux.png">       
+<img src="https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/images/testfunctional_linux.png">       
 </p>
 
    
@@ -289,21 +302,20 @@ It internally uses C# to implement FIX protocol.
 4. Press the start button.
         
 <p align="center">  
-<img src="https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/documentation/testfunctional_gui_windows.png">       
+<img src="https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/images/testfunctional_gui_windows.png">       
 </p>
             
-## <a name="UnitTesting">**10. Unit testing with GoogleTest:** 
+## <a name="UnitTesting">**9. Unit testing :** 
 
-The project uses GoogleTest 1.7. You can find a makefile and vcproj under "test_unit" directory.
+The project uses GoogleTest 1.7. You can find a makefile and vcproj under "unit_test" directory.
     
-Building and running unit test on Linux : You can either use Makefile or Netbeans project files under "test_unit" directory.
+Building and running unit test on Linux : You can either use Makefile or Netbeans project files under "unit_test" directory.
 
-Building and running unit test on Windows : You can use VisualStudio solution in "test_unit" directory.
+Building and running unit test on Windows : You can use VisualStudio solution in "unit_test" directory.
 
-## <a name="UtilityScripts">**11. Utility scripts:**
+## <a name="UtilityScripts">**10. Utility scripts:**
 
 You can find them under "utility_scripts" directory :
-
 
 | Script		           			| Functionality		                                                 			|
 | ----------------------------------|:-----------------------------------------------------------------------------:|
@@ -319,13 +331,8 @@ You can find them under "utility_scripts" directory :
 | valgrind_hellgrind.sh				| runs Valgrind concurrency analysis						             		|
 | valgrind_cachegrind.sh			| runs Valgrind CPU cache usage analysis					             		|
     
-Viewing tcpdump captures with Wireshark :
 
-<p align="center">      
-<img src="https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/documentation/wireshark_fix.png">
-</p>
-
-## <a name="CodingGuideline">**12. Coding and other guidelines:**
+## <a name="CodingGuideline">**11. Coding and other guidelines:**
 
 Source code and file/directory naming conventions :
 
@@ -368,9 +375,23 @@ For Linux , there is pch rule to enable it in the makefile ( build/linux/Makefil
 
 For GCC see https://gcc.gnu.org/onlinedocs/gcc/Precompiled-Headers.html
 
-For MSVC 120 see https://msdn.microsoft.com/en-us/library/8c5ztk84(v=vs.120).aspx
+For MSVC see https://msdn.microsoft.com/en-us/library/8c5ztk84(v=vs.140).aspx
 
-MSVC120 C++11 Limitations : Curly brace initialisation at MILs and noexcept is not supported. For noexcept usage please see compiler_portability/noexcept.h .
+## <a name="CodeStructure">**12. Code structure:**
+
+It is as below :
+
+<p align="center">  
+<img src="https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/images/code_structure.png">       
+</p>
+
+core: It is the core library. Has subdirectories such as as network, concurrency etc
+
+fix : It mainly uses core/network and core/concurrency. It is the FIX implemenatation
+
+order_matcher : Order matcher layer is the heart of project. It knows nothing about FIX protocol but has its own order,  incoming message and outgoing message classes.
+
+server : This layer is the layer that uses FIX layer to receive FIX orders and submit to the central order book in the order matcher layer. Then it receives results from the central order book and sends them to the outgoing message processor.
 
 ## <a name="ContinousIntegration">**13. Continous integration:**
 

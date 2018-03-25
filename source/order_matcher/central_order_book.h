@@ -5,6 +5,7 @@
 #include "order_book.h"
 #include "outgoing_message.h"
 
+#include <atomic>
 #include <vector>
 #include <string>
 #include <queue>
@@ -18,25 +19,21 @@
 
 #include <core/concurrency/thread_pool.h>
 #include <core/design_patterns/visitor.hpp>
-#include <core/design_patterns/observer.hpp>
-
-#include <core/concurrency/thread_pool_observer.h>
 
 namespace order_matcher
 {
 
 using OutgoingMessageQueue = std::vector<std::unique_ptr<core::RingBufferSPSCLockFree<OutgoingMessage>>>;
 
-class CentralOrderBook : public core::NonCopyable, public core::Visitable<Order>, public core::Observable<CentralOrderBook>
+class CentralOrderBook : public core::NonCopyable, public core::Visitable<Order>
 {
     public:
-        CentralOrderBook() : m_isMatchingMultithreaded{ false } {}
+        CentralOrderBook();
 
         ~CentralOrderBook()
         {
             m_orderBookThreadPool.shutdown();
         }
-
 
         void accept(core::Visitor<Order>& v) override;
 
@@ -46,27 +43,26 @@ class CentralOrderBook : public core::NonCopyable, public core::Visitable<Order>
 
         bool isMatchingMultithreaded() const { return m_isMatchingMultithreaded; }
 
-        bool addOrder(const Order& order);
-        void rejectOrder(const Order& order, const std::string& message);
-        void cancelOrder(const Order& order, const std::string& origClientOrderID);
+        bool addOrder(Order& order);
+        void rejectOrder(Order& order, const std::string& message);
+        void cancelOrder(Order& order, const std::string& origClientOrderID);
 
         OutgoingMessageQueue* getOutgoingMessageQueue() { return &m_outgoingMessages; }
 
     private:
+        bool m_isMatchingMultithreaded;
+        std::atomic<int> m_orderNumber;
+
         std::unordered_map<std::size_t, OrderBook> m_orderBookDictionary; // SecurityId - OrderBook dictionary
         std::unordered_map<std::size_t, int> m_queueIDDictionary; // SecurityId - Queue ID dictionary , queue ids refer to both thread pool worker queues
                                                                   // and outgoing message processor queues
 
-        bool m_isMatchingMultithreaded;
         std::vector<std::size_t> m_securityIds;
-
         OutgoingMessageQueue m_outgoingMessages;
-
         core::ThreadPool m_orderBookThreadPool;
-        core::ThreadPoolObserver m_threadPoolObserver;
 
-        void* taskNewOrder(const Order& order);
-        void* taskCancelOrder(const Order& order, const std::string& origClientOrderID);
+        void* taskNewOrder(Order& order);
+        void* taskCancelOrder(Order& order, const std::string& origClientOrderID);
 
         // Move ctor deletion
         CentralOrderBook(CentralOrderBook&& other) = delete;

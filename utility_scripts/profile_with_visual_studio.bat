@@ -1,38 +1,43 @@
 @echo off
 cls
 Color 0E
-SET OUTPUT_FILE=ome.vsp
+
+REM Check admin rights
+NET SESSION >nul 2>&1
+IF %ERRORLEVEL% EQU 0 (
+    ECHO Running in admin mode
+) ELSE (
+    ECHO You need to run in admin mode
+	pause
+	goto:eof
+)
+
+echo.
+echo This script and profiler will stop when the target app finishes the execution. 
+echo Then open created vspx file with VisualStudio to analyze at the end
+echo.
+pause
+
 SET TARGET_EXECUTABLE=ome.exe
 REM Change your drive letter accordingly
-SET DRIVE_LETTER=D
 SET PROFILER=vsperf
 REM
-REM MSDN Link for using vsperf from command line : https://msdn.microsoft.com/en-us/library/hh977161.aspx
-REM MSDN Link for using vs perf cmd from command line : https://msdn.microsoft.com/en-us/library/dd255377.aspx
-REM 
-REM For VS 2013 commnad prompt
-SET VS_CMD_BAT="C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\vcvarsall.bat"
+REM MSDN Link for using vsperf from command line : https://msdn.microsoft.com/en-us/library/dd255377(v=vs.140).aspx
+REM For VS 2017 commnad prompt
+SET VS_CMD_BAT="C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\Tools\VsDevCmd.bat"
 if exist %VS_CMD_BAT% (
 	echo VisualStudio commmand prompt found
 ) else (
     echo VisualStudio commmand prompt not found && pause && exit 1
 )
-call %VS_CMD_BAT% x86_amd64
-REM For VS 2015 command prompt
-REM call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" x86_amd64
-REM
-REM MSDN Link that shows how to install profiling tools standalone : https://msdn.microsoft.com/en-us/library/bb385771.aspx
+call %VS_CMD_BAT%
 REM 
-cd /d %DRIVE_LETTER%:
-cd %~dp0
 SET TARGET_EXECUTABLE_DIRECTORY=%~dp0..\bin
 echo %TARGET_EXECUTABLE_DIRECTORY%
 REM
 REM By default, performance data is sampled every 10,000,000 non-halted processor clock cycles.
 REM This is approximately one time every 10 seconds on a 1GHz processor
 REM
-%PROFILER% /start:sample /file:%OUTPUT_FILE%
+%PROFILER% /stop:sample
+%PROFILER% /start:sample
 %PROFILER% /launch:%TARGET_EXECUTABLE_DIRECTORY%\%TARGET_EXECUTABLE% /console
-echo
-echo This script and profiler will stop when the target app finishes the execution
-echo

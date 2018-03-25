@@ -5,7 +5,7 @@
 #include <mutex>
 
 #include <core/concurrency/spinlock.hpp>
-#include <core/memory/heap_memory.h>
+#include <core/memory/heap_memory_cache_aligned_allocators.hpp>
 
 namespace core
 {

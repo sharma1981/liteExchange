@@ -1,174 +1,150 @@
-//Coming from QuickFix
-#ifdef _MSC_VER
-#pragma warning( disable : 4503 4355 4786 )
-#endif
-
 #include <server/server_fix.h>
 
 #include <algorithm>
 #include <ctype.h>
 #include <cstddef>
+#include <exception>
 
-#include <quickfix/FileStore.h>
-#include <quickfix/SocketInitiator.h>
-#include <quickfix/SessionSettings.h>
-#include <quickfix/Log.h>
-
+#include <core/compiler/unused.h>
+#include <core/concurrency/thread.h>
 #include <core/concurrency/thread_priority.h>
 
 #include <order_matcher/order.h>
+#include <order_matcher/incoming_message.h>
 #include <order_matcher/security_manager.h>
-#include <server/quickfix_converter.h>
 using namespace order_matcher;
 
 #include <core/file_utility.h>
 #include <core/pretty_exception.h>
 #include <core/logger/logger.h>
 
+#include <fix/fix_constants.h>
+
+#include "fix_message_converter.h"
+#include "server_outgoing_message_processor.h"
+
 using namespace std;
+using namespace fix;
 
-ServerFix::ServerFix(const string& fixEngineConfigFile, const ServerConfiguration& serverConfiguration)
-: m_fixEngineConfigFile(fixEngineConfigFile), ServerBase(serverConfiguration)
+ServerFix::ServerFix(const ServerConfiguration& serverConfiguration)
+: ServerBase(serverConfiguration), FixServerReactor()
 {
-    if (!core::doesFileExist(m_fixEngineConfigFile))
-    {
-        THROW_PRETTY_RUNTIME_EXCEPTION(core::format("FIX configuration file %s does not exist", m_fixEngineConfigFile))
-    }
-
-    // Incoming message dispatcher initialisation
-    m_dispatcher.setCentralOrderBook(&m_centralOrderBook);
-    m_dispatcher.start();
-}
-
-void ServerFix::run()
-{
-    // FIX engine initialisation
-    FIX::SessionSettings settings(m_fixEngineConfigFile);
-    FIX::FileStoreFactory storeFactory(settings);
-    FIX::ThreadedSocketAcceptor fixEngineAcceptor(*this, storeFactory, settings);
-    // FIX engine start
-    fixEngineAcceptor.start();
-
-    LOG_INFO("FIX Engine", "Acceptor started")
-
-    m_commandLineInterface.run();
-
-    // FIX engine stop
-    fixEngineAcceptor.stop(true);
-    LOG_INFO("FIX Engine", "Acceptor stopped")
+    FixServerReactor::initialise(serverConfiguration.getFixServerConfiguration());
+    //CLI
+    m_commandLineInterface.setParentCentralOrderbook(&m_centralOrderBook);
 }
 
 ServerFix::~ServerFix()
 {
     m_outgoingMessageProcessor.shutdown();
-    m_dispatcher.shutdown();
 }
 
-void ServerFix::onCreate(const FIX::SessionID& sessionID)
+void ServerFix::run()
 {
-}
+    start();
+    LOG_INFO("FIX Engine", "Acceptor started")
 
-void ServerFix::fromAdmin(const FIX::Message& message, const FIX::SessionID& sessionID) throw(FIX::FieldNotFound, FIX::IncorrectDataFormat, FIX::IncorrectTagValue, FIX::RejectLogon)
-{
-}
+    m_commandLineInterface.start();
 
-void ServerFix::toAdmin(FIX::Message& message, const FIX::SessionID& sessionID)
-{
-}
-
-void ServerFix::onLogon(const FIX::SessionID& sessionID)
-{
-    LOG_INFO("FIX Engine", "New logon , session ID : " + sessionID.toString())
-}
-
-void ServerFix::onLogout(const FIX::SessionID& sessionID)
-{
-    LOG_INFO("FIX Engine", "Logout , session ID : " + sessionID.toString())
-}
-
-void ServerFix::toApp(FIX::Message& message, const FIX::SessionID& sessionID) throw(FIX::DoNotSend)
-{
-    LOG_INFO("FIX Engine", "Sending fix message : " + message.toString() )
-}
-
-void ServerFix::fromApp(const FIX::Message& message, const FIX::SessionID& sessionID)throw(FIX::FieldNotFound, FIX::IncorrectDataFormat, FIX::IncorrectTagValue, FIX::UnsupportedMessageType)
-{
-    LOG_INFO("FIX Engine", "Receiving fix message : " + message.toString())
-    crack(message, sessionID);
-}
-
-void ServerFix::onMessage(const FIX42::NewOrderSingle& message, const FIX::SessionID& sessionID)
-{
-    LOG_INFO("FIX Engine", "New order message received :" + message.toString())
-
-    FIX::SenderCompID senderCompID;
-    FIX::TargetCompID targetCompID;
-    FIX::ClOrdID clOrdID;
-    FIX::Symbol symbol;
-    FIX::Side side;
-    FIX::OrdType ordType;
-    FIX::Price price;
-    FIX::OrderQty orderQty;
-
-    // For the time being , we are ignoring TimeInForce
-
-    message.getHeader().get(senderCompID);
-    message.getHeader().get(targetCompID);
-    message.get(clOrdID);
-    message.get(symbol);
-    message.get(side);
-    message.get(ordType);
-    message.get(orderQty);
-
-    OrderType newOrderType = convertOrderTypeFromQuickFix(ordType);
-    OrderSide newOrderSide = convertOrderSideFromQuickFix(side);
-
-    // Find security id of the symbol in our SecurityManager
-    auto securityId = SecurityManager::getInstance()->getSecurityId(symbol);
-
-    // Check if we support the symbol
-    if (securityId == -1)
+    while (true)
     {
-        // Reject non supported order type or side
-        Order rejectedOrder(clOrdID, securityId, senderCompID, targetCompID, OrderSide::BUY, OrderType::LIMIT, 0, 0);
-        // Rather than pushing on to the dispatcher , directly push to the outgoing message processor via the central order book
-        m_centralOrderBook.rejectOrder(rejectedOrder, "Non supported symbol");
+        // Exit if interface returns false , it means we are exiting
+        if (m_commandLineInterface.isFinishing())
+        {
+            break;
+        }
+
+        for (auto& thread : core::Thread::THREADS)
+        {
+            auto threadException = thread->getException();
+            if (threadException)
+            {
+                LOG_ERROR("FIX Server", "Unhandled exception in thread : " + thread->getName())
+                std::rethrow_exception(threadException);
+            }
+        }
     }
 
-    if (newOrderType == OrderType::NON_SUPPORTED || newOrderSide == OrderSide::NON_SUPPORTED)
-    {
-        // Reject non supported order type or side
-        Order rejectedOrder(clOrdID, securityId, senderCompID, targetCompID, OrderSide::BUY, OrderType::LIMIT, 0, 0);
-        // Rather than pushing on to the dispatcher , directly push to the outgoing message processor via the central order book
-        m_centralOrderBook.rejectOrder(rejectedOrder, "Non supported order type or order side");
-    }
-
-    message.get(price);
-
-    Order order(clOrdID, securityId, senderCompID, targetCompID, newOrderSide, newOrderType, price, (long)orderQty);
-    IncomingMessage incomingMessage(order, order_matcher::IncomingMessageType::NEW_ORDER);
-    m_dispatcher.pushMessage(incomingMessage);
+    stop();
+    LOG_INFO("FIX Engine", "Acceptor stopped")
 }
 
-void ServerFix::onMessage(const FIX42::OrderCancelRequest& message, const FIX::SessionID&)
+void ServerFix::onUnhandledSocketError(int errorCode)
 {
-    LOG_INFO("FIX Engine", "Cancel order message received :" + message.toString())
+    LOG_ERROR("FIX Server", "Socket error : " + core::Socket::getSocketErrorAsString(errorCode))
+}
 
-    FIX::OrigClOrdID origClOrdID;
-    FIX::Symbol symbol;
-    FIX::Side side;
-    FIX::SenderCompID senderCompID;
-    FIX::ClOrdID clientID;
+void ServerFix::onFixError(const std::string& fixErrorMessage)
+{
+    LOG_ERROR("FIX Server", "Fix error : " + fixErrorMessage)
+}
 
-    message.getHeader().get(senderCompID);
-    message.get(origClOrdID);
-    message.get(clientID);
-    message.get(symbol);
-    message.get(side);
+void ServerFix::onFixLogon(FixSession* session)
+{
+    LOG_INFO("FIX Server", "New logon , comp id : " + session->getTargetCompId())
+}
 
-    auto securityId = SecurityManager::getInstance()->getSecurityId(symbol);
+void ServerFix::onFixLogoff(FixSession* session)
+{
+    LOG_INFO("FIX Server", "Logoff , comp id : " + session->getTargetCompId())
+}
 
-    Order order("", securityId, senderCompID, "", convertOrderSideFromQuickFix(side), order_matcher::OrderType::LIMIT, 0, 0);
-    IncomingMessage incomingMessage(order, order_matcher::IncomingMessageType::CANCEL_ORDER, origClOrdID);
-    m_dispatcher.pushMessage(incomingMessage);
+void ServerFix::onTraderLogon(FixSession* session, const string& trader)
+{
+    UNUSED(session);
+    LOG_INFO("FIX Server", "Trader logon  : " + trader)
+}
+
+void ServerFix::onFixMessage(FixMessage* message, size_t sessionId)
+{
+    auto messageType = message->getMessageType();
+
+    if (messageType == FixConstants::MessageType::NEW_ORDER)
+    {
+        onNewOrder(message, sessionId);
+    }
+    else if (messageType == FixConstants::MessageType::CANCEL)
+    {
+        onCancelOrder(message, sessionId);
+    }
+    else
+    {
+        m_outgoingMessageProcessor.rejectOrder(sessionId, message, "Only new and cancel orders accepted");
+    }
+}
+
+void ServerFix::onNewOrder(FixMessage* message, size_t sessionId)
+{
+    Order order;
+    order.setSessionId(sessionId);
+
+    FixMessageConverter::convertNewOrder(*message, order);
+
+    if (message->getTagValueAsInt(fix::FixConstants::FIX_TAG_ORDER_TYPE) != fix::FixConstants::FIX_ORDER_TYPE_LIMIT)
+    {
+        m_outgoingMessageProcessor.rejectOrder(sessionId, message, "Non supported order type");
+        return;
+    }
+
+    if (order_matcher::SecurityManager::getInstance()->isSecuritySupported(order.getSecurityId()) == false)
+    {
+        m_outgoingMessageProcessor.rejectOrder(sessionId, message, "Non supported symbol");
+        return;
+    }
+
+    LOG_INFO("FIX Server", core::format("NEW ORDER RECEIVED, SESSION ID : %d, CLIENT ORDER ID : %s", sessionId, order.getClientID()).c_str())
+
+    m_centralOrderBook.addOrder(order);
+}
+
+void ServerFix::onCancelOrder(FixMessage* message, size_t sessionId)
+{
+    Order order;
+    order.setSessionId(sessionId);
+
+    FixMessageConverter::convertCancelOrder(*message, order);
+
+    LOG_INFO("FIX Server", core::format("CANCEL ORDER RECEIVED : %s , SESSION ID : %d", order.getClientID(), sessionId).c_str())
+
+    m_centralOrderBook.cancelOrder(order, message->getTagValue(FixConstants::FIX_TAG_ORIG_CLIENT_ORDER_ID));
 }

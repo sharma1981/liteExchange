@@ -3,6 +3,7 @@
 
 #include <string>
 #include <fstream>
+#include <sstream>
 #include <vector>
 #include <cstring>
 
@@ -40,19 +41,32 @@ inline std::string getDirectoryNameFromPath(const std::string& fullPath)
     return directoryName;
 }
 
+inline void readAllFile(const std::string& fileName, std::string& content)
+{
+    std::ifstream inFile;
+    inFile.open(fileName);
+
+    std::stringstream stream;
+    stream << inFile.rdbuf();
+
+    content = stream.str();
+    inFile.close();
+}
+
 inline bool appendTextToFile(const std::string& fileName, const std::string& text, bool createIfNecessary = true)
 {
-  std::ofstream outfile;
-  auto mode = createIfNecessary ? std::ios_base::app : std::ios_base::out;
-  outfile.open(fileName, mode);
+    std::ofstream outfile;
+    auto mode = createIfNecessary ? std::ios_base::app : std::ios_base::out;
+    outfile.open(fileName, mode);
 
-  if (outfile.is_open() == false)
-  {
-    return false;
-  }
+    if (outfile.is_open() == false)
+    {
+        return false;
+    }
 
-  outfile << text;
-  return true;
+    outfile << text;
+    outfile.close();
+    return true;
 }
 
 inline bool doesFileExist(const std::string& fileName)

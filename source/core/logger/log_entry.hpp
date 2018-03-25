@@ -20,8 +20,8 @@ class LogEntry
     {
     };
 
-    LogEntry(const LogLevel level, const std::string sender, const std::string message, const std::string sourceCode, const std::string sourceCodeLineNumber)
-        : m_logLevel(level), m_sender(sender), m_message(message), m_sourceCode(sourceCode), m_sourceCodeLineNumber(sourceCodeLineNumber)
+    LogEntry(const LogLevel level, const std::string sender, const std::string message)
+    : m_logLevel(level), m_sender(sender), m_message(message)
     {
     }
 
@@ -29,9 +29,6 @@ class LogEntry
     {
         std::string logLevel;
         logLevelToString(entry.m_logLevel, logLevel);
-
-        os << core::format("[ %s : %s ]",  entry.m_sourceCode, entry.m_sourceCodeLineNumber);
-        os << std::endl;
         os << core::format("%s : %s , %s , %s", core::getUtcDatetime(core::Subseconds::MICROSECONDS), logLevel, entry.m_sender, entry.m_message);
         return os;
     }
@@ -52,8 +49,6 @@ class LogEntry
         LogLevel m_logLevel;
         std::string m_sender;
         std::string m_message;
-        std::string m_sourceCode;
-        std::string m_sourceCodeLineNumber;
 };
 
 }

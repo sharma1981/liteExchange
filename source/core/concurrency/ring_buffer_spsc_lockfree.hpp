@@ -45,7 +45,7 @@ class RingBufferSPSCLockFree : public core::NonCopyable
             return false;
         }
 
-        void push(T val)
+        void push(T val, std::string message = "")
         {
             while (!tryPush(val));
         }

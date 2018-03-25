@@ -1,5 +1,7 @@
 #include "order_book.h"
 #include <core/pretty_exception.h>
+#include <core/string_utility.h>
+#include <core/logger/logger.h>
 #include <utility>
 using namespace std;
 using namespace core;
@@ -32,13 +34,13 @@ void OrderBook::insert(const Order& order)
     }
 }
 
-bool OrderBook::find(Order** order, const std::string& owner, const std::string& clientID, OrderSide side)
+bool OrderBook::find(Order** order, const string& clientID, size_t sessionId, OrderSide side)
 {
     if (side == OrderSide::BUY)
     {
         for (auto i = m_bidOrders.begin(); i != m_bidOrders.end(); ++i)
         {
-            if (i->second.getClientID() == clientID && i->second.getOwner() == owner )
+            if (i->second.getSessionId() == sessionId && i->second.getClientID() == clientID)
             {
                 *order = &(i->second);
                 return true;
@@ -49,7 +51,7 @@ bool OrderBook::find(Order** order, const std::string& owner, const std::string&
     {
         for (auto i = m_askOrders.begin(); i != m_askOrders.end(); ++i)
         {
-            if (i->second.getClientID() == clientID && i->second.getOwner() == owner)
+            if (i->second.getSessionId() == sessionId  && i->second.getClientID() == clientID)
             {
                 *order = &(i->second);
                 return true;
@@ -62,14 +64,14 @@ bool OrderBook::find(Order** order, const std::string& owner, const std::string&
 
 void OrderBook::erase(const Order& order)
 {
-    string id = order.getClientID();
-    string owner = order.getOwner();
+    auto clientId = order.getClientID();
+    auto sessionId = order.getSessionId();
 
     if (order.getSide() == OrderSide::BUY)
     {
         for (auto i = m_bidOrders.begin(); i != m_bidOrders.end(); ++i)
         {
-            if (i->second.getClientID() == id && i->second.getOwner() == owner)
+            if (i->second.getClientID() == clientId && i->second.getSessionId() == sessionId)
             {
                 m_bidOrders.erase(i);
                 return;
@@ -80,7 +82,7 @@ void OrderBook::erase(const Order& order)
     {
         for (auto i = m_askOrders.begin(); i != m_askOrders.end(); ++i)
         {
-            if (i->second.getClientID() == id && i->second.getOwner() == owner)
+            if (i->second.getClientID() == clientId && i->second.getSessionId() == sessionId)
             {
                 m_askOrders.erase(i);
                 return;
@@ -132,8 +134,17 @@ bool OrderBook::processMatching(queue<Order>& processedOrders)
             processedOrders.push(bid);
             processedOrders.push(ask);
 
-            if (bid.isFilled()) m_bidOrders.erase(iBid);
-            if (ask.isFilled()) m_askOrders.erase(iAsk);
+            if (bid.isFilled())
+            {
+                LOG_INFO("Order book", core::format("ORDER FULLY FILLED, SESSION ID : %d , CLIENT ORDER ID : %s", bid.getSessionId(), bid.getClientID()).c_str())
+                m_bidOrders.erase(iBid);
+            }
+
+            if (ask.isFilled())
+            {
+                LOG_INFO("Order book", core::format("ORDER FULLY FILLED, SESSION ID : %d , CLIENT ORDER ID : %s", ask.getSessionId(), ask.getClientID()).c_str())
+                m_askOrders.erase(iAsk);
+            }
         }
         else
         {

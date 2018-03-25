@@ -3,9 +3,6 @@ cls
 Color 0E
 SET DR_MEMORY_PATH="C:\Program Files (x86)\Dr. Memory\bin64\"
 SET DR_MEMORY_EXECUTABLE=drmemory.exe
-SET DRIVE_LETTER=D
-cd /d %DRIVE_LETTER%:
-cd %~dp0
 setx PATH %DR_MEMORY_PATH%
 if exist %DR_MEMORY_PATH%\%DR_MEMORY_EXECUTABLE% (
 	echo DrMemory found

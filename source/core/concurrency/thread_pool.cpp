@@ -1,9 +1,12 @@
 #include <cassert>
 #include <utility>
-using namespace std;
+
+#include "thread_pool.h"
 
 #include <core/string_utility.h>
-#include "thread_pool.h"
+#include <core/logger/logger.h>
+
+using namespace std;
 
 namespace core
 {
@@ -98,14 +101,13 @@ void* ThreadPool::workerThreadFunction(void* argument)
     ThreadPool* pool = threadArgument->m_threadPool;
     auto queueIndex = threadArgument->m_queueIndex;
 
-    pool->notify(core::format("Thread(%d) %s starting", queueIndex, pool->m_threads[queueIndex]->getThreadName()));
+    LOG_INFO("Thread pool", core::format("Thread(%d) %s starting", queueIndex, pool->m_threads[queueIndex]->getThreadName()).c_str())
 
     while( ! pool->m_isShuttingDown.load() )
     {
         Task queueTask;
         if ( pool->m_threadQueues[queueIndex]->tryPop(&queueTask) )
         {
-            pool->notify(pool->m_threads[queueIndex]->getThreadName() + " thread got a new task to execute");
             queueTask.execute();
         }
         else
@@ -114,7 +116,7 @@ void* ThreadPool::workerThreadFunction(void* argument)
         }
     }
 
-    pool->notify(core::format("Thread(%d) %s exiting", queueIndex, pool->m_threads[queueIndex]->getThreadName()));
+    LOG_INFO("Thread pool", core::format("Thread(%d) %s exiting", queueIndex, pool->m_threads[queueIndex]->getThreadName()).c_str())
     return nullptr;
 }
 

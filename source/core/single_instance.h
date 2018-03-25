@@ -2,20 +2,24 @@
 #define _SINGLE_INSTANCE_H_
 
 #include <cstdint>
-#include <string>
 #include <core/noncopyable.h>
 
-#ifdef _WIN32
+#ifdef __linux__
+#include <string>
+#elif _WIN32
 #include <windows.h>
 #endif
 
 namespace core
 {
+
+#define SINGLE_INSTANCE_LOCK "single_instance_lock"
+
 class SingleInstance : public core::NonCopyable
 {
     public:
 
-        explicit SingleInstance(int singleInstancePort = 666);
+        SingleInstance();
         ~SingleInstance();
 
         // Move ctor deletion
@@ -28,9 +32,8 @@ class SingleInstance : public core::NonCopyable
     private:
 
 #ifdef __linux__
-        int m_socketFD = -1;
-        int m_rc;
-        uint16_t m_port;
+        int m_fd;
+        std::string m_filePath;
 #elif _WIN32
         HANDLE m_mutex;
         unsigned long  m_lastError;

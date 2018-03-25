@@ -34,10 +34,13 @@ class Actor : public Thread
         virtual void shutdown() { sendFinishSignal(); join(); }
         virtual bool isFinishing() { return m_isFinishing.load(); }
 
+    protected:
+
+        void sendFinishSignal() { m_isFinishing.store(true); }
+
     private:
 
         std::atomic<bool> m_isFinishing;
-        void sendFinishSignal() { m_isFinishing.store(true); }
 };
 
 }// namespace

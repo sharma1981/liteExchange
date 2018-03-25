@@ -3,6 +3,7 @@
 
 #include "order.h"
 
+#include <cstddef>
 #include <map>
 #include <queue>
 #include <string>
@@ -21,7 +22,7 @@ class OrderBook : public core::Visitable<Order>
 
         void accept(core::Visitor<Order>& v) override;
         void insert(const Order& order);
-        bool find(Order** order, const std::string& owner, const std::string& clientID, OrderSide side);
+        bool find(Order** order, const std::string& clientID, std::size_t sessionId, OrderSide side);
         void erase(const Order& order);
         bool processMatching( std::queue<Order>& processedOrders );
         bool isEmpty() const { return (m_bidOrders.size() == 0) && (m_askOrders.size() == 0); }

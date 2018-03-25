@@ -9,6 +9,7 @@
 #include <unistd.h>
 #include <sys/resource.h>
 #elif _WIN32
+#include <direct.h>
 #include <windows.h>
 #endif
 

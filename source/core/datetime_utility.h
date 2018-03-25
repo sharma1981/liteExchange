@@ -22,7 +22,7 @@ namespace core
 
 enum class Subseconds
 {
-    NONE,
+    SECONDS,
     MILLISECONDS,
     MICROSECONDS
 };
@@ -113,6 +113,20 @@ inline const std::string getCurrentDateTime(const std::string format, bool unive
 inline const std::string getUtcDatetime(Subseconds subseconds)
 {
     return getCurrentDateTime("%Y%m%d-%H:%M:%S", true, subseconds);
+}
+
+inline const Subseconds getSubsecondsFromString(const std::string& input)
+{
+    if (core::compare(input, "MILLISECONDS"))
+    {
+        return Subseconds::MILLISECONDS;
+    }
+    else if (core::compare(input, "MICROSECONDS"))
+    {
+        return Subseconds::MICROSECONDS;
+    }
+
+    return Subseconds::SECONDS;
 }
 
 }// namespace

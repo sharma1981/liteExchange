@@ -1,26 +1,38 @@
 #include "fix_message.h"
 #include "fix_constants.h"
+#include "fix_parser.h"
 #include <core/string_utility.h>
-#include <core/datetime_utility.h>
 #include <core/pretty_exception.h>
+#include <cstring>
 #include <fstream>
 using namespace std;
 
 namespace fix
 {
 
-char FixMessage::getMessageType() const
+FixMessage::FixMessage() : m_fixVersion{ FixConstants::FixVersion::FIX_VERSION_NONE }, m_sequenceNumber{1}
 {
-    string val;
-    getTagValue(FixConstants::FIX_TAG_MESSAGE_TYPE, val);
-    return val[0];
+    m_bodyTagValuePairs.reserve(16);
+}
+
+void FixMessage::reset()
+{
+    m_fixVersion = FixConstants::FixVersion::FIX_VERSION_NONE;
+    m_messageType = (char)NULL;
+    m_sequenceNumber = 1;
+    m_senderCompId = "";
+    m_targetCompId = "";
+    m_sendingTime = "";
+    m_bodyTagValuePairs.clear();
 }
 
 bool FixMessage::isAdminMessage() const
 {
     auto type = getMessageType();
 
-    if (type == FixConstants::FIX_MESSAGE_LOG_OFF || type == FixConstants::FIX_MESSAGE_LOG_ON || type == FixConstants::FIX_MESSAGE_HEARTBEAT)
+    if (type == FixConstants::MessageType::LOGOFF || type == FixConstants::MessageType::LOGON
+        || type == FixConstants::MessageType::HEARTBEAT || type == FixConstants::MessageType::TEST_REQUEST
+        || type == FixConstants::MessageType::USER_LOGON || type == FixConstants::MessageType::ADMIN_REJECT)
     {
         return true;
     }
@@ -28,44 +40,106 @@ bool FixMessage::isAdminMessage() const
     return false;
 }
 
+int FixMessage::calculateHeaderLength() const
+{
+    const int lengthExcludingValue{ 4 };
+    int headerLength{ 20 };
+
+    // 20 = 4 * 5
+    // 4 = delimiter + equals sign + tag length for all header tags
+    // 5 = 35 34 49 52 56
+
+    // FIX MESSAGE TYPE 35
+    headerLength += strlen(FixConstants::FIX_MESSAGE_TYPE_STRINGS[m_messageType]);
+
+    // FIX SEQUENCE NUMBER 34
+    headerLength += std::to_string(m_sequenceNumber).length();
+
+    // FIX SENDER COMPID 49
+    headerLength += m_senderCompId.length();
+
+    // FIX SENDING TIME 52
+    headerLength += m_sendingTime.length();
+
+    // FIX TARGET COMPID 56
+    headerLength += m_targetCompId.length();
+
+    return headerLength;
+}
+
 int FixMessage::calculateBodyLength() const
 {
     int bodyLength{ 0 };
+    const int seperatorAndEqualsLength{ 2 };
 
 
-    for(const auto& tagValue : m_tagValuePairs)
+    for (const auto& tagValue : m_bodyTagValuePairs)
     {
         int tagValueKey = tagValue.first;
-
-        //  We exclude header and checksum
-        if (tagValueKey == FixConstants::FIX_TAG_VERSION)
-        {
-            continue;
-        }
-
-        if (tagValueKey == FixConstants::FIX_TAG_BODY_LENGTH)
-        {
-            continue;
-        }
-
-        if (tagValueKey == FixConstants::FIX_TAG_BODY_CHECKSUM)
-        {
-            continue;
-        }
-
         auto value = tagValue.second;
         int keyLength = std::to_string(tagValueKey).length();
 
-        bodyLength += keyLength + 2 + value.length(); // +2 is because of = and delimiter
+        bodyLength += keyLength + seperatorAndEqualsLength + value.length(); // +2 is because of = and delimiter
     }
+
+    bodyLength += calculateHeaderLength();
 
     return bodyLength;
 }
 
+void FixMessage::removeTag(int tag)
+{
+    m_bodyTagValuePairs.erase(tag);
+}
+
+int FixMessage::getMessageType() const
+{
+    return m_messageType;
+}
+
+void FixMessage::initialiseHeader()
+{
+    if (hasTag(FixConstants::FIX_TAG_VERSION))
+    {
+        setFixVersion(FixConstants::getFixVersionFromString(getTagValue(FixConstants::FIX_TAG_VERSION)));
+        removeTag(FixConstants::FIX_TAG_VERSION);
+    }
+
+    if (hasTag(FixConstants::FIX_TAG_MESSAGE_TYPE))
+    {
+        setMessageType(FixConstants::getMessageTypeFromString(getTagValue(FixConstants::FIX_TAG_MESSAGE_TYPE)));
+        removeTag(FixConstants::FIX_TAG_MESSAGE_TYPE);
+    }
+
+    if (hasTag(FixConstants::FIX_TAG_SEQUENCE_NUMBER))
+    {
+        setSequenceNumber(getTagValueAsInt(FixConstants::FIX_TAG_SEQUENCE_NUMBER));
+        removeTag(FixConstants::FIX_TAG_SEQUENCE_NUMBER);
+    }
+
+    if (hasTag(FixConstants::FIX_TAG_SENDING_TIME))
+    {
+        setSendingTime(getTagValue(FixConstants::FIX_TAG_SENDING_TIME));
+        removeTag(FixConstants::FIX_TAG_SENDING_TIME);
+    }
+
+    if (hasTag(FixConstants::FIX_TAG_SENDER_COMPID))
+    {
+        setSenderCompId(getTagValue(FixConstants::FIX_TAG_SENDER_COMPID));
+        removeTag(FixConstants::FIX_TAG_SENDER_COMPID);
+    }
+
+    if (hasTag(FixConstants::FIX_TAG_TARGET_COMPID))
+    {
+        setTargetCompId(getTagValue(FixConstants::FIX_TAG_TARGET_COMPID));
+        removeTag(FixConstants::FIX_TAG_TARGET_COMPID);
+    }
+}
+
 bool FixMessage::hasTag(int tag) const
 {
-    auto element = m_tagValuePairs.find(tag);
-    if (element == m_tagValuePairs.end())
+    auto element = m_bodyTagValuePairs.find(tag);
+    if (element == m_bodyTagValuePairs.end())
     {
         return false;
     }
@@ -74,7 +148,7 @@ bool FixMessage::hasTag(int tag) const
 
 void FixMessage::setTag(int tag, const string& value)
 {
-    m_tagValuePairs[tag] = value;
+    m_bodyTagValuePairs[tag] = value;
 }
 
 void FixMessage::setTag(int tag, int value)
@@ -84,35 +158,53 @@ void FixMessage::setTag(int tag, int value)
 
 void FixMessage::setTag(int tag, char value)
 {
+    string temp;
+    temp.push_back(value);
+    setTag(tag, temp);
+}
+
+void FixMessage::setTag(int tag, double value)
+{
     setTag(tag, std::to_string(value));
 }
 
-void FixMessage::setFixVersion(const string& version)
+void FixMessage::setTag(int tag, long value)
 {
-    setTag(FixConstants::FIX_TAG_VERSION, version);
+    setTag(tag, std::to_string(value));
 }
 
-void FixMessage::getTagValue(int tag, string& value) const
+
+void FixMessage::setSendingAndTransactionTimeAsCurrent(core::Subseconds precision)
 {
-    value = m_tagValuePairs[tag];
+    auto dateTime = core::getUtcDatetime(precision);
+    setTag(FixConstants::FIX_TAG_SENDING_TIME, dateTime);
+    setTag(FixConstants::FIX_TAG_TRANSACTION_TIME, dateTime);
 }
 
-void FixMessage::loadFromString(const string& input)
+const string& FixMessage::getTagValue(int tag) const
 {
-    auto tagValuePairs = core::split(input, FixConstants::FIX_DELIMITER);
+    return m_bodyTagValuePairs[tag];
+}
 
-    for(auto& tagValuePair : tagValuePairs)
-    {
-        if (tagValuePair.length() == 0)
-        {
-            continue;
-        }
+char  FixMessage::getTagValueAsChar(int tag) const
+{
+    auto valueAsString = getTagValue(tag);
+    return valueAsString[0];
+}
 
-        auto tokens = core::split(tagValuePair, FixConstants::FIX_EQUALS);
-        int tag = std::stoi(tokens[0]);
-        string value = tokens[1];
-        setTag(tag, value);
-    }
+int  FixMessage::getTagValueAsInt(int tag) const
+{
+    return std::stoi(getTagValue(tag));
+}
+
+long FixMessage::getTagValueAsLong(int tag) const
+{
+    return std::stol(getTagValue(tag));
+}
+
+double FixMessage::getTagValueAsDouble(int tag) const
+{
+    return std::stod(getTagValue(tag));
 }
 
 void FixMessage::loadFromFile(const string& input, vector<FixMessage>& messages)
@@ -132,7 +224,7 @@ void FixMessage::loadFromFile(const string& input, vector<FixMessage>& messages)
         if (core::startsWith(line, '#') == false)
         {
             FixMessage message;
-            message.loadFromString(line);
+            FixParser::parseFromString(message, line);
             messages.emplace_back(message);
         }
     }
@@ -140,110 +232,56 @@ void FixMessage::loadFromFile(const string& input, vector<FixMessage>& messages)
     file.close();
 }
 
-void FixMessage::toString(bool sendingAsMessage, bool updateTransactionTime, string& stringOutput)
+void FixMessage::toString(string& stringOutput)
 {
     auto appendTag = [&stringOutput, this](int tag)
                             {
-                                string value;
-                                getTagValue(tag, value);
+                                auto value = getTagValue(tag);
                                 stringOutput += std::to_string(tag) + FixConstants::FIX_EQUALS + value + FixConstants::FIX_DELIMITER;
                             };
 
-    auto appendTagValue = [&stringOutput, this](int tag, string value)
+    auto appendTagStringValue = [&stringOutput, this](int tag, string value)
     {
         stringOutput += std::to_string(tag) + FixConstants::FIX_EQUALS + value + FixConstants::FIX_DELIMITER;
     };
 
+    ////////////////////////////////////////////
+    // HEADER TAGS
+
     // FIX VERSION
-    appendTag(FixConstants::FIX_TAG_VERSION);
-
-    // FIX SENDING TIME AND TRANSACTION, have to be before body length calculation ,but not appended for the correct order
-    if (sendingAsMessage)
-    {
-        auto currentUTCDateTime = core::getUtcDatetime(core::Subseconds::MICROSECONDS);
-
-        setTag(FixConstants::FIX_TAG_SENDING_TIME, currentUTCDateTime);
-
-        if (updateTransactionTime && isAdminMessage() == false)
-        {
-            setTag(FixConstants::FIX_TAG_TRANSACTION_TIME, currentUTCDateTime);
-        }
-    }
+    appendTagStringValue(FixConstants::FIX_TAG_VERSION, FixConstants::FIX_VERSION_STRINGS[m_fixVersion]);
 
     // FIX BODY LENGTH
-    if (sendingAsMessage)
-    {
-        appendTagValue(FixConstants::FIX_TAG_BODY_LENGTH, std::to_string(calculateBodyLength()));
-    }
+    appendTagStringValue(FixConstants::FIX_TAG_BODY_LENGTH, std::to_string(calculateBodyLength()));
 
     // FIX MESSAGE TYPE
-    appendTag(FixConstants::FIX_TAG_MESSAGE_TYPE);
+    appendTagStringValue(FixConstants::FIX_TAG_MESSAGE_TYPE, FixConstants::FIX_MESSAGE_TYPE_STRINGS[m_messageType]);
 
     // FIX SEQUENCE NUMBER
-    appendTag(FixConstants::FIX_TAG_SEQUENCE_NUMBER);
+    appendTagStringValue(FixConstants::FIX_TAG_SEQUENCE_NUMBER, std::to_string(m_sequenceNumber));
 
     // FIX SENDER COMPID
-    appendTag(FixConstants::FIX_TAG_SENDER_COMPID);
+    appendTagStringValue(FixConstants::FIX_TAG_SENDER_COMPID, m_senderCompId);
 
     // FIX SENDING TIME
-    appendTag(FixConstants::FIX_TAG_SENDING_TIME);
+    appendTagStringValue(FixConstants::FIX_TAG_SENDING_TIME, m_sendingTime);
 
     // FIX TARGET COMPID
-    appendTag(FixConstants::FIX_TAG_TARGET_COMPID);
+    appendTagStringValue(FixConstants::FIX_TAG_TARGET_COMPID, m_targetCompId);
 
-    for(const auto& tagValue : m_tagValuePairs)
+    ////////////////////////////////////////////
+    // BODY TAGS
+    for (const auto& tagValue : m_bodyTagValuePairs)
     {
         auto tagValueKey = tagValue.first;
-        if (tagValueKey == FixConstants::FIX_TAG_VERSION)
-        {
-            continue;
-        }
-
-        if (tagValueKey == FixConstants::FIX_TAG_BODY_LENGTH)
-        {
-            continue;
-        }
-
-        if (tagValueKey == FixConstants::FIX_TAG_MESSAGE_TYPE)
-        {
-            continue;
-        }
-
-        if (tagValueKey == FixConstants::FIX_TAG_SEQUENCE_NUMBER)
-        {
-            continue;
-        }
-
-        if (tagValueKey == FixConstants::FIX_TAG_SENDING_TIME)
-        {
-            continue;
-        }
-
-        if (tagValueKey == FixConstants::FIX_TAG_SENDER_COMPID)
-        {
-            continue;
-        }
-
-        if (tagValueKey == FixConstants::FIX_TAG_TARGET_COMPID)
-        {
-            continue;
-        }
-
-        if (tagValueKey == FixConstants::FIX_TAG_BODY_CHECKSUM)
-        {
-            continue;
-        }
-
         appendTag(tagValueKey);
     }
 
-    // FIX CHECKSUM
-    if (sendingAsMessage)
-    {
-        string checksum;
-        FixMessage::calculateCheckSum(stringOutput, checksum);
-        appendTagValue(FixConstants::FIX_TAG_BODY_CHECKSUM, checksum);
-    }
+    ////////////////////////////////////////////
+    // CHECKSUM
+    string checksum;
+    FixMessage::calculateCheckSum(stringOutput, checksum);
+    appendTagStringValue(FixConstants::FIX_TAG_BODY_CHECKSUM, checksum);
 }
 
 void FixMessage::calculateCheckSum(const string& message, string& checksum)

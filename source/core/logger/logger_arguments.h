@@ -17,8 +17,8 @@ struct LoggerArguments
     std::size_t m_bufferSize;
     std::size_t m_rotationSizeInBytes;
     std::size_t m_writePeriodInMilliSeconds;
-    bool m_copyToStdout;
     LogLevel m_logLevel;
+    bool m_copyToStdout;
     std::string m_memoryMappedFileName;
 
     LoggerArguments() : m_bufferSize{ DEFAULT_LOGGER_RING_BUFFER_SIZE },

@@ -181,7 +181,7 @@ namespace details
 template <typename... Args>
 std::string format(std::string const& formatString, Args&&... args)
 {
-    const std::size_t MAX_BUFFER_SIZE = 1024; // Will throw exception if not enough
+    const std::size_t MAX_BUFFER_SIZE = 2048; // Will throw exception if not enough
     std::unique_ptr<char[]> chars = details::formatImplementation(MAX_BUFFER_SIZE, formatString.c_str(), details::ifStringThenConvertToCharBuffer(args)...);
     return std::string(chars.get());
 }

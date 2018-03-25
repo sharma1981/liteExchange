@@ -3,18 +3,16 @@
 
 #include <cstddef>
 #include <string>
+#include <core/noncopyable.h>
 
 namespace core
 {
 
-class BaseLock
+class BaseLock : public NonCopyable
 {
     public :
-        explicit BaseLock(const std::string lockName = "") : m_lockName(lockName)
-        {
-        }
+        BaseLock(){}
 
-        const std::string getName() const{ return m_lockName;  }
         // We provide those two methods
         // so that the derived classes can work with
         // std::lock_guard or std::unique_lock template classes
@@ -28,8 +26,6 @@ class BaseLock
         // In HP`s systems, there is : pthread_mutexattr_setspin_np : http://h20564.www2.hpe.com/hpsc/doc/public/display?docId=emr_na-c02267594&lang=en-us&cc=us
         // But this does not apply to all distributions
         static const std::size_t DEFAULT_SPIN_COUNT = 0x00000400;
-    private :
-        std::string m_lockName;
 };
 
 } // namespace

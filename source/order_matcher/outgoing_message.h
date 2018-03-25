@@ -9,8 +9,6 @@
 namespace order_matcher
 {
 
-enum class OutgoingMessageType { ACCEPTED, FILLED, PARTIALLY_FIELD, CANCELED, REJECTED };
-
 class OutgoingMessage : public BaseMessage
 {
     public:
@@ -19,41 +17,42 @@ class OutgoingMessage : public BaseMessage
         {
         }
 
-        OutgoingMessage(Order order, OutgoingMessageType type, const std::string& message = "") : BaseMessage(order), m_type(type), m_message(message)
+        OutgoingMessage(Order order, OrderStatus executionType, const std::string& message = "") : BaseMessage(order), m_message(message)
         {
+            // Currently do not support replace/amend orders, therefore last execution status and order status will be same
+            m_order.setOrderStatus(executionType);
+            m_order.setLastExecutionType(executionType);
         }
-
-        bool hasMessage() const { return m_message.length() != 0 ; }
-
-        OutgoingMessageType& getType() { return m_type; }
 
         std::string toString() const override
         {
-            switch (m_type)
+            switch (m_order.getLastExecutionType())
             {
-                case order_matcher::OutgoingMessageType::ACCEPTED:
-                    return "ACCEPTED";
-                    break;
-                case order_matcher::OutgoingMessageType::FILLED:
-                    return "FILLED";
-                    break;
-                case order_matcher::OutgoingMessageType::PARTIALLY_FIELD:
-                    return "PARTIALLY_FIELD";
-                    break;
-                case order_matcher::OutgoingMessageType::CANCELED:
-                    return "CANCELED";
-                    break;
-                case order_matcher::OutgoingMessageType::REJECTED:
-                    return "REJECTED";
-                    break;
-                default:
-                    THROW_PRETTY_INVALID_ARG_EXCEPTION(std::string("Invalid outgoing message type"))
+            case order_matcher::OrderStatus::ACCEPTED:
+                return "ACCEPTED";
+                break;
+            case order_matcher::OrderStatus::FILLED:
+                return "FILLED";
+                break;
+            case order_matcher::OrderStatus::PARTIALLY_FILLED:
+                return "PARTIALLY_FIELD";
+                break;
+            case order_matcher::OrderStatus::CANCELED:
+                return "CANCELED";
+                break;
+            case order_matcher::OrderStatus::REJECTED:
+                return "REJECTED";
+                break;
+            default:
+                THROW_PRETTY_INVALID_ARG_EXCEPTION(std::string("Non supported outgoing message type"))
                     break;
             }
         }
 
+        bool hasMessage() const { return m_message.length() != 0 ; }
+
     private:
-        OutgoingMessageType m_type;
+
         std::string m_message;
 };
 

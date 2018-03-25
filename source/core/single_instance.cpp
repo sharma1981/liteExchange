@@ -2,7 +2,8 @@
 
 #ifdef __linux__
 #include <unistd.h>
-#include <netinet/in.h>
+#include <fcntl.h>
+#include <core/string_utility.h>
 #endif
 
 using namespace std;
@@ -10,24 +11,21 @@ using namespace std;
 namespace core
 {
 
-SingleInstance::SingleInstance(int singleInstancePort)
+SingleInstance::SingleInstance()
 {
 #ifdef __linux__
-    m_socketFD = -1;
-    m_rc = 1;
-    m_port = singleInstancePort;
+    m_fd = 0;
 #elif _WIN32
-    m_mutex = CreateMutex(NULL, FALSE, "VERY_UNIQUE"); //do early
-    m_lastError = GetLastError(); //save for use later...
+    m_mutex = nullptr;
 #endif
 }
 
 SingleInstance::~SingleInstance()
 {
 #ifdef __linux__
-    if (m_socketFD != -1)
+    if (m_fd > 0)
     {
-        close(m_socketFD);
+        unlink(m_filePath.c_str());
     }
 #elif _WIN32
     if (m_mutex)
@@ -41,27 +39,24 @@ SingleInstance::~SingleInstance()
 bool SingleInstance::operator()()
 {
 #ifdef __linux__
-    if (m_socketFD == -1 || m_rc)
-    {
-        m_socketFD = -1;
-        m_rc = 1;
+    struct flock fl;
 
-        if ((m_socketFD = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
-        {
-            //Could not create socket
-            return false;
-        }
-        else
-        {
-            struct sockaddr_in name;
-            name.sin_family = AF_INET;
-            name.sin_port = htons (m_port);
-            name.sin_addr.s_addr = htonl (INADDR_ANY);
-            m_rc = bind (m_socketFD, (struct sockaddr *) &name, sizeof (name));
-        }
+    m_filePath = core::format("%s/%s", getenv("HOME"), SINGLE_INSTANCE_LOCK);
+
+    m_fd = open(m_filePath.c_str(), O_RDWR | O_CREAT, 0600);
+
+    fl.l_start = 0;
+    fl.l_len = 0;
+    fl.l_type = F_WRLCK;
+    fl.l_whence = SEEK_SET;
+    if (fcntl(m_fd, F_SETLK, &fl) < 0)
+    {
+        return false;
     }
-    return (m_socketFD != -1 && m_rc == 0);
+    return true;
 #elif _WIN32
+    m_mutex = CreateMutex(NULL, FALSE, SINGLE_INSTANCE_LOCK);
+    m_lastError = GetLastError();
     return (ERROR_ALREADY_EXISTS == m_lastError)?false:true;
 #endif
 }

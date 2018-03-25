@@ -7,11 +7,11 @@
 #include <core/memory/cpu_memory.h>  // To see if cache line we are running on
                                      // matches the compiled one
 
-#include <core/self_process.h>       // To check whether we are root/admin or not
+#include <memory>
 
-#include <iostream>
-
+#include <core/self_process.h>
 #include <core/single_instance.h>
+
 #include <core/logger/logger.h>
 #include <core/file_utility.h>
 
@@ -26,96 +26,77 @@ using namespace std;
 
 int main ()
 {
-    /////////////////////////////////////////////////////////////////////////////////////////
     // Initial checks
     if (core::getCPUCacheLineSize() != CACHE_LINE_SIZE)
     {
         auto message = core::format("This executable compiled for cache line size %d , but you are running on a CPU with a cache line of %d", CACHE_LINE_SIZE, core::getCPUCacheLineSize());
-        onError(message, ServerError::NON_SUPPORTED_EXECUTION);
+        onError(ServerError::NON_SUPPORTED_EXECUTION, message);
+    }
+
+    // Single instance protection
+    core::SingleInstance singleInstance;
+    if (singleInstance() == false )
+    {
+        onError(ServerError::ALREADY_RUNNING);
     }
 
     if (core::SelfProcess::amIAdmin() == false)
     {
         // Mainly needed for ability to set thread priorities
         core::consoleOutputWithColor(core::ConsoleColor::FG_RED, " WARNING : Program didn`t start with admin/root rights. Therefore will not be able to modify thread priorities.\n");
-        core::pressAnyKeyToContinue();
     }
-
-    // Set current working directory as current executable`s directory
-    core::SelfProcess::setCurrentWorkingDirectory(core::SelfProcess::getCurrentExecutableDirectory());
 
     // Load configuration file
     ServerConfiguration serverConfiguration;
+
     try
     {
+        // Set current working directory as current executable`s directory
+        core::SelfProcess::setCurrentWorkingDirectory(core::SelfProcess::getCurrentExecutableDirectory());
+
         serverConfiguration.load(server_constants::CONFIGURATION_FILE);
-    }
-    catch (const std::invalid_argument & e)
-    {
-        onError(e.what(), ServerError::INVALID_CONFIG_FILE);
-    }
-    catch (const std::runtime_error & e)
-    {
-        onError(e.what(), ServerError::INVALID_CONFIG_FILE);
-    }
-    catch (const std::bad_alloc &)
-    {
-        onError("Insufficient memory", ServerError::INSUFFICIENT_MEMORY);
-    }
-    catch (...)
-    {
-        onError("Unknown exception occured", ServerError::UNKNOWN_PROBLEM);
-    }
 
-    // Single instance protection
-    core::SingleInstance singleton(serverConfiguration.getSingleInstancePortNumber());
+        // Set process priority
+        core::SelfProcess::setPriority(core::SelfProcess::getProcessPriorityFromString(serverConfiguration.getProcessPriority()));
 
-    if ( !singleton() )
-    {
-        onError("Ome process is running already.", ServerError::ALREADY_RUNNING);
-    }
-
-    // Set process priority
-    core::SelfProcess::setPriority(core::SelfProcess::getProcessPriorityFromString(serverConfiguration.getProcessPriority()));
-
-    // Start and run the server
-    try
-    {
         // Start logger if enabled
         core::Logger::getInstance()->initialise(serverConfiguration.getLoggerConfiguration());
         core::Logger::getInstance()->start();
         LOG_INFO("Main thread", "starting")
 
-        if ( serverConfiguration.getOfflineOrderEntryFile().length() == 0)
+        unique_ptr<ServerBase> server;
+
+        if (serverConfiguration.getOrderEntryMode() == "FIX")
         {
             // FIX SERVER MODE
-            ServerFix application(server_constants::FIX_ENGINE_CONFIG_FILE, serverConfiguration);
-            application.run();
+            server.reset(new ServerFix(serverConfiguration));
         }
         else
         {
             // OFFLINE ORDER ENTRY MODE
-            ServerOffline application(serverConfiguration);
-            application.run();
+            server.reset(new ServerOffline(serverConfiguration));
         }
+
+        server->run();
+
     }
     catch (const std::invalid_argument & e)
     {
-        onError(e.what(), ServerError::RUNTIME_ERROR);
+        onError(ServerError::RUNTIME_ERROR, e.what());
     }
     catch (const std::runtime_error & e)
     {
-        onError(e.what(), ServerError::RUNTIME_ERROR);
+        onError(ServerError::RUNTIME_ERROR, e.what());
     }
-    catch (const std::bad_alloc & )
+    catch (const std::bad_alloc &)
     {
-        onError("Insufficient memory", ServerError::INSUFFICIENT_MEMORY);
+        onError(ServerError::INSUFFICIENT_MEMORY);
     }
     catch (...)
     {
-        onError("Unknown exception occured", ServerError::UNKNOWN_PROBLEM);
+        onError(ServerError::UNKNOWN_PROBLEM);
     }
-    //////////////////////////////////////////
+
     // Application exit
     LOG_INFO("Main thread", "Ending")
     core::Logger::getInstance()->shutdown();

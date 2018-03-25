@@ -15,12 +15,14 @@
 
 #include <core/pretty_exception.h>
 
+#include <fix/fix_server_configuration.h>
+
 class ServerConfiguration
 {
     public :
 
         ServerConfiguration()
-        : m_singleInstanceTCPPortNumber{ 0 }, m_outgoingMessageQueueSizePerThread{ 0 }, m_isMatchingMultithreaded{ false }
+        : m_outgoingMessageQueueSizePerThread{ 0 }, m_isMatchingMultithreaded{ false }
         {
         }
 
@@ -29,13 +31,34 @@ class ServerConfiguration
             core::Configuration configuration;
             core::Configuration::loadFromFile(configurationFile, configuration);
 
-            m_singleInstanceTCPPortNumber = configuration.getIntValue(server_constants::CONFIGURATION_FILE_SINGLE_INSTANCE_TCP_PORT, server_constants::CONFIFURATION_DEFAULT_SINGLE_INSTANCE_TCP_PORT);
             m_processPriority = configuration.getStringValue(server_constants::CONFIGURATION_FILE_PROCESS_PRIORITY, server_constants::CONFIGURATION_DEFAULT_PROCESS_PRIORITY);
 
-            if (configuration.doesAttributeExist(server_constants::CONFIGURATION_FILE_OFFLINE_ORDER_ENTRY_FILE))
-            {
-                m_offlineOrderEntryFile = configuration.getStringValue(server_constants::CONFIGURATION_FILE_OFFLINE_ORDER_ENTRY_FILE);
-            }
+            // ORDER ENTRY MODE
+            m_orderEntryMode = configuration.getStringValue(server_constants::CONFIGURATION_FILE_ORDER_ENTRY_MODE, "FIX");
+
+            // Offline order entry configuration
+            m_offlineOrderEntryFile = configuration.getStringValue(server_constants::CONFIGURATION_FILE_OFFLINE_ORDER_ENTRY_FILE);
+            m_offlineOrderEntryOutputFile = configuration.getStringValue(server_constants::CONFIGURATION_FILE_OFFLINE_ORDER_ENTRY_OUTPUT_FILE);
+
+            // Fix server configuration
+            m_fixServerConfiguration.m_tcpDisableNagle = configuration.getBoolValue(server_constants::CONFIGURATION_FILE_TCP_DISABLE_NAGLE, true);
+            m_fixServerConfiguration.m_tcpQuickAck = configuration.getBoolValue(server_constants::CONFIGURATION_FILE_TCP_QUICK_ACK, true);
+            m_fixServerConfiguration.m_tcpPendingConnectionSize = configuration.getIntValue(server_constants::CONFIGURATION_FILE_TCP_PENDING_CONNECTION_SIZE, DEFAULT_TCP_PENDING_CONNECTION_SIZE);
+            m_fixServerConfiguration.m_tcpSocketOptionReceiveBufferSize = configuration.getIntValue(server_constants::CONFIGURATION_FILE_TCP_SOCKET_OPTION_RECEIVE_BUFFER_SIZE, DEFAULT_SOCKET_OPTION_RECV_BUFFER_SIZE);
+            m_fixServerConfiguration.m_tcpSocketOptionSendBufferSize = configuration.getIntValue(server_constants::CONFIGURATION_FILE_TCP_SOCKET_OPTION_SEND_BUFFER_SIZE, DEFAULT_SOCKET_OPTION_SEND_BUFFER_SIZE);
+            m_fixServerConfiguration.m_tcpPollTimeoutMicroseconds = configuration.getIntValue(server_constants::CONFIGURATION_FILE_TCP_POLL_TIMEOUT_MICROSECONDS, DEFAULT_POLL_TIMEOUT_MICROSECONDS);
+            m_fixServerConfiguration.m_tcpPollMaxEvents = configuration.getIntValue(server_constants::CONFIGURATION_FILE_TCP_POLL_MAX_EVENTS, DEFAULT_POLL_MAX_EVENTS);
+
+            m_fixServerConfiguration.m_reactorThreadPriority = core::getThreadPriorityFromString(configuration.getStringValue(server_constants::CONFIGURATION_FILE_REACTOR_THREAD_PRIORITY));
+            m_fixServerConfiguration.m_reactorThreadCpuId = configuration.getIntValue(server_constants::CONFIGURATION_FILE_REACTOR_THREAD_CPU_ID, -1);
+            m_fixServerConfiguration.m_reactorThreadStackSize = configuration.getIntValue(server_constants::CONFIGURATION_FILE_REACTOR_THREAD_STACK_SIZE, 0);
+
+            m_fixServerConfiguration.m_fixCompId = configuration.getStringValue(server_constants::CONFIGURATION_FILE_FIX_SERVER_COMP_ID);
+            m_fixServerConfiguration.m_fixAddress = configuration.getStringValue(server_constants::CONFIGURATION_FILE_FIX_SERVER_ADDRESS);
+            m_fixServerConfiguration.m_fixPort = configuration.getIntValue(server_constants::CONFIGURATION_FILE_FIX_SERVER_PORT);
+            m_fixServerConfiguration.m_fixTimePrecision = core::getSubsecondsFromString(configuration.getStringValue(server_constants::CONFIGURATION_FILE_FIX_SERVER_TIME_PRECISION, "MICROSECONDS"));
+            m_fixServerConfiguration.m_fixReceiveCacheSize = configuration.getIntValue(server_constants::CONFIGURATION_FILE_FIX_SERVER_RECEIVE_CACHE_SIZE, 0);
+            m_fixServerConfiguration.m_fixSequenceNumberValidation = configuration.getBoolValue(server_constants::CONFIGURATION_FILE_FIX_SERVER_SEQUENCE_NUMBER_VALIDATION, true);
 
             // Get logger configuration
             m_loggerConfiguration.m_copyToStdout = configuration.getBoolValue(server_constants::CONFIGURATION_FILE_LOGGER_COPY_TO_STDOUT, false);
@@ -68,26 +91,41 @@ class ServerConfiguration
 
             // Get outgoing message processor configuration
             m_outgoingMessageQueueSizePerThread = configuration.getIntValue(server_constants::CONFIGURATION_FILE_OUTGOING_MESSAGE_QUEUE_SIZE_PER_THREAD, server_constants::CONFIGURATION_DEFAULT_OUTGOING_MESSAGE_QUEUE_SIZE_PER_THREAD);
+            m_outgoingMessageThreadCpuId = configuration.getIntValue(server_constants::CONFIGURATION_FILE_OUTGOING_MESSAGE_QUEUE_THREAD_CPU_ID, -1);
+            outgoingMessageThreadStackSize = configuration.getIntValue(server_constants::CONFIGURATION_FILE_OUTGOING_MESSAGE_QUEUE_THREAD_STACK_SIZE, 0);
+            m_outgoingMessageThreadPriority = core::getThreadPriorityFromString(configuration.getStringValue(server_constants::CONFIGURATION_FILE_OUTGOING_MESSAGE_QUEUE_THREAD_PRIORITY, "NORMAL"));
         }
 
-        int getSingleInstancePortNumber() const{ return m_singleInstanceTCPPortNumber; }
-        int getOutgoingMessageQueueSizePerThread()const { return m_outgoingMessageQueueSizePerThread; }
-        std::string getProcessPriority() const { return m_processPriority;  }
+        const std::string getOrderEntryMode() const { return m_orderEntryMode; }
+        const std::string getProcessPriority() const { return m_processPriority;  }
         bool getMatchingMultithreadingMode() const { return m_isMatchingMultithreaded; }
         core::ThreadPoolArguments getThreadPoolArguments() const { return m_threadPoolArguments; }
         std::vector<std::string> getSymbols() const { return m_symbols;  }
-        std::string getOfflineOrderEntryFile() const { return m_offlineOrderEntryFile; }
-        core::LoggerArguments getLoggerConfiguration() const { return m_loggerConfiguration; }
+        const std::string getOfflineOrderEntryFile() const { return m_offlineOrderEntryFile; }
+        const std::string getOfflineOrderEntryOutputFile() const { return m_offlineOrderEntryOutputFile; }
+        core::LoggerArguments& getLoggerConfiguration() { return m_loggerConfiguration; }
+        const fix::FixServerConfiguration getFixServerConfiguration() const { return m_fixServerConfiguration;  }
+
+        int getOutgoingMessageQueueSizePerThread()const { return m_outgoingMessageQueueSizePerThread; }
+        int getOutgoingMessageThreadCPUId()const { return m_outgoingMessageThreadCpuId; }
+        int getOutgoingMessageThreadStackSize()const { return outgoingMessageThreadStackSize; }
+        core::ThreadPriority getOutgoingMessageThreadPriority()const { return m_outgoingMessageThreadPriority; }
+
 
     private :
-        int m_singleInstanceTCPPortNumber;
         int m_outgoingMessageQueueSizePerThread;
+        int m_outgoingMessageThreadCpuId;
+        int outgoingMessageThreadStackSize;
+        core::ThreadPriority m_outgoingMessageThreadPriority;
+        std::string m_orderEntryMode;
         std::string m_processPriority;
         std::string m_offlineOrderEntryFile;
+        std::string m_offlineOrderEntryOutputFile;
         bool m_isMatchingMultithreaded;
         core::ThreadPoolArguments m_threadPoolArguments;
         std::vector<std::string> m_symbols;
         core::LoggerArguments m_loggerConfiguration;
+        fix::FixServerConfiguration m_fixServerConfiguration;
 };
 
 

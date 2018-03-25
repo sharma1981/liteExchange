@@ -1,11 +1,9 @@
 #include <utility>
-#include <algorithm>
 #include <type_traits>
+#include <iostream>
 
 #include "logger.h"
-
-#include <core/logger/console_sink.hpp>
-#include <core/logger/memory_mapped_file_sink.hpp>
+#include "memory_mapped_file_backend.hpp"
 
 using namespace std;
 
@@ -26,26 +24,21 @@ void Logger::initialise(const LoggerArguments& configuration)
     // Memory mapped file sink
     if (configuration.m_memoryMappedFileName.length() > 0)
     {
-        auto memoryMappedFileSink = new MemoryMappedFileSink();
-        memoryMappedFileSink->setResourceName(configuration.m_memoryMappedFileName);
-        memoryMappedFileSink->setRotationSize(configuration.m_rotationSizeInBytes);
-        m_sinks.emplace_back(std::move(memoryMappedFileSink));
+        m_backendEnabled = true;
+        m_backend.setResourceName(configuration.m_memoryMappedFileName);
+        m_backend.setRotationSize(configuration.m_rotationSizeInBytes);
     }
 
-    // Console sink if specified
-    if (configuration.m_copyToStdout)
-    {
-        m_sinks.emplace_back(std::move(new  ConsoleSink));
-    }
+    m_copyToStdout = configuration.m_copyToStdout;
 }
 
-void Logger::log(const LogLevel level, const string& sender, const string& message, const string& sourceCode, const string& sourceCodeLineNumber)
+void Logger::log(const LogLevel level, const string& sender, const string& message)
 {
     auto logLevel = static_cast<std::underlying_type<LogLevel>::type >(level);
 
     if (m_logLevel >= logLevel)
     {
-        LogEntry entry(level, sender, message, sourceCode, sourceCodeLineNumber);
+        LogEntry entry(level, sender, message);
         pushLogToLogBuffer(entry);
     }
 }
@@ -57,16 +50,32 @@ void Logger::pushLogToLogBuffer(const LogEntry& log)
 
 void* Logger::run()
 {
-    // Open all sinks
-    std::for_each(m_sinks.begin(), m_sinks.end(), [](std::unique_ptr<BaseLoggerSink>& sink){sink->open(); });
+    if ( m_backendEnabled == false && m_copyToStdout == false)
+    {
+        return nullptr; // Early exit
+    }
+
+    // Open backend
+    if (m_backendEnabled)
+    {
+        m_backend.open();
+    }
 
     while ( true )
     {
         while (m_buffer->count() > 0)
         {
             auto log = m_buffer->pop();
-            // Process all sinks
-            std::for_each(m_sinks.begin(), m_sinks.end(), [&log](std::unique_ptr<BaseLoggerSink>& sink){sink->process(log); });
+
+            if (m_backendEnabled)
+            {
+                m_backend.process(log);
+            }
+
+            if (m_copyToStdout)
+            {
+                std::cout << log.getMessage() << std::endl;
+            }
         }
 
         if (isFinishing() == true)
@@ -77,8 +86,11 @@ void* Logger::run()
         applyWaitStrategy(m_writePeriodInMicroseconds);
     }
 
-    // Close all sinks
-    std::for_each(m_sinks.begin(), m_sinks.end(), [](std::unique_ptr<BaseLoggerSink>& sink){sink->close(); });
+    // Close backend
+    if (m_backendEnabled)
+    {
+        m_backend.close();
+    }
 
     return nullptr;
 }

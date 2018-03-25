@@ -10,8 +10,21 @@ using namespace std;
 namespace order_matcher
 {
 
-Order::Order(string clientOrderID, size_t securityId, string owner, string target, OrderSide side, OrderType type, double price, long quantity)
-: m_clientOrderID(clientOrderID), m_securityId(securityId), m_owner(owner), m_target(target), m_side(side), m_orderType(type), m_price(price), m_quantity(quantity)
+Order::Order()
+{
+    m_price = 0;
+    m_quantity = 0;
+    m_openQuantity = 0;
+    m_executedQuantity = 0;
+    m_averageExecutedPrice = 0;
+    m_lastExecutedPrice = 0;
+    m_lastExecutedQuantity = 0;
+    m_orderStatus = OrderStatus::ACCEPTED;
+    m_lastExecution = OrderStatus::ACCEPTED;
+}
+
+Order::Order(size_t orderId, string clientOrderID, size_t securityId, size_t sessionId, OrderSide side, OrderType type, double price, long quantity)
+: m_orderID(orderId), m_clientOrderID(clientOrderID), m_securityId(securityId), m_sessionId(sessionId), m_side(side), m_orderType(type), m_price(price), m_quantity(quantity)
 {
     m_openQuantity = m_quantity;
     m_executedQuantity = 0;
@@ -19,6 +32,8 @@ Order::Order(string clientOrderID, size_t securityId, string owner, string targe
     m_averageExecutedPrice = 0;
     m_lastExecutedPrice = 0;
     m_lastExecutedQuantity = 0;
+    m_orderStatus = OrderStatus::ACCEPTED;
+    m_lastExecution = OrderStatus::ACCEPTED;
 }
 
 void Order::execute(double price, long quantity)
@@ -36,7 +51,7 @@ void Order::execute(double price, long quantity)
 string Order::toString() const
 {
     string side = m_side == OrderSide::BUY ? "BUY" : "SELL";
-    string ret = core::format("Client: %s, Client ID: %s, Symbol: %s, Side: %s", m_owner, m_clientOrderID, SecurityManager::getInstance()->getSecurityName(m_securityId), side);
+    string ret = core::format("Client session id: %d, Client ID: %s, Symbol: %s, Side: %s", m_sessionId, m_clientOrderID, SecurityManager::getInstance()->getSecurityName(m_securityId), side);
     return ret;
 }
 

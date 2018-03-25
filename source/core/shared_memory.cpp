@@ -60,6 +60,7 @@ void SharedMemory::close()
     m_size = 0;
     m_buffer = nullptr;
     m_writtenSize = 0;
+    m_readSize = 0;
 }
 
 bool SharedMemory::open(string name, size_t maxSize, bool createFile, bool ipc, bool buffered)

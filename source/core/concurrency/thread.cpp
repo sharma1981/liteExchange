@@ -18,11 +18,15 @@ using namespace std;
 namespace core
 {
 
-Thread::Thread(const string& name) : m_task{ nullptr }, m_name(name), m_started{ false }, m_joined{ false }, m_threadID{ 0 }, m_priority{ThreadPriority::NORMAL}
+vector<Thread*> Thread::THREADS;
+
+Thread::Thread(const string& name) : m_task{ nullptr }, m_name(name), m_started{ false },
+m_joined{ false }, m_threadID{ 0 }, m_priority{ ThreadPriority::NORMAL }
 {
 #ifdef _WIN32
     m_threadHandle = nullptr;
 #endif
+    Thread::THREADS.emplace_back(this);
 }
 
 Thread::~Thread()
