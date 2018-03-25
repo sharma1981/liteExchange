@@ -3,7 +3,7 @@ function initialise()
   $source = @"
   using System;
   
-     public class FixConstants
+    public class FixConstants
     {
         // GENERAL
         public const char FIX_EQUALS = '=';
@@ -15,6 +15,8 @@ function initialise()
         public const string FIX_VERSION_4_3 = "FIX.4.3";
         public const string FIX_VERSION_4_4 = "FIX.4.4";
         public const string FIX_VERSION_5_0 = "FIX.5.0";
+		public const string FIX_VERSION_5_0SP1 = "FIX.5.0SP1";
+		public const string FIX_VERSION_5_0SP2 = "FIX.5.0SP2";
         // TAGS
         public const int FIX_AVERAGE_PRICE = 6;
         public const int FIX_TAG_VERSION = 8;
@@ -1059,13 +1061,9 @@ function initialise()
             {
 				Console.WriteLine(fixOrdersFile);
                 var orders = FixMessage.loadFromFile(fixOrdersFile);
-				Console.WriteLine("1.2");
                 string currentCompId = compIdBase + (i + 1).ToString();
-				Console.WriteLine("1.3");
                 FixAutomationClient currentFixClient = new FixAutomationClient();
-				Console.WriteLine("2");
                 currentFixClient.initialise(fixVersion, address, port, currentCompId, "", targetCompid, "");
-				Console.WriteLine("3");
                 currentFixClient.setOrders(orders);
                 m_fixClients.Add(currentFixClient);
             }

@@ -1,9 +1,9 @@
 # Concurrent Order Matching Engine
 <td><img src="https://img.shields.io/badge/LICENCE-PUBLIC%20DOMAIN-green.svg" alt="Licence badge"></td>
 
-| - | Linux GCC | Windows MSVC |
-|:------:|:------:|:------:|
-|Build|[![Build Status](https://travis-ci.org/akhin/concurrent-order-matching-engine.svg?branch=master)](https://travis-ci.org/akhin/concurrent-order-matching-engine)|[![Build status](https://ci.appveyor.com/api/projects/status/hw8s5o46kcgr388l?svg=true)](https://ci.appveyor.com/project/akhin/cpp-multithreaded-order-matching-engine)|
+| Linux GCC | Windows MSVC |
+|:------:|:------:|
+|[![Build Status](https://travis-ci.org/akhin/concurrent-order-matching-engine.svg?branch=master)](https://travis-ci.org/akhin/concurrent-order-matching-engine)|[![Build status](https://ci.appveyor.com/api/projects/status/hw8s5o46kcgr388l?svg=true)](https://ci.appveyor.com/project/akhin/cpp-multithreaded-order-matching-engine)|
 
 * Sections
 	* [1. Introduction and features](#Introduction)
@@ -41,7 +41,7 @@ Some features can be seen in the table below :
 | Exec report types			    | Accepted, Filled, PartiallyFilled, Rejected, Canceled |
 | TIF                           | Not supported       			                        |
 | Symbology                     | Uses tag 55, no validations ,examples use RIC codes   |
-| FIX Admin messages			| Responds to heartbeats and test requests (35=1)       |
+| Supported FIX Admin messages	| Heartbeats, test requests (35=1), trader logons       |
 
 Technical implementation details are as below : 
 
@@ -69,7 +69,7 @@ The core of order matching layer is called the central order book, which keeps o
 2. Central order book uses a thread pool , processes messages and pushes results to SPSC queues of outgoing message processor per symbol.
 3. Outgoing message procesor sends execution reports to the FIX clients.
 
-Please note that FIX library is not a full implemenatation. It does minimal validations. The only validations done are sequence number checks 
+Please note that FIX library is not a full implementation. It does minimal validations. The only validations done are sequence number checks 
 and required tags.
 
 ## <a name="LowLatency">**3. Low latency features and how it can be improved:** 
@@ -92,7 +92,7 @@ and required tags.
 	
 	* Threads : Pinning threads to specified CPU cores , setting thread stack size and specifying OS-level thread priority are configurable in ini file
 
-	* Locks : Project mostly uses spinlock. Its waiting strategy ( busy-wait, sleep or yield ) is configurable in code
+	* Locks : Project mostly uses spinlock. You can set the spincout or enable yielding in code.
 
 * However there are so many more that can be improved , some very obvious ones :
 
@@ -108,13 +108,13 @@ For Linux , the project is built and tested with GCC4.8 on CentOS7 and Ubuntu.
 
 For running on Linux , make sure you have GNU Libstd C++ 6 runtime in your Linux distribution
 	
-		CentOS : 	First find out package name for your architecture
+		CentOS :    First find out package name for your architecture
 		
-						yum whatprovides libstdc++.so.6
+					    yum whatprovides libstdc++.so.6
 				
-					Then yum install the package you found
+				    Then yum install the package you found
 		
-		Ubuntu :	sudo apt-get install libstdc++6
+		Ubuntu :    sudo apt-get install libstdc++6
 
 As for Windows you can build with MSVC141(VS2017).
 
@@ -314,7 +314,7 @@ It internally uses C# to implement FIX protocol.
 
 The project uses GoogleTest 1.7. You can find a makefile and vcproj under "unit_test" directory.
     
-Building and running unit test on Linux : You can either use Makefile or Netbeans project files under "unit_test" directory.
+Building and running unit test on Linux : You can use Makefile under "unit_test" directory.
 
 Building and running unit test on Windows : You can use VisualStudio solution in "unit_test" directory.
 

@@ -26,7 +26,6 @@ class FixMessageConverter
         {
             convertCommonOrder(message, order);
 
-
             order.setOrderType(order_matcher::OrderType::LIMIT);
 
             auto side = message.getTagValueAsInt(fix::FixConstants::FIX_TAG_ORDER_SIDE);
