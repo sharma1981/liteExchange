@@ -5,7 +5,7 @@
 * Sections
 	* [1. Introduction and features](#Introduction)
     * [2. Overview of architecture and multithreading system](#Overview)
-	* [3. Low latency features and how it can be improved] (#LowLatency)
+	* [3. Low latency features and how it can be improved](#LowLatency)
     * [4. Build and runtime dependencies](#Dependencies)
 	* [5. How to build](#HowToBuild)
 	* [6. Configuring and running the server](#Configuration)
