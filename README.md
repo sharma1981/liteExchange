@@ -1,6 +1,7 @@
 <td><img src="https://img.shields.io/badge/LICENCE-PUBLIC%20DOMAIN-green.svg" alt="Licence badge"></td>
 
-[![Build status](https://ci.appveyor.com/api/projects/status/hw8s5o46kcgr388l?svg=true)](https://ci.appveyor.com/project/akhin/cpp-multithreaded-order-matching-engine)
+Linux [![Build Status](https://travis-ci.org/akhin/concurrent-order-matching-engine.svg?branch=master)](https://travis-ci.org/akhin/concurrent-order-matching-engine)
+Windows [![Build status](https://ci.appveyor.com/api/projects/status/hw8s5o46kcgr388l?svg=true)](https://ci.appveyor.com/project/akhin/cpp-multithreaded-order-matching-engine)
 
 * Sections
 	* [1. Introduction and features](#Introduction)
@@ -15,7 +16,6 @@
 	* [10. Utility scripts](#UtilityScripts)
 	* [11. Coding and other guidelines](#CodingGuideline)
 	* [12. Code structure](#CodeStructure)
-	* [13. Continous integration](#ContinousIntegration)
           
 ## <a name="Introduction"></a>**1. Introduction:** 
 It is a cross platform (Linux/Windows) multithreaded order matching engine written in C++11 using FIX protocol. 
@@ -395,7 +395,3 @@ fix : It mainly uses core/network and core/concurrency. It is the FIX implemenat
 order_matcher : Order matcher layer is the heart of project. It knows nothing about FIX protocol but has its own order,  incoming message and outgoing message classes.
 
 server : This layer is the layer that uses FIX layer to receive FIX orders and submit to the central order book in the order matcher layer. Then it receives results from the central order book and sends them to the outgoing message processor.
-
-## <a name="ContinousIntegration">**13. Continous integration:**
-
-For the time being , online CI has been setup for only MSVC using Appveyor. Planning to add GCC based online CI with TravisCI.
