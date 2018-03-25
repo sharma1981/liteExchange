@@ -74,32 +74,31 @@ and required tags.
 
 Non-configurable low latency features are as below : 
 
-	Network IO model : Using Epoll to avoid context switching costs
+	- Network IO model : Using Epoll to avoid context switching costs
 
-	Memory allocations : Allocations in critical path are aligned to CPU cache line size.
+	- Memory allocations : Allocations in critical path are aligned to CPU cache line size.
 	
-	Logger : Logger uses memory mapped file/shared memory
+	- Logger : Logger uses memory mapped file/shared memory
 	
-	Lockfree thread safe containers : It uses bounded SPSC lockfree. Currently only logger uses a lock based MPMC unbounded queue.
+	- Lockfree thread safe containers : It uses bounded SPSC lockfree. Currently only logger uses a lock based MPMC unbounded queue.
 
 The project has some configurable low latency features :
 
-	TCP sockets : socket buffer sizes, Nagle algorithm , TCP quick ack
+	- TCP sockets : socket buffer sizes, Nagle algorithm , TCP quick ack
 	
-	TCP Epoll settings : Max number of events , epoll timeout
+	- TCP Epoll settings : Max number of events , epoll timeout
 	
-	Threads : You can pin each thread to CPU , set thread stack size and specify OS-level thread priority
+	- Threads : You can pin each thread to CPU , set thread stack size and specify OS-level thread priority
 
-	Locks : Project mostly uses spinlock. Its waiting strategy ( busy-wait or sleep ) is configurable in code
+	- Locks : Project mostly uses spinlock. Its waiting strategy ( busy-wait or sleep ) is configurable in code
 
 However there are so many more that can be improved , some very obvious ones :
 
-	Object pools : Currently no pooling for FIX message or order object instances
+	- Object pools : Currently no pooling for FIX message or order object instances
 	
-	Memory allocations : Project could benefit from preallocating everything in critical path.
+	- Memory allocations : Project could benefit from preallocating everything in critical path.
 	
-	Data oriented design : Currenty order class in order books suffers from cache misses. If the order class is split into core order ( price-side-symbol ) and other order data,
-	the matching engine would gain a lot of speed by avoiding cache misses
+	- Data oriented design : Currenty order class in order books suffers from cache misses. If the order class is split into core order ( price-side-symbol ) and other order data,	the matching engine would gain a lot of speed by avoiding cache misses
 
 ## <a name="Dependencies">**4. Build and runtime dependencies:** 
 
@@ -132,9 +131,13 @@ How to build the project on Linux :
     or if you want to make a parallel build :
     ./build_in_parallel.sh release
 
-How to debug the project on Linux using VisualStudio code: Build the project for debug mode and open the source directory and VisualStudioCode. Source directory provides a launch.json supporting GCC on Linux and MSVC on Windows. Therefore choose GDB in VSCode debug options before starting debugging and then press F5.
+How to debug the project on Linux using VisualStudio code: 
 
-How to build the project on Linux from Windows with Visual Studio  : You will need to install Linux C++ feature during VS2017 installation. Then after making sure that your Linux has SSH, you will need your Linux machine SSH details to your Visual Studio. After that you will be able to build and debug on remote Linux. For details please see https://nativecoding.wordpress.com/2018/02/24/visual-studio-for-existing-remote-linux-c-projects/
+Build the project for debug mode and open the source directory and VisualStudioCode. Source directory provides a launch.json supporting GCC on Linux and MSVC on Windows. Therefore choose GDB in VSCode debug options before starting debugging and then press F5.
+
+How to build the project on Linux from Windows with Visual Studio  : 
+
+You will need to install Linux C++ feature during VS2017 installation. Then after making sure that your Linux has SSH, you will need your Linux machine SSH details to your Visual Studio. After that you will be able to build and debug on remote Linux. For details please see https://nativecoding.wordpress.com/2018/02/24/visual-studio-for-existing-remote-linux-c-projects/
 
 How to build the project on Windows with Visual Studio  :
     
