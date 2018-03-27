@@ -87,8 +87,9 @@ Non-configurable low latency features are as below :
 | --------------------|:--------------------------------------------------------------------:|
 | Network/IO model    | Using Epoll to avoid context switching costs					     |
 | Memory allocations  | Critical ones aligned to CPU cache line size to avoid false sharing  |
+| Contention		  | Design based on bounded SPSC lockfree containers except the logger   |
+| Lockfree 			  | SPSC lockfree container uses relaxed memory 					     |
 | Logger			  | Logger uses memory mapped file/shared memory						 |
-| Lockfree containers | Uses bounded SPSC lockfree. Only logger uses a lock based MPMC queue |
 
 The configurable low latency features :
 
@@ -107,6 +108,8 @@ The configurable low latency features :
 	* Memory allocations : Project can benefit from preallocating everything in critical path.
 	
 	* Data oriented design : Currenty order class in order books suffers from cache misses. If the order class is split into core order ( price-side-symbol ) and other order data,	the matching engine would gain a lot of speed by avoiding cache misses
+	
+	* Cache-aware algorithm : Order book implementation uses std::multimap which is known to use red-black which is controversial when it comes to be cache friendly : https://news.ycombinator.com/item?id=7513896 
 
 ## <a name="Dependencies">**4. Build and runtime dependencies:** 
 
