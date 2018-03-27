@@ -30,7 +30,7 @@ It does not use any 3rd party libraries and uses its own concurrency and network
 
 Its core libraries such as concurrency and networking is designed to be as configurable as possible for low latency purposes. 
 
-Some features can be seen in the table below :
+Electronic trading features can be seen in the table below :
 
 | Feature                       | Details                                               |
 | ----------------------------- |:-----------------------------------------------------:|
@@ -40,8 +40,18 @@ Some features can be seen in the table below :
 | Order message types           | NewOrder, Cancel                                      |
 | Exec report types			    | Accepted, Filled, PartiallyFilled, Rejected, Canceled |
 | TIF                           | Not supported       			                        |
-| Symbology                     | Uses tag 55, no validations ,examples use RIC codes   |
+| Securities                    | Supported symbols defined in configuration file	    |
+
+Fix implementation details can be seen as below :
+
+| Feature                       | Details                                               |
+| ----------------------------- |:-----------------------------------------------------:|
+| Versions						| Agnostic , accepts all non-binary ones				|
 | Supported FIX Admin messages	| Heartbeats, test requests (35=1), trader logons       |
+| Header tags                   | Only mandatory ones                                   |
+| Validations		           	| Compid, sequence number (optional), required tags     |
+| Sequence management			| Saves and restores sequence numbers from files		|
+| Symbology						| Uses tag 55, no validations, examples use RIC codes	|
 
 Technical implementation details are as below : 
 
@@ -69,30 +79,26 @@ The core of order matching layer is called the central order book, which keeps o
 2. Central order book uses a thread pool , processes messages and pushes results to SPSC queues of outgoing message processor per symbol.
 3. Outgoing message procesor sends execution reports to the FIX clients.
 
-Please note that FIX library is not a full implementation. It does minimal validations. The only validations done are sequence number checks 
-and required tags.
-
 ## <a name="LowLatency">**3. Low latency features and how it can be improved:** 
 
-* Non-configurable low latency features are as below : 
+Non-configurable low latency features are as below : 
 
-	* Network IO model : Using Epoll to avoid context switching costs
+| Feature             | Details                                                              |
+| --------------------|:--------------------------------------------------------------------:|
+| Network/IO model    | Using Epoll to avoid context switching costs					     |
+| Memory allocations  | Critical ones aligned to CPU cache line size to avoid false sharing  |
+| Logger			  | Logger uses memory mapped file/shared memory						 |
+| Lockfree containers | Uses bounded SPSC lockfree. Only logger uses a lock based MPMC queue |
 
-	* Memory allocations : Allocations in critical path are aligned to CPU cache line size to avoid false sharing
-	
-	* Logger : Logger uses memory mapped file/shared memory
-	
-	* Lockfree thread safe containers : Uses bounded SPSC lockfree. Currently only logger uses a lock based MPMC unbounded queue.
+The configurable low latency features :
 
-* The project has some configurable low latency features :
-
-	* TCP sockets : socket buffer sizes, Nagle algorithm , TCP quick ack are configurable in ini file
-	
-	* TCP Epoll settings : Max number of events , epoll timeout are configurable in ini file
-	
-	* Threads : Pinning threads to specified CPU cores , setting thread stack size and specifying OS-level thread priority are configurable in ini file
-
-	* Locks : Project mostly uses spinlock. You can set the spincout or enable yielding in code.
+| Feature             | Configurable parameters                                              |
+| --------------------|:--------------------------------------------------------------------:|
+| TCP sockets         | Socket buffer sizes, Nagle algorithm , TCP quick ack			     |
+| TCP Epoll settings  | Max number of events , epoll timeout								 |
+| Threads			  | Pinning to CPU core, stack size, OS level priority				 	 |
+| Thread pool		  | HyperV avoidance												 	 |
+| Locks               | Uses spinlock. You can set the spincout or enable yielding in code   |
 
 * However there are so many more that can be improved , some very obvious ones :
 
@@ -108,13 +114,12 @@ For Linux , the project is built and tested with GCC4.8 on CentOS7 and Ubuntu.
 
 For running on Linux , make sure you have GNU Libstd C++ 6 runtime in your Linux distribution
 	
-		CentOS :    First find out package name for your architecture
+CentOS :    
+			Find out package name for your architecture : yum whatprovides libstdc++.so.6
+			Then yum install the package you found
 		
-					    yum whatprovides libstdc++.so.6
-				
-				    Then yum install the package you found
-		
-		Ubuntu :    sudo apt-get install libstdc++6
+Ubuntu :    
+			sudo apt-get install libstdc++6
 
 As for Windows you can build with MSVC141(VS2017).
 
@@ -133,25 +138,13 @@ How to build the project on Linux :
     or if you want to make a parallel build :
     ./build_in_parallel.sh release
 
-How to debug the project on Linux using VisualStudio code: 
+**How to debug the project on Linux using VisualStudio code :** Build the project for debug mode and open the source directory and VisualStudioCode. Source directory provides a launch.json supporting GCC on Linux and MSVC on Windows. Therefore choose GDB in VSCode debug options before starting debugging and then press F5.
 
-Build the project for debug mode and open the source directory and VisualStudioCode. Source directory provides a launch.json supporting GCC on Linux and MSVC on Windows. Therefore choose GDB in VSCode debug options before starting debugging and then press F5.
+**How to build the project on Linux from Windows with Visual Studio 2017 :** You will need to install Linux C++ feature during VS2017 installation. Then after making sure that your Linux has SSH, you will need your Linux machine SSH details to your Visual Studio. After that you will be able to build and debug on remote Linux. For details please see https://nativecoding.wordpress.com/2018/02/24/visual-studio-for-existing-remote-linux-c-projects/
 
-How to build the project on Linux from Windows with Visual Studio  : 
-
-You will need to install Linux C++ feature during VS2017 installation. Then after making sure that your Linux has SSH, you will need your Linux machine SSH details to your Visual Studio. After that you will be able to build and debug on remote Linux. For details please see https://nativecoding.wordpress.com/2018/02/24/visual-studio-for-existing-remote-linux-c-projects/
-
-How to build the project on Windows with Visual Studio  :
+**How to build the project on Windows with Visual Studio 2017 :** Go to "build/windows_msvc_visual_studio" directory and use SLN file to launch VS with the project
     
-    You can build with Visual Studio 2017
-    Go to "build/windows_msvc_visual_studio" directory
-    Use SLN file to launch VS with the project
-    
-How to build the project on Windows with Visual Studio in command line :
-    
-    You can build with Visual Studio 2017
-    Go to "build/windows_msvc_command_line" directory
-    Execute one of batch files : build_debug.bat or build_release.bat
+**How to build the project on Windows with Visual Studio in command line :** Go to "build/windows_msvc_command_line" directory and execute one of batch files : build_debug.bat or build_release.bat
 
 ## <a name="Configuration">**6. Configuring and running the server :** 
 
