@@ -115,11 +115,13 @@ For Linux , the project is built and tested with GCC4.8 on CentOS7 and Ubuntu.
 For running on Linux , make sure you have GNU Libstd C++ 6 runtime in your Linux distribution
 	
 CentOS :    
-			Find out package name for your architecture : yum whatprovides libstdc++.so.6
-			Then yum install the package you found
+
+	Find out package name for your architecture : yum whatprovides libstdc++.so.6
+	Then yum install the package you found
 		
 Ubuntu :    
-			sudo apt-get install libstdc++6
+
+	sudo apt-get install libstdc++6
 
 As for Windows you can build with MSVC141(VS2017).
 
@@ -130,7 +132,7 @@ For running on Windows , you need to install MSVC141 ( VS2017 ) C++ runtime :
 
 ## <a name="HowToBuild">**5. How to build:**
             
-How to build the project on Linux :
+**How to build the project on Linux :**
     
     cd build/linux_gcc
     make clean
@@ -383,10 +385,10 @@ It is as below :
 <img src="https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/images/code_structure.png">       
 </p>
 
-core: It is the core library. Has subdirectories such as as network, concurrency etc
+**core :** It is the core library. Has subdirectories such as as network, concurrency etc
 
-fix : It mainly uses core/network and core/concurrency. It is the FIX implemenatation
+**fix :** It mainly uses core/network and core/concurrency. It is the FIX implemenatation
 
-order_matcher : Order matcher layer is the heart of project. It knows nothing about FIX protocol but has its own order,  incoming message and outgoing message classes.
+**order_matcher :** Order matcher layer is the heart of project. It knows nothing about FIX protocol but has its own order,  incoming message and outgoing message classes.
 
-server : This layer is the layer that uses FIX layer to receive FIX orders and submit to the central order book in the order matcher layer. Then it receives results from the central order book and sends them to the outgoing message processor.
+**server :** This layer is the layer that uses FIX layer to receive FIX orders and submit to the central order book in the order matcher layer. Then it receives results from the central order book and sends them to the outgoing message processor.
