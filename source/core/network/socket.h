@@ -82,7 +82,7 @@ class Socket
         SOCKET_STATE m_state;
         int m_pendingConnectionsQueueSize;
         SOCKET_TYPE m_socketType;
-		Address m_address;
+        Address m_address;
 
         // Move ctor deletion
         Socket(Socket&& other) = delete;

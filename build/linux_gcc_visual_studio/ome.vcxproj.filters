@@ -398,6 +398,9 @@
     <ClInclude Include="..\..\source\precompiled_header.h">
       <Filter>src</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\source\core\network\address.h">
+      <Filter>src\core\network</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\bin\ome.ini">

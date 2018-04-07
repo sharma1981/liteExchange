@@ -3,10 +3,7 @@
 #ifdef __linux__
 #include <sys/socket.h>
 #include <sys/types.h>
-#include <arpa/inet.h>
 #include <netinet/tcp.h>
-#include <netinet/in.h>
-#include <netdb.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <errno.h>
