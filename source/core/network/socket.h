@@ -1,12 +1,7 @@
 #ifndef _SOCKET_
 #define _SOCKET_
 
-#ifdef __linux__
-#include <netinet/in.h>
-#elif _WIN32
-#include <Ws2tcpip.h>
-#endif
-
+#include "address.h"
 #include <string>
 #include <cstddef>
 
@@ -48,7 +43,7 @@ enum class SOCKET_STATE
 class Socket
 {
     public :
-        Socket():m_socketDescriptor{0}, m_state{ SOCKET_STATE::DISCONNECTED }, m_port{ 0 }, m_pendingConnectionsQueueSize{0}
+        Socket():m_socketDescriptor{0}, m_state{ SOCKET_STATE::DISCONNECTED }, m_pendingConnectionsQueueSize{0}
         {}
 
         ~Socket();
@@ -76,25 +71,18 @@ class Socket
         bool isConnectionLost(int errorCode, std::size_t receiveResult);
 
         SOCKET_STATE getState() const { return m_state; }
-
-        int getPort() const { return m_port; }
-        std::string getAddress() const{ return m_address; }
+        int getPort() const { return m_address.getPort(); }
+        std::string getAddress() const{ return m_address.getAddress(); }
         int getSocketDescriptor() const { return m_socketDescriptor; }
-
-        const std::string& getName() const { return m_socketName;  }
-        void setName(const std::string& socketName) { m_socketName = socketName; }
 
     protected:
         int m_socketDescriptor;
 
     private:
         SOCKET_STATE m_state;
-        int m_port;
         int m_pendingConnectionsQueueSize;
         SOCKET_TYPE m_socketType;
-        std::string m_address;
-        struct sockaddr_in m_socketAddress;
-        std::string m_socketName;
+		Address m_address;
 
         // Move ctor deletion
         Socket(Socket&& other) = delete;
@@ -103,9 +91,7 @@ class Socket
 
         void initialise(const std::string& address, int port);
         void initialise(int socketDescriptor, struct sockaddr_in* socketAddress);
-        static void setSocketAddress(struct sockaddr_in* addr, const std::string& address, int port);
         int getSocketOptionValue(SOCKET_OPTION);
-        static int getAddressInfo(const char* hostname, struct in_addr* socketAddress);
 };
 
 }//namespace

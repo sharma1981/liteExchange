@@ -169,6 +169,7 @@
     <ClInclude Include="..\..\source\core\memory\make_unique.hpp" />
     <ClInclude Include="..\..\source\core\memory\stack_memory.h" />
     <ClInclude Include="..\..\source\core\memory\virtual_memory.h" />
+    <ClInclude Include="..\..\source\core\network\address.h" />
     <ClInclude Include="..\..\source\core\network\io_listener_select.h" />
     <ClInclude Include="..\..\source\core\network\socket.h" />
     <ClInclude Include="..\..\source\core\network\socket_library.h" />

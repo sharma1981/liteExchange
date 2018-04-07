@@ -5,6 +5,7 @@
 #include <sys/types.h>
 #include <arpa/inet.h>
 #include <netinet/tcp.h>
+#include <netinet/in.h>
 #include <netdb.h>
 #include <unistd.h>
 #include <fcntl.h>
@@ -13,6 +14,7 @@
 #elif _WIN32
 #pragma comment(lib,"Ws2_32.lib")
 #include <Windows.h>
+#include <Ws2tcpip.h>
 #endif
 
 #include <cstring>
@@ -76,18 +78,6 @@ bool Socket::isConnectionLost(int errorCode, size_t receiveResult)
 {
     bool ret{ false };
 #ifdef __linux__
-    /*
-        100 = Network is down
-        101 = Network is unreachable
-        102 = Network dropped connection on reset
-        103 = Software caused connection abort
-        104 = Connection reset by peer
-    */
-    /*if( errorCode ==0 && receiveResult == 0 )
-    {
-        ret = true;
-    }
-    */
     if (errorCode >= 100 && errorCode <= 104 )
     {
         ret = true;
@@ -192,9 +182,9 @@ bool Socket::listen()
 
 bool Socket::connect(const string& address, int port)
 {
-    initialise(address, port);
+    m_address.initialise(address, port);
 
-    if (::connect(m_socketDescriptor, (struct sockaddr*)&m_socketAddress, sizeof(m_socketAddress)) != 0)
+    if (::connect(m_socketDescriptor, (struct sockaddr*)m_address.getSocketAddressStruct(), sizeof(struct sockaddr_in)) != 0)
     {
         return false;
     }
@@ -262,8 +252,8 @@ bool Socket::select(bool read, bool write, long timeout)
 
 bool Socket::bind(const string& address, int port)
 {
-    initialise(address, port);
-    int result = ::bind(m_socketDescriptor, (struct sockaddr*)&m_socketAddress, sizeof(m_socketAddress));
+    m_address.initialise(address, port);
+    int result = ::bind(m_socketDescriptor, (struct sockaddr*)m_address.getSocketAddressStruct(), sizeof(struct sockaddr_in));
 
     if (result != 0)
     {
@@ -275,43 +265,10 @@ bool Socket::bind(const string& address, int port)
     return true;
 }
 
-void Socket::setSocketAddress(struct sockaddr_in* addr, const std::string& address, int port)
-{
-    memset(addr, 0, sizeof(sockaddr_in));
-    addr->sin_family = PF_INET;
-    addr->sin_port = htons(port);
-
-    if (address.size() > 0)
-    {
-        if (getAddressInfo(address.c_str(), &(addr->sin_addr)) != 0)
-        {
-            inet_pton(PF_INET, address.c_str(), &(addr->sin_addr));
-        }
-    }
-    else
-    {
-        addr->sin_addr.s_addr = INADDR_ANY;
-    }
-}
-
-void Socket::initialise(const std::string& address, int port)
-{
-    m_port = port;
-    m_address = address;
-    setSocketAddress(&m_socketAddress, address, port);
-}
-
 void Socket::initialise(int socketDescriptor, struct sockaddr_in* socketAddress)
 {
     m_socketDescriptor = socketDescriptor;
-    char ip[50];
-#ifdef __linux__
-    inet_ntop(PF_INET, (struct in_addr*)&(socketAddress->sin_addr.s_addr), ip, sizeof(ip) - 1);
-#elif _WIN32
-    InetNtopA(PF_INET, (struct in_addr*)&(socketAddress->sin_addr.s_addr), ip, sizeof(ip) - 1);
-#endif
-    m_address = ip;
-    m_port = ntohs(socketAddress->sin_port);
+    m_address.initialise(socketAddress);
 }
 
 Socket* Socket::accept(int timeout)
@@ -357,21 +314,6 @@ Socket* Socket::accept(int timeout)
     m_state = SOCKET_STATE::ACCEPTED;
 
     return peerSocket;
-}
-
-int Socket::getAddressInfo(const char* hostname, struct in_addr* socketAddress)
-{
-    struct addrinfo *res{ nullptr };
-
-    int result = getaddrinfo(hostname, nullptr, nullptr, &res);
-
-    if (result == 0)
-    {
-        memcpy(socketAddress, &((struct sockaddr_in *) res->ai_addr)->sin_addr, sizeof(struct in_addr));
-        freeaddrinfo(res);
-    }
-
-    return result;
 }
 
 int Socket::getSocketOptionValue(SOCKET_OPTION option)

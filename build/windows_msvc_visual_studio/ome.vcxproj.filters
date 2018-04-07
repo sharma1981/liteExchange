@@ -342,6 +342,9 @@
     <ClInclude Include="..\..\source\core\single_instance.h">
       <Filter>core</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\source\core\network\address.h">
+      <Filter>core\network</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="order_matcher">

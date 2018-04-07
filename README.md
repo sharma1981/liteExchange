@@ -16,10 +16,10 @@
 	* [8. Test harness / FIX client automations](#TestHarness)
 	* [9. Unit tests](#UnitTesting)
 	* [10. Utility scripts](#UtilityScripts)
-	* [11. Coding and other guidelines](#CodingGuideline)
-	* [12. Code structure](#CodeStructure)
+	* [11. Coding conventions](#CodingConventions)
+	* [12. Code map](#CodeMap)
           
-## <a name="Introduction"></a>**1. Introduction:** 
+## <a name="Introduction"></a>**1. Introduction and features:** 
 It is a cross platform (Linux/Windows) multithreaded order matching engine written in C++11 using FIX protocol. 
 
 Currently supports only limit orders. For limit orders and matching engines , see https://money.stackexchange.com/questions/15156/how-do-exchanges-match-limit-orders
@@ -28,7 +28,7 @@ For FIX protocol , see https://en.wikipedia.org/wiki/Financial_Information_eXcha
 
 It does not use any 3rd party libraries and uses its own concurrency and network/FIX libraries. It also comes with own FIX client automation test harnesses writtten in stock Python and Powershell.
 
-Its core libraries such as concurrency and networking is designed to be as configurable as possible for low latency purposes. 
+Its core libraries such as concurrency and networking is designed to be as configurable as possible for low latency tuning purposes. 
 
 Electronic trading features can be seen in the table below :
 
@@ -42,20 +42,20 @@ Electronic trading features can be seen in the table below :
 | TIF                           | Not supported       			                        |
 | Securities                    | Supported symbols defined in configuration file	    |
 
-Fix implementation details can be seen as below :
+Fix session details can be seen as below :
 
-| Feature                       | Details                                               |
-| ----------------------------- |:-----------------------------------------------------:|
-| Versions						| Agnostic , accepts all non-binary ones				|
-| Supported FIX Admin messages	| Heartbeats, test requests (35=1), trader logons       |
-| Header tags                   | Only mandatory ones                                   |
-| Validations		           	| Compid, sequence number (optional), required tags     |
-| Sequence management			| Saves and restores sequence numbers from files		|
-| Symbology						| Uses tag 55, no validations, examples use RIC codes	|
+| Property                      | Details                                                  |
+| ----------------------------- |:--------------------------------------------------------:|
+| Versions						| Agnostic , accepts all non-binary ones				   |
+| Supported FIX Admin messages	| Heartbeats, test requests, trader logons (no validation) |
+| Header tags                   | Only mandatory ones                                      |
+| Validations		           	| Compid, sequence number (optional), required tags        |
+| Sequence management			| Saves and restores sequence numbers from files		   |
+| Symbology						| Uses tag 55, no validations, examples use RIC codes	   |
 
 Technical implementation details are as below : 
 
-| Feature               | Details                                                       |
+| Property              | Details                                                       |
 | ----------------------|:-------------------------------------------------------------:|
 | OS                    | Linux ( tested on Ubuntu and CentOS ),Windows ( tested on 10 )|
 | C++                   | C++11                                                         |
@@ -81,25 +81,23 @@ The core of order matching layer is called the central order book, which keeps o
 
 ## <a name="LowLatency">**3. Low latency features and how it can be improved:** 
 
-Non-configurable low latency features are as below : 
+Non-tunable low latency features are as below : 
 
 | Feature             | Details                                                              |
 | --------------------|:--------------------------------------------------------------------:|
 | Network/IO model    | Using Epoll to avoid context switching costs					     |
 | Memory allocations  | Critical ones aligned to CPU cache line size to avoid false sharing  |
 | Contention		  | Design based on bounded SPSC lockfree containers except the logger   |
-| Lockfree 			  | SPSC lockfree container uses relaxed memory 					     |
-| Logger			  | Logger uses memory mapped file/shared memory						 |
+| Lockfree 			  | SPSC lockfree container uses relaxed memory , uses spinlocks	     |
 
-The configurable low latency features :
+The tunable low latency features :
 
-| Feature             | Configurable parameters                                              |
-| --------------------|:--------------------------------------------------------------------:|
-| TCP sockets         | Socket buffer sizes, Nagle algorithm , TCP quick ack			     |
-| TCP Epoll settings  | Max number of events , epoll timeout								 |
-| Threads			  | Pinning to CPU core, stack size, OS level priority				 	 |
-| Thread pool		  | HyperV avoidance												 	 |
-| Locks               | Uses spinlock. You can set the spincout or enable yielding in code   |
+| Feature               | Configurable parameters                                              |
+| ----------------------|:--------------------------------------------------------------------:|
+| TCP sockets           | Socket buffer sizes, Nagle algorithm , TCP quick ack			       |
+| TCP Epoll settings    | Max number of events , epoll timeout								   |
+| Threads & thread pool | Pinning to CPU core, stack size, OS level priority, hyperV avoidance |
+| Spinlocks             | You can set the spincount or enable yielding in code   			   |
 
 * However there are so many more that can be improved , some very obvious ones :
 
@@ -109,7 +107,7 @@ The configurable low latency features :
 	
 	* Data oriented design : Currenty order class in order books suffers from cache misses. If the order class is split into core order ( price-side-symbol ) and other order data,	the matching engine would gain a lot of speed by avoiding cache misses
 	
-	* Cache-aware algorithm : Order book implementation uses std::multimap which is known to use red-black which is controversial when it comes to be cache friendly : https://news.ycombinator.com/item?id=7513896 
+	* Cache-aware algorithms : Order book implementation uses std::multimap which is known to use red-black tree which is controversial when it comes to be cache friendly : https://news.ycombinator.com/item?id=7513896 
 
 ## <a name="Dependencies">**4. Build and runtime dependencies:** 
 
@@ -179,7 +177,7 @@ The engine executable looks for "ome.ini" file. There is a few categories of con
 | --------------------------------------------------|:-------------------------------------------------------------:|
 | FIX_SERVER_COMP_ID								| Sender compid for FIX server                     				|
 | FIX_SERVER_ADDRESS	        					| Address to bind												|
-| FIX_SERVER_PORT         							| Port to bind													|
+| FIX_SERVER_PORT         							| Port to use													|
 | FIX_SERVER_SEQUENCE_NUMBER_VALIDATION			    | Can be turned off for rapid development						|
 | FIX_SERVER_TIME_PRECISION     					| Applies to tag52 and tag60 : seconds,milliseconds,microseconds|
 | FIX_RECEIVE_CACHE_SIZE         					| Size of TCP receive buffer cache			                    |
@@ -335,7 +333,7 @@ You can find them under "utility_scripts" directory :
 | valgrind_cachegrind.sh			| runs Valgrind CPU cache usage analysis					             		|
     
 
-## <a name="CodingGuideline">**11. Coding and other guidelines:**
+## <a name="CodingConventions">**11. Coding conventions:**
 
 Source code and file/directory naming conventions :
 
@@ -380,12 +378,10 @@ For GCC see https://gcc.gnu.org/onlinedocs/gcc/Precompiled-Headers.html
 
 For MSVC see https://msdn.microsoft.com/en-us/library/8c5ztk84(v=vs.140).aspx
 
-## <a name="CodeStructure">**12. Code structure:**
-
-It is as below :
+## <a name="CodeMap">**12. Code map:**
 
 <p align="center">  
-<img src="https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/images/code_structure.png">       
+<img src="https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/images/code_map.png">       
 </p>
 
 **core :** It is the core library. Has subdirectories such as as network, concurrency etc
