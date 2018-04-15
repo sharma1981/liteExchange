@@ -6,9 +6,9 @@ import os.path
 from sys import platform as _platform
 #As Cpython ( default python engine) uses GIL ( https://wiki.python.org/moin/GlobalInterpreterLock )
 #using process instead to benefit from multicore : http://stackoverflow.com/questions/1182315/python-multicore-processing
-from multiprocessing import Process, Queue
+from multiprocessing import Process, Queue, Lock
 import threading
-from threading import Thread, Lock
+from threading import Thread
 import time
 from datetime import datetime
 
@@ -276,6 +276,7 @@ class FixConstants:
                 return True
         return False
 
+
 class FixMessage:
     def __init__(self, tagValueTupleArray=None):
         if tagValueTupleArray:
@@ -300,11 +301,17 @@ class FixMessage:
                     return currentValue
         return None
 
-    def setTag(self, tag, value, index=1, addTagIfNotExists=True):
+    def setTag(self, tag, value, index=1):
         if self.hasTag(tag) == False:
-            if addTagIfNotExists == True:
-                self.appendTag(tag, value)
-                return
+            self.appendTag(tag, value)
+            return True
+        # Dealing with a repeating group tag
+        
+        # Early exit
+        if index == 1:
+            return False
+
+        # This part is for re setting value of an existing repeating group tag
         count = 0
         listIndex = -1
         for tagValuePair in self.__tagValuePairs:
@@ -314,7 +321,14 @@ class FixMessage:
                 count = count + 1
                 if count == index:
                     self.__tagValuePairs[listIndex] = tuple((tag, str(value)))
-                    return
+                    return True
+
+        # If reached here , append repeating group tag if index specified correctly
+        if index == count+1:
+            self.appendTag(tag, value)
+            return True
+        # Did not add , check arguments
+        return False
 
     def appendTag(self, tag, value):
         self.__tagValuePairs.append( tuple((tag, str(value))) )
@@ -336,7 +350,7 @@ class FixMessage:
     def setTags(self , tagValueTupleArray):
         for tagValuePair in tagValueTupleArray:
             tag, value = tagValuePair
-            self.setTag(tag, value)
+            self.appendTag(tag, value)
 
     def hasTags(self, tagArray):
         for tag in tagArray:
@@ -396,15 +410,18 @@ class FixMessage:
             bodyLength += len(str(tag)) + len( str(value) ) + 2 # +2 is because of = and delimiter
         return bodyLength
 
-    def toString(self, sendingAsMessage = False):
-        # If it was Python3 could use a non local variable instead making string a mutable array
+    def toString(self, sendingAsMessage = False, usePipeAsDelimiter = False):
+        # If it was Python3 could use a non local variable, instead  making string a mutable array
         messageAsString = [""]
         
         def appendToMessageAsString(tag, value = ""):
             if len(value) == 0:
                 value = self.getTagValue(tag)
             messageAsString[0] += str(tag) + FixConstants.EQUALS + value
-            messageAsString[0] += FixConstants.DELIMITER
+            if usePipeAsDelimiter is False:
+                messageAsString[0] += FixConstants.DELIMITER
+            else:
+                messageAsString[0] += '|'
 
         # CALCULATE BODY LENGTH
         if sendingAsMessage is True:
@@ -423,7 +440,7 @@ class FixMessage:
                 continue
             if FixConstants.isTrailerTag(tag) is True:
                 continue
-            appendToMessageAsString(tag)
+            appendToMessageAsString(tag, value)
 
         # ADD TRAILER TAGS EXCLUDING CHECKSUM
         for trailerTag in FixConstants.TRAILER_TAGS:
@@ -440,11 +457,15 @@ class FixMessage:
                 appendToMessageAsString(FixConstants.TAG_BODY_CHECKSUM)
 
         return messageAsString[0]
-
-    def __str__(self):
-        ret = self.toString(False)
+    
+    def toReadableString(self):
+        ret = self.toString(False, True)
         return ret
 
+    def __str__(self):
+        return self.toReadableString()
+    
+        
 class FixTCPTransport:
     def __init__(self):
         self.networkTimeoutInSeconds = 0
@@ -782,10 +803,10 @@ class FixSession:
                 self.send(logoffMessage)
                 if self.server == False:
                     logoffResponse = self.recv()
-                print("Disconnected : " + logoffResponse.toString())
-                self.fixTransport.close()
             except:
                 pass
+            finally:
+                self.fixTransport.close()
             self.connected = False
             self.saveSequenceNumberToFile()
 
@@ -941,7 +962,7 @@ class FixServer:
         message = self.fixSession.recv()
         self.fixSession.saveSequenceNumberToFile()
         return message
-        
+               
 class FixAutomationClient(FixClient):
     def __init__(self):
         FixClient.__init__(self)
@@ -960,20 +981,28 @@ class FixAutomationClient(FixClient):
     def addExecutionReport(self, fixMessage):
         self.executionReports.append(fixMessage)
 
-def fixClientAutomationClientThread(resultsQueue, ordersFile, fixVersion, address, port, baseCompId, clientIndex, targetCompid):
+def syncronisedPrint(mutex, message):
+        mutex.acquire()
+        print(message)
+        mutex.release()
+        
+FIX_CLIENT_AUTOMATION_MUTEX = Lock()
+        
+def fixClientAutomationClientThread(fixClientAutomationMutex, resultsQueue, ordersFile, fixVersion, address, port, baseCompId, clientIndex, targetCompid):
+    
     senderCompId = baseCompId + str(clientIndex)
 
     fixClient = FixAutomationClient()
     fixClient.fixSession.restoreSequenceNumberFromFile = True
-
+    
     orders = FixMessage.loadFromFile(ordersFile)
     ordersCount = len(orders)
-
+    
     fixClient.connect(address, port, fixVersion, senderCompId, targetCompid)
     connected = fixClient.fixSession.connected
 
     if connected is True:
-        print( senderCompId + " connected" )
+        syncronisedPrint(fixClientAutomationMutex, senderCompId + " connected" )
 
         processedCount = 0
 
@@ -981,7 +1010,7 @@ def fixClientAutomationClientThread(resultsQueue, ordersFile, fixVersion, addres
             order.setTag(FixConstants.TAG_TRANSACTION_TIME, fixClient.fixSession.getCurrentUTCDateTime())
             fixClient.send(order, True, 120)
 
-        print(senderCompId + " fired all orders")
+        syncronisedPrint(fixClientAutomationMutex, senderCompId + " fired all orders")
 
         # Collect execution reports
         while True:
@@ -993,27 +1022,27 @@ def fixClientAutomationClientThread(resultsQueue, ordersFile, fixVersion, addres
             if message.getMessageType() is FixConstants.MESSAGE_HEARTBEAT:
                 continue
 
-            resultsQueue.put( str(clientIndex) +  "," +  message.toString(False) )
+            resultsQueue.put( message.toString(False) )
 
             if message.hasTag(FixConstants.TAG_ORDER_STATUS):
                 orderStatus = message.getTagValue(FixConstants.TAG_ORDER_STATUS)
                 if orderStatus is FixConstants.ORDER_STATUS_FILLED:
                     processedCount += 1
-                    print( senderCompId + " received a fill :" + str(processedCount) + " of " + str(ordersCount) )
+                    syncronisedPrint(fixClientAutomationMutex, senderCompId + " received a fill :" + str(processedCount) + " of " + str(ordersCount) )
                 if orderStatus is FixConstants.ORDER_STATUS_CANCELED:
                     processedCount += 1
                     ordersCount -= 1
-                    print( senderCompId + " received a cancel :" + str(processedCount) + " of " + str(ordersCount) )
+                    syncronisedPrint(fixClientAutomationMutex, senderCompId + " received a cancel :" + str(processedCount) + " of " + str(ordersCount) )
 
             if processedCount == ordersCount:
                 break
 
         fixClient.disconnect()
-        print(senderCompId + " disconnected")
+        syncronisedPrint(fixClientAutomationMutex, senderCompId + " disconnected")
 
 class FixClientAutomation:
     def __init__(self):
-        self.resultsQueue = Queue()
+        self.resultsQueue = []
         self.fixClientThreads = []
         self.fixVersion = ""
         self.numberOfClients = 0
@@ -1042,8 +1071,10 @@ class FixClientAutomation:
 
     def start(self):
         for i in range(0, self.numberOfClients):
+            currentQueue = Queue()
+            self.resultsQueue.append(currentQueue)
             fixClientThread = Process(target=fixClientAutomationClientThread,
-                                      args=[self.resultsQueue, self.ordersFile, self.fixVersion, self.address, self.port, self.compIdBase, i+1, self.targetCompId ])
+                                      args=[FIX_CLIENT_AUTOMATION_MUTEX, self.resultsQueue[i], self.ordersFile, self.fixVersion, self.address, self.port, self.compIdBase, i+1, self.targetCompId ])
             self.fixClientThreads.append(fixClientThread)
             self.fixClientThreads[len(self.fixClientThreads) - 1].start()
 
@@ -1060,12 +1091,9 @@ class FixClientAutomation:
         for i in range(0, numberOfClients):
             list = []
             clientExecReports.append(list)
-
-        while not self.resultsQueue.empty():
-            result = self.resultsQueue.get()
-            clientIndex = int(result.split(',')[0])-1
-            actualResult = result.split(',')[1]
-            clientExecReports[clientIndex-1].append(actualResult)
+            while not self.resultsQueue[i].empty():
+                result = self.resultsQueue[i].get()
+                clientExecReports[i].append(result)
 
         for i in range(0, numberOfClients):
             # Sender comp id

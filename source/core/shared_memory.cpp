@@ -31,9 +31,9 @@ SharedMemory::~SharedMemory()
 
 void SharedMemory::close()
 {
-    shrinkToWrittenSize();
     if (m_buffer != nullptr)
     {
+        shrinkToWrittenSize();
 #ifdef __linux__
         munmap(m_buffer, m_size);
         if (!m_fileDescriptor)
