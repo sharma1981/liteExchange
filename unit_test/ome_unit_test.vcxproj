@@ -82,6 +82,7 @@
     <ClCompile Include="..\source\core\shared_memory.cpp" />
     <ClCompile Include="..\source\core\single_instance.cpp" />
     <ClCompile Include="..\source\core\stopwatch.cpp" />
+    <ClCompile Include="..\source\fix\fix_message.cpp" />
     <ClCompile Include="..\source\order_matcher\central_order_book.cpp" />
     <ClCompile Include="..\source\order_matcher\order.cpp" />
     <ClCompile Include="..\source\order_matcher\order_book.cpp" />
@@ -92,6 +93,7 @@
     <ClInclude Include="..\source\core\concurrent\thread.h" />
     <ClInclude Include="..\source\core\concurrent\thread_pool.h" />
     <ClInclude Include="test_concurrency.h" />
+    <ClInclude Include="test_fix.h" />
     <ClInclude Include="test_order_matcher.h" />
     <ClInclude Include="test_utility.h" />
   </ItemGroup>

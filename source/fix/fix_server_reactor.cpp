@@ -150,6 +150,13 @@ void FixServerReactor::processMessage(FixMessage* incomingMessage, FixSession* s
     // Logon messages need to be handled before seq number validation
     if (messageType == FixConstants::MessageType::LOGON)
     {
+        if (!FixSession::validateTargetCompid(*incomingMessage))
+        {
+            onFixError(core::format("Invalid target comp id , expected : %s , actual : %s", FixSession::getCompId(), incomingMessage->getTargetCompId().c_str()));
+            session->close();
+            onClientDisconnected(peerIndex);
+            return;
+        }
         session->handleLogonMessage(*incomingMessage);
         onFixLogon(session);
     }
@@ -159,12 +166,10 @@ void FixServerReactor::processMessage(FixMessage* incomingMessage, FixSession* s
 
     if (m_sequenceNumberValidation == true)
     {
-        auto expectedIncomingSequenceNumber = session->getIncomingSequenceNumber();
-
-        if (expectedIncomingSequenceNumber + 1 != actualIncomingSequenceNumber)
+        if (!session->validateSequenceNumber(actualIncomingSequenceNumber))
         {
             // Currently sequence number resetting / gap filling not supported
-            onFixError(core::format("Invalid sequence number received , expected : %d , actual : %d", expectedIncomingSequenceNumber, actualIncomingSequenceNumber));
+            onFixError(core::format("Invalid sequence number received , expected : %d , actual : %d", session->getIncomingSequenceNumber()+1, actualIncomingSequenceNumber));
             session->close();
             onClientDisconnected(peerIndex);
             return;

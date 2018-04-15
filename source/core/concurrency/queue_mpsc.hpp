@@ -5,7 +5,7 @@
 #include <mutex>
 #include <condition_variable>
 
-#include <core/concurrency/lock.hpp>
+#include <core/concurrency/spinlock.hpp>
 #include <core/memory/heap_memory_cache_aligned_allocators.hpp>
 
 namespace core
@@ -13,7 +13,7 @@ namespace core
 
 // Unbounded multi producer single consumer queue
 template<typename T>
-class QueueMPSC : public core::NonCopyable, AlignedContainerPolicy<T>
+class QueueMPSC : public core::NonCopyable
 {
     public:
 

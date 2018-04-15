@@ -11,6 +11,7 @@
 #include <order_matcher/security_manager.h>
 
 #include <server/server_constants.h>
+#include <server/fix_message_converter.h>
 
 #include <exception>
 #include <fstream>
@@ -38,52 +39,28 @@ void ServerOffline::loadOrders()
     for(const auto& fixMessage : fixMessages)
     {
         IncomingMessageType type;
+
+
+        Order order;
         auto messageType = fixMessage.getMessageType();
 
         // ORDER MESSAGE TYPE
         if (messageType == fix::FixConstants::MessageType::NEW_ORDER)
         {
             type = IncomingMessageType::NEW_ORDER;
+            FixMessageConverter::convertNewOrder(fixMessage, order);
         }
         else if (messageType == fix::FixConstants::MessageType::CANCEL)
         {
             type = IncomingMessageType::CANCEL_ORDER;
+            FixMessageConverter::convertCancelOrder(fixMessage, order);
         }
         else
         {
-            // Skip
+            LOG_WARNING("FixMessageConverter", "Only new orders and cancel orders are supported")
             continue;
         }
 
-        //  SYMBOL
-        string symbol = fixMessage.getTagValue(fix::FixConstants::FIX_TAG_SYMBOL);
-        auto securityId = SecurityManager::getInstance()->getSecurityId(symbol);
-
-        // ORDER SIDE
-        auto side = fixMessage.getTagValueAsInt(fix::FixConstants::FIX_TAG_ORDER_SIDE);
-        OrderSide orderSide;
-
-        if (side == fix::FixConstants::FIX_ORDER_SIDE_BUY)
-        {
-            orderSide = OrderSide::BUY;
-        }
-        else if (side == fix::FixConstants::FIX_ORDER_SIDE_SELL)
-        {
-            orderSide = OrderSide::SELL;
-        }
-        else
-        {
-            // Skip
-            continue;
-        }
-
-        // PRICE
-        double price = fixMessage.getTagValueAsDouble(fix::FixConstants::FIX_TAG_ORDER_PRICE);
-
-        // QUANTITY
-        auto quantity = fixMessage.getTagValueAsLong(fix::FixConstants::FIX_TAG_ORDER_QUANTITY);
-
-        Order order(0, "", securityId, 0, orderSide, OrderType::LIMIT, price, quantity);
         IncomingMessage message(order, type);
         m_orders.emplace_back(message);
     }

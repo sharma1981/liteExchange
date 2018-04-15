@@ -53,13 +53,13 @@ Fix session details can be seen as below :
 | Sequence management			| Saves and restores sequence numbers from files		   |
 | Symbology						| Uses tag 55, no validations, examples use RIC codes	   |
 
-Technical implementation details are as below : 
+Implementation details are as below : 
 
 | Property              | Details                                                       |
 | ----------------------|:-------------------------------------------------------------:|
 | OS                    | Linux ( tested on Ubuntu and CentOS ),Windows ( tested on 10 )|
 | C++                   | C++11                                                         |
-| C++ Compiler Support  | GCC4.8 and MSVC 141 (VS2017)									|
+| C++ Compiler Support  | GCC4.8+ and MSVC 141 (VS2017)									|
 | C++ Libraries         | STD, STL						                                |
 | C++ Platform APIs     | GNU LibC, POSIX, some POSIX NP ,WinAPI, MS CRT                |
 | Build systems         | Makefile, VSCode and VisualStudio2017 for Linux and Windows	|
@@ -92,12 +92,13 @@ Non-tunable low latency features are as below :
 
 The tunable low latency features :
 
-| Feature               | Configurable parameters                                              |
-| ----------------------|:--------------------------------------------------------------------:|
-| TCP sockets           | Socket buffer sizes, Nagle algorithm , TCP quick ack			       |
-| TCP Epoll settings    | Max number of events , epoll timeout								   |
-| Threads & thread pool | Pinning to CPU core, stack size, OS level priority, hyperV avoidance |
-| Spinlocks             | You can set the spincount or enable yielding in code   			   |
+| Feature                | Configurable parameters                                                        |
+| -----------------------|:------------------------------------------------------------------------------:|
+| TCP sockets            | Socket buffer sizes, Nagle algorithm , TCP quick ack, binding to specified NIC |
+| TCP Epoll settings     | Max number of events , epoll timeout								              |
+| FIX receive cache size | Size of TCP receive buffer cache for FIX messages                              |
+| Threads & thread pool  | Pinning to CPU core, stack size, OS level priority, hyperV avoidance           |
+| Spinlocks              | You can set the spincount or enable yielding in code   			              |
 
 * However there are so many more that can be improved , some very obvious ones :
 
@@ -105,13 +106,13 @@ The tunable low latency features :
 	
 	* Memory allocations : Project can benefit from preallocating everything in critical path.
 	
-	* Data oriented design : Currenty order class in order books suffers from cache misses. If the order class is split into core order ( price-side-symbol ) and other order data,	the matching engine would gain a lot of speed by avoiding cache misses
+	* Data oriented design : Currently order class in order books suffers from cache misses. If the order class is split into core order ( price-side-symbol ) and other order data,	the matching engine would gain a lot of speed by avoiding cache misses
 	
 	* Cache-aware algorithms : Order book implementation uses std::multimap which is known to use red-black tree which is controversial when it comes to be cache friendly : https://news.ycombinator.com/item?id=7513896 
 
 ## <a name="Dependencies">**4. Build and runtime dependencies:** 
 
-For Linux , the project is built and tested with GCC4.8 on CentOS7 and Ubuntu. 
+For Linux , the project is built and tested with GCC4.8 and GCC7 on CentOS7 and Ubuntu. 
 
 For running on Linux , make sure you have GNU Libstd C++ 6 runtime in your Linux distribution
 	
@@ -129,7 +130,7 @@ As for Windows you can build with MSVC141(VS2017).
 For running on Windows , you need to install MSVC141 ( VS2017 ) C++ runtime :
 
 	Go to https://support.microsoft.com/en-gb/help/2977003/the-latest-supported-visual-c-downloads
-	Download and install VS2017 x86 version
+	Download and install VS2017 x86 or x64 version
 
 ## <a name="HowToBuild">**5. How to build:**
             
@@ -176,7 +177,7 @@ The engine executable looks for "ome.ini" file. There is a few categories of con
 | FIX server settings      							| Description                                                   |
 | --------------------------------------------------|:-------------------------------------------------------------:|
 | FIX_SERVER_COMP_ID								| Sender compid for FIX server                     				|
-| FIX_SERVER_ADDRESS	        					| Address to bind												|
+| FIX_SERVER_ADDRESS	        					| Address one of network interface cards on the system			|
 | FIX_SERVER_PORT         							| Port to use													|
 | FIX_SERVER_SEQUENCE_NUMBER_VALIDATION			    | Can be turned off for rapid development						|
 | FIX_SERVER_TIME_PRECISION     					| Applies to tag52 and tag60 : seconds,milliseconds,microseconds|
@@ -205,7 +206,6 @@ The engine executable looks for "ome.ini" file. There is a few categories of con
 
 | Logger settings          							| Description                                                   |
 | --------------------------------------------------|:-------------------------------------------------------------:|
-| LOGGER_BUFFER_SIZE 								| Maximum buffer size for the logging ring buffer				|
 | LOGGER_WRITE_PERIOD_MILLISECONDS 					| Logging period in milliseconds								|
 | LOGGER_MEMORY_MAPPED_FILE							| Sets log file													|
 | LOGGER_ROTATION_SIZE_IN_BYTES      				| Log rotation size in bytes						 			|

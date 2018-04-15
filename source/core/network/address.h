@@ -32,11 +32,11 @@ class Address
             addr->sin_family = PF_INET;
             addr->sin_port = htons(port);
 
-            if (address.size() > 0)
+            if (m_address.size() > 0)
             {
-                if (getAddressInfo(address.c_str(), &(addr->sin_addr)) != 0)
+                if (getAddressInfo(m_address.c_str(), &(addr->sin_addr)) != 0)
                 {
-                    inet_pton(PF_INET, address.c_str(), &(addr->sin_addr));
+                    inet_pton(PF_INET, m_address.c_str(), &(addr->sin_addr));
                 }
             }
             else

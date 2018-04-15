@@ -69,6 +69,11 @@ class FixSession
         void setFixVersion(int fixVersion) { m_fixVersion = fixVersion; }
         void setTimePrecision(core::Subseconds timePrecision) { m_timePrecision = timePrecision; }
         static void setCompId(const std::string& compId) { FixSession::COMPID = compId; }
+        static const std::string& getCompId() { return FixSession::COMPID; }
+
+        bool validateSequenceNumber(const FixMessage&);
+        bool validateSequenceNumber(int);
+        static bool validateTargetCompid(const FixMessage&);
         static bool validateRequiredTags(const FixMessage&, int& misingTag);
 
     private:
@@ -86,7 +91,7 @@ class FixSession
         time_t m_lastSentTime;
         bool m_isUsingExternalTCPConnectionManager;
 
-        // SENDER COMPID AND SENDER SUBID ARE SHARED BY ALL SESSIONS
+        // SENDER COMPID SHARED BY ALL SESSIONS
         static std::string COMPID;
 
         void updateLastReceivedTime() { m_lastReceivedTime = time(0); }

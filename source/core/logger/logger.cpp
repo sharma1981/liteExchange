@@ -15,8 +15,7 @@ void Logger::initialise(const LoggerArguments& configuration)
     // Disc write period
     m_writePeriodInMicroseconds = configuration.m_writePeriodInMilliSeconds * 1000;
 
-    // Ring buffer size
-    m_buffer.reset(new core::RingBufferMPMC<LogEntry>(configuration.m_bufferSize));
+    m_buffer.reset(new core::QueueMPSC<LogEntry>());
 
     // Log level
     m_logLevel = static_cast<std::underlying_type<LogLevel>::type >(configuration.m_logLevel);
@@ -63,19 +62,20 @@ void* Logger::run()
 
     while ( true )
     {
-        while (m_buffer->count() > 0)
-        {
-            auto log = m_buffer->pop();
+        auto currentLog = m_buffer->flush();
 
+        while (currentLog)
+        {
             if (m_backendEnabled)
             {
-                m_backend.process(log);
+                m_backend.process(currentLog->m_data);
             }
 
             if (m_copyToStdout)
             {
-                std::cout << log.getMessage() << std::endl;
+                std::cout << currentLog->m_data.getMessage() << std::endl;
             }
+            currentLog = currentLog->m_next;
         }
 
         if (isFinishing() == true)

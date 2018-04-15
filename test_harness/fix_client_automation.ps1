@@ -1056,7 +1056,6 @@ function initialise()
 
         public void initialise(int numberOfClients, string fixOrdersFile, string fixVersion, string address, int port, string compIdBase, string targetCompid)
         {
-			Console.WriteLine("0");
             for (int i = 0; i < numberOfClients; i++)
             {
 				Console.WriteLine(fixOrdersFile);
@@ -1175,14 +1174,6 @@ $form_fix_client_automation.MaximizeBox = $false
 $form_fix_client_automation.MinimizeBox = $false
 $form_fix_client_automation.Width = 640
 $form_fix_client_automation.Height = 387
-
-$textBox_fixVersion = New-Object system.windows.Forms.TextBox
-$textBox_fixVersion.Text = "FIX.4.2"
-$textBox_fixVersion.Width = 292
-$textBox_fixVersion.Height = 20
-$textBox_fixVersion.location = new-object system.drawing.point(238,127)
-$textBox_fixVersion.Font = "Microsoft Sans Serif,10"
-$form_fix_client_automation.controls.Add($textBox_fixVersion)
 
 $button_start_test = New-Object system.windows.Forms.Button
 $button_start_test.Text = "Start test"

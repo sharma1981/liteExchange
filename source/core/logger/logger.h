@@ -6,7 +6,7 @@
 
 #include <core/concurrency/actor.h>
 #include <core/concurrency/thread_wait_strategy.h>
-#include <core/concurrency/ring_buffer_mpmc.hpp>
+#include <core/concurrency/queue_mpsc.hpp>
 
 #include <core/design_patterns/singleton_dclp.hpp>
 
@@ -25,7 +25,7 @@ namespace core
 #define LOG_WARNING(SENDER, MESSAGE) (core::Logger::getInstance()->log(core::LogLevel::LEVEL_WARNING,(SENDER),(MESSAGE)));
 #define LOG_ERROR(SENDER, MESSAGE) (core::Logger::getInstance()->log(core::LogLevel::LEVEL_ERROR,(SENDER),(MESSAGE)));
 
-using LogBuffer = std::unique_ptr< core::RingBufferMPMC<LogEntry> >;
+using LogBuffer = std::unique_ptr< core::QueueMPSC<LogEntry> >;
 
 class Logger : public core::Actor, public SingletonDCLP<Logger>, public SleepWaitStrategy
 {

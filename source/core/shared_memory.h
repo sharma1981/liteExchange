@@ -24,6 +24,7 @@ class SharedMemory
         void append(void* buffer, std::size_t size);
         void write(void* buffer , std::size_t size, std::size_t writeOffset);
         void read(void* buffer, std::size_t size, std::size_t readOffset);
+        void flushToDisc();
         void close();
 
         std::size_t getSize() const { return m_size; }
@@ -53,6 +54,7 @@ class SharedMemory
         HANDLE m_fileHandle;
 #endif
         void copyMemory(void* from, void* to, std::size_t size);
+        void shrinkToWrittenSize();
 };
 
 } // namespace

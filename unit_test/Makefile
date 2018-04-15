@@ -4,6 +4,7 @@ CXX=g++
 SOURCE_DIR=../source
 SOURCE_DIR_CORE= $(SOURCE_DIR)/core
 SOURCE_DIR_CORE_CONCURRENT= $(SOURCE_DIR_CORE)/concurrency
+SOURCE_DIR_FIX= $(SOURCE_DIR)/fix
 SOURCE_DIR_ORDER_MATCHER= $(SOURCE_DIR)/order_matcher
 SOURCE_DIR_CORE_LOGGER= $(SOURCE_DIR_CORE)/logger
 SOURCES =  test.cpp \
@@ -14,6 +15,7 @@ SOURCES =  test.cpp \
 	   $(SOURCE_DIR_CORE)/shared_memory.cpp \
 	   $(SOURCE_DIR_CORE_LOGGER)/logger.cpp \
 	   $(SOURCE_DIR_CORE)/single_instance.cpp \
+	   $(SOURCE_DIR_FIX)/fix_message.cpp \
 	   $(SOURCE_DIR_ORDER_MATCHER)/order.cpp \
 	   $(SOURCE_DIR_ORDER_MATCHER)/order_book.cpp \
 	   $(SOURCE_DIR_ORDER_MATCHER)/security_manager.cpp \

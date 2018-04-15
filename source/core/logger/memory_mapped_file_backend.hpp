@@ -99,7 +99,7 @@ class MemoryMappedFileBackend
 
         void openMemoryMappedFile()
         {
-            m_logFile.open(m_resourceName, m_rotationSize, true);
+            m_logFile.open(m_resourceName, m_rotationSize, true, true);
 
             if (!m_logFile.isOpen())
             {

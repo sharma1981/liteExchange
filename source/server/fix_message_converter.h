@@ -4,6 +4,8 @@
 #include <string>
 #include <type_traits>
 
+#include <core/logger/logger.h>
+
 #include <fix/fix_message.h>
 #include <fix/fix_constants.h>
 
@@ -26,7 +28,16 @@ class FixMessageConverter
         {
             convertCommonOrder(message, order);
 
-            order.setOrderType(order_matcher::OrderType::LIMIT);
+            auto orderType = message.getTagValueAsInt(fix::FixConstants::FIX_TAG_ORDER_TYPE);
+
+            if (orderType == fix::FixConstants::FIX_ORDER_TYPE_LIMIT)
+            {
+                order.setOrderType(order_matcher::OrderType::LIMIT);
+            }
+            else
+            {
+                LOG_WARNING("FixMessageConverter", "Only limit orders are supported")
+            }
 
             auto side = message.getTagValueAsInt(fix::FixConstants::FIX_TAG_ORDER_SIDE);
 

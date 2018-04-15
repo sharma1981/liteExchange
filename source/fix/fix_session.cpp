@@ -300,6 +300,34 @@ int FixSession::receive(FixMessage& message)
     return totalLength;
 }
 
+bool FixSession::validateSequenceNumber(int incomingSequenceNumber)
+{
+    if (getIncomingSequenceNumber() + 1 != incomingSequenceNumber)
+    {
+        return false;
+    }
+
+    return true;
+}
+
+bool FixSession::validateSequenceNumber(const FixMessage& message)
+{
+    auto actualIncomingSequenceNumber = message.getSequenceNumber();
+    return validateSequenceNumber(actualIncomingSequenceNumber);
+}
+
+bool FixSession::validateTargetCompid(const FixMessage& message)
+{
+    const string& targetCompId = message.getTargetCompId();
+
+    if (!core::compare(targetCompId, FixSession::COMPID))
+    {
+        return false;
+    }
+
+    return true;
+}
+
 bool FixSession::validateRequiredTags(const FixMessage& message, int& missingTag)
 {
     auto verifyTag = [&](int tag) -> bool

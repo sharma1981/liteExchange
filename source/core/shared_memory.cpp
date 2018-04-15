@@ -31,32 +31,32 @@ SharedMemory::~SharedMemory()
 
 void SharedMemory::close()
 {
+    shrinkToWrittenSize();
+    if (m_buffer != nullptr)
+    {
 #ifdef __linux__
-    if( m_buffer != nullptr)
-    {
-        munmap (m_buffer, m_size);
-    }
-
-    ::close(m_fileDescriptor);
+        munmap(m_buffer, m_size);
+        if (!m_fileDescriptor)
+        {
+            ::close(m_fileDescriptor);
+        }
 #elif _WIN32
-    if (m_buffer)
-    {
         UnmapViewOfFile(m_buffer);
-    }
 
-    if (m_handle)
-    {
-        CloseHandle(m_handle);
-    }
+        if (m_handle)
+        {
+            CloseHandle(m_handle);
+        }
 
-    if (m_fileHandle)
-    {
-        CloseHandle(m_fileHandle);
-    }
+        if (m_fileHandle)
+        {
+            CloseHandle(m_fileHandle);
+        }
 
-    m_handle = INVALID_HANDLE_VALUE;
-    m_fileHandle = INVALID_HANDLE_VALUE;
+        m_handle = INVALID_HANDLE_VALUE;
+        m_fileHandle = INVALID_HANDLE_VALUE;
 #endif
+    }
     m_size = 0;
     m_buffer = nullptr;
     m_writtenSize = 0;
@@ -69,7 +69,6 @@ bool SharedMemory::open(string name, size_t maxSize, bool createFile, bool ipc, 
     m_size = core::VirtualMemory::adjustSizeToPageSize(maxSize);
 #ifdef __linux__
     UNUSED(buffered); // Not using O_DIRECT due to alignment requirements
-    UNUSED(ipc);
     // Prepare a file large enough to hold an unsigned integer.
     int flags = O_RDWR | O_CREAT | O_TRUNC;
     m_fileDescriptor = ::open (name.c_str(), flags, S_IRUSR | S_IWUSR);
@@ -79,7 +78,7 @@ bool SharedMemory::open(string name, size_t maxSize, bool createFile, bool ipc, 
          // Something needs to be written at the end of the file to have the file actually have the new size.
         if( ::write(m_fileDescriptor, "", 1) == 1)
         {
-            int mmapFlags = MAP_SHARED;
+            int mmapFlags = ipc ? MAP_SHARED : MAP_PRIVATE;
             // Create memory mapping
             m_buffer = static_cast<char*>(mmap (0, m_size, PROT_WRITE, mmapFlags, m_fileDescriptor, 0));
         }
@@ -149,6 +148,25 @@ bool SharedMemory::open(string name, size_t maxSize, bool createFile, bool ipc, 
         std::memset(m_buffer, 0, m_size);
     }
     return ret;
+}
+
+void SharedMemory::flushToDisc()
+{
+#ifdef __linux__
+    msync(m_buffer, m_writtenSize, MS_SYNC);
+#elif _WIN32
+    FlushViewOfFile(m_buffer, m_writtenSize);
+#endif
+}
+
+void SharedMemory::shrinkToWrittenSize()
+{
+#ifdef __linux__
+    ftruncate(m_fileDescriptor, m_writtenSize);
+    mremap(m_buffer, m_size, m_writtenSize, MREMAP_MAYMOVE);
+#elif _WIN32
+    // NOT IMPLEMENTED FOR WINDOWS
+#endif
 }
 
 void SharedMemory::append(void* buffer, size_t size)

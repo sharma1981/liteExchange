@@ -13,4 +13,4 @@ Linux
 Windows
 
 	Go to https://support.microsoft.com/en-gb/help/2977003/the-latest-supported-visual-c-downloads
-	Download and install VS2017 x86 version
+	Download and install VS2017 x86 or x64 version

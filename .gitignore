@@ -13,11 +13,16 @@
 *.exp
 *.ncb
 *.suo
+*.iobj
+*.ipdb
+*.db*
+*.log
+*.user
+ipch/
+intermediate/
 ##########################
-# PYTHON SPECIFIC ( TEST HARNESS)
+# PYTHON SPECIFIC ( TEST HARNESS )
 *.pyc
 ##########################
 # PROJECT SPECIFIC
 ome_log.txt
-ipch/
-intermediate/
