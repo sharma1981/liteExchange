@@ -20,9 +20,11 @@
 	* [12. Code map](#CodeMap)
           
 ## <a name="Introduction"></a>**1. Introduction and features:** 
-It is a cross platform (Linux/Windows) multithreaded order matching engine written in C++11 using FIX protocol. 
+It is a cross platform (Linux/Windows) multithreaded order matching engine written in C++11 using FIX protocol for order entry.
 
-Currently supports only limit orders. For limit orders and matching engines , see https://money.stackexchange.com/questions/15156/how-do-exchanges-match-limit-orders
+Matching engines are used in exchanges to automatedly match buy and sell orders. You can see a nice video explaining them and components of an exchange here : https://www.youtube.com/watch?v=b1e4t2k2KJY
+
+Currently supports only limit orders. For limit orders and matching , please see https://money.stackexchange.com/questions/15156/how-do-exchanges-match-limit-orders
 
 For FIX protocol , see https://en.wikipedia.org/wiki/Financial_Information_eXchange
 
