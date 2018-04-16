@@ -31,7 +31,7 @@ class FixServerReactor : public core::TCPServerReactor
         virtual void onFixLogoff(FixSession*) = 0;
         virtual void onTraderLogon(FixSession*, const std::string&) = 0;
         virtual void onFixMessage(FixMessage*, std::size_t) = 0;
-        virtual void onFixError(const std::string&) = 0;
+        virtual void onFixError(const std::string&, FixSession*) = 0;
 
         static FixSession* getSession(std::size_t);
 

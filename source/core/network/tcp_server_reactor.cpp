@@ -200,7 +200,7 @@ void* TCPServerReactor::reactorThread()
         else
         {
             auto errorCode = Socket::getCurrentThreadLastSocketError();
-            onUnhandledSocketError(errorCode);
+            onUnhandledSocketError(errorCode, result);
         }
     }
     return nullptr;

@@ -55,6 +55,15 @@ void OutgoingMessageProcessor::rejectOrder(size_t sessionId, FixMessage* message
     else
     {
         session = FixServerReactor::getSession(sessionId);
+
+        if (session == nullptr)
+        {
+            LOG_ERROR("Outgoing message processor", core::format("Session(%d) not available, cannot send reject message : %d", sessionId, rejectionMessage))
+            return;
+        }
+
+        session->lock();
+
         session->getBaseMessage(FixConstants::MessageType::BUSINESS_REJECT, rejectMessage);
     }
 
@@ -73,6 +82,7 @@ void OutgoingMessageProcessor::rejectOrder(size_t sessionId, FixMessage* message
     else
     {
         session->send(rejectMessage);
+        session->unlock();
     }
 }
 
@@ -131,8 +141,11 @@ void* OutgoingMessageProcessor::run()
 
                     if (session == nullptr)
                     {
+                        LOG_ERROR("Outgoing message processor",core::format("Session not available, cannot send execution report : SessionId(%d) ClientOrderId(%s)", order.getSessionId(), order.getClientID()))
                         continue;
                     }
+
+                    session->lock();
 
                     session->getExecutionReportMessage(executionReport);
                 }
@@ -164,7 +177,6 @@ void* OutgoingMessageProcessor::run()
                 {
                     executionReport.setTag(fix::FixConstants::FIX_TAG_LAST_QUANTITY, order.getLastExecutedQuantity());
                     executionReport.setTag(fix::FixConstants::FIX_TAG_LAST_PRICE, order.getLastExecutedPrice());
-                    LOG_INFO("Outgoing message processor", core::format("ORDER FILL EXECUTION REPORT BEING SENT, SESSION ID : %d , CLIENT ORDER ID : %s ", order.getSessionId(), order.getClientID()).c_str())
                 }
 
                 if (executionReport.getFixVersion() == fix::FixConstants::FIX_4_2)
@@ -183,7 +195,26 @@ void* OutgoingMessageProcessor::run()
                 else
                 {
                     // FIX MODE
-                    session->send(executionReport);
+                    auto result = session->send(executionReport);
+
+                    string logMessage = "";
+
+                    if (orderStatus == fix::FixConstants::FIX_ORDER_STATUS_FILLED || orderStatus == fix::FixConstants::FIX_ORDER_STATUS_PARTIALLY_FILLED)
+                    {
+                        logMessage = "SENDING FILL EXECUTION REPORT : ";
+                    }
+                    else
+                    {
+                        logMessage = "SENDING EXECUTION REPORT : ";
+                    }
+
+                    logMessage += core::format("TargetCompid(%s) ClientOrderId(%s) ExecType(%d) SocketResult(%d)", session->getTargetCompId().c_str(), order.getClientID().c_str(), executionType, result);
+                    LOG_INFO("Outgoing message processor", logMessage.c_str())
+
+                    // TODO : Currently losing an execution report in case of a possible disconnection
+                    // If send result is a failure need to resend this to a client in case of reconnection
+
+                    session->unlock();
                 }
             }
         }

@@ -29,7 +29,7 @@ class TCPServer
         // Abstract methods
         virtual void onClientConnected(std::size_t peerIndex) = 0;
         virtual void onClientDisconnected(std::size_t peerIndex) = 0;
-        virtual void onUnhandledSocketError(int errorCode) = 0;
+        virtual void onUnhandledSocketError(int errorCode, int eventResult) = 0;
         virtual void* handleClient(std::size_t peerIndex) = 0;
 
     protected:

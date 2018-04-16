@@ -14,7 +14,7 @@ string FixSession::COMPID = "";
 
 FixSession::FixSession() : m_fixVersion{ FixConstants::FixVersion::FIX_VERSION_NONE }, m_outgoingSequenceNumber{ 1 }, m_incomingSequenceNumber{ 1 },
 m_heartBeatInterval{ DEFAULT_HEARTBEAT_INTERVAL }, m_encryptionMethod{ FixConstants::FIX_ENCRYPTION_NONE }
-, m_tcpConnection{ nullptr }, m_sessionLock{ nullptr }, m_receiveCache{ nullptr }, m_isUsingExternalTCPConnectionManager{false}
+, m_tcpConnection{ nullptr }, m_sessionLock{ nullptr }, m_sessionSendLock{nullptr}, m_receiveCache{ nullptr }, m_isUsingExternalTCPConnectionManager{ false }
 {
     m_timePrecision = core::Subseconds::MICROSECONDS;
     m_lastReceivedTime = 0;
@@ -29,6 +29,7 @@ FixSession::FixSession(const FixSession& other)
     m_encryptionMethod = other.m_encryptionMethod;
     m_tcpConnection = other.m_tcpConnection;
     m_sessionLock = other.m_sessionLock;
+    m_sessionSendLock = other.m_sessionSendLock;
     m_receiveCache = other.m_receiveCache;
     m_targetCompId = other.m_targetCompId;
     m_fixVersion = other.m_fixVersion;
@@ -42,6 +43,11 @@ FixSession::~FixSession()
     if (m_sessionLock)
     {
         delete m_sessionLock;
+    }
+
+    if (m_sessionSendLock)
+    {
+        delete m_sessionSendLock;
     }
 
     if (m_receiveCache)
@@ -61,6 +67,7 @@ void FixSession::initialise(core::TCPConnection* connection, core::Subseconds ti
     m_tcpConnection = connection;
     m_timePrecision = timePrecision;
     m_sessionLock = new core::SpinLock;
+    m_sessionSendLock = new core::SpinLock;
     m_receiveCache = new FixReceiveCache;
 
     if (receiveCacheSize > 0)
@@ -391,7 +398,7 @@ int FixSession::send(FixMessage& message)
 
     {
         // Critical section
-        std::lock_guard < core::SpinLock > sendLock(*m_sessionLock);
+        std::lock_guard < core::SpinLock > sendLock(*m_sessionSendLock);
 
         message.setSequenceNumber(m_outgoingSequenceNumber);
         message.setSendingTime(currentUTCDateTime);

@@ -69,14 +69,14 @@ void ServerFix::run()
     LOG_INFO("FIX Engine", "Acceptor stopped")
 }
 
-void ServerFix::onUnhandledSocketError(int errorCode)
+void ServerFix::onUnhandledSocketError(int errorCode, int eventResult)
 {
-    LOG_ERROR("FIX Server", "Socket error : " + core::Socket::getSocketErrorAsString(errorCode))
+    LOG_ERROR("FIX Server", core::format( "Socket error :%d, socket event result :%d ", errorCode, eventResult))
 }
 
-void ServerFix::onFixError(const std::string& fixErrorMessage)
+void ServerFix::onFixError(const std::string& fixErrorMessage, FixSession* session)
 {
-    LOG_ERROR("FIX Server", "Fix error : " + fixErrorMessage)
+    LOG_ERROR("FIX Server", core::format("Fix error for %s : %s", session->getTargetCompId(), fixErrorMessage))
 }
 
 void ServerFix::onFixLogon(FixSession* session)

@@ -13,7 +13,7 @@
 	* [5. How to build](#HowToBuild)
 	* [6. Configuring and running the server](#Configuration)
 	* [7. Offline order entry mode](#OfflineOrderEntry)
-	* [8. Test harness / FIX client automations](#TestHarness)
+	* [8. Test harness / FIX client automation](#TestHarness)
 	* [9. Unit tests](#UnitTesting)
 	* [10. Utility scripts](#UtilityScripts)
 	* [11. Coding conventions](#CodingConventions)
@@ -58,6 +58,7 @@ Implementation details are as below :
 | Property              | Details                                                       |
 | ----------------------|:-------------------------------------------------------------:|
 | OS                    | Linux ( tested on Ubuntu and CentOS ),Windows ( tested on 10 )|
+| Architectures			| 64 bit and 32 bit												|
 | C++                   | C++11                                                         |
 | C++ Compiler Support  | GCC4.8+ and MSVC 141 (VS2017)									|
 | C++ Libraries         | STD, STL						                                |
@@ -149,6 +150,15 @@ For running on Windows , you need to install MSVC141 ( VS2017 ) C++ runtime :
 **How to build the project on Windows with Visual Studio 2017 :** Go to "build/windows_msvc_visual_studio" directory and use SLN file to launch VS with the project
     
 **How to build the project on Windows with Visual Studio in command line :** Go to "build/windows_msvc_command_line" directory and execute one of batch files : build_debug.bat or build_release.bat
+
+**Warning levels :** Using -Wall for GCC and /W3 for MSVC
+        
+**Precompiled header file usage :** On Windows , the project is using /FI ( Force include parameter, therefore no need to include the pch header everywhere ) and specified the pch header to be precompiled_header.h. Note that this breaks edit-and-continue in Visual Studio. Also precompiled header setting of all projects is "use" whereas precompiled_header.cpp is "create".
+For Linux , there is pch rule to enable it in the makefile ( build/linux/Makefile) , but currently that rule is not being used since it doesn`t appear as it is doing much improvement as on Windows.
+
+For GCC see https://gcc.gnu.org/onlinedocs/gcc/Precompiled-Headers.html
+
+For MSVC see https://msdn.microsoft.com/en-us/library/8c5ztk84(v=vs.140).aspx
 
 ## <a name="Configuration">**6. Configuring and running the server :** 
 
@@ -274,11 +284,11 @@ The output of offline order matching will have timestamps with microsecond preci
 		8=FIX.4.29=7835=86=111=14=117=320=031=132=137=38=139=254=155=GOOGL150=2151=010=173
 		16-09-2017 03:12:27.777489
 			
-## <a name="TestHarness">**8. Test harness / Fix client automations:** 
+## <a name="TestHarness">**8. Test harness / Fix client automation:** 
 
 Under "test_harness" directory :
 
-For Linux, the project has a Python script which can send orders from FIX files using Fix protocol.
+The project has a Python script which can send orders from FIX files using Fix protocol.
 
 1. Modify test_cases.txt which has the orders to send to the engine as FIX messages.
 
@@ -287,23 +297,7 @@ For Linux, the project has a Python script which can send orders from FIX files 
 3. You can set automation parameters in the commandline :
         
 <p align="center">  
-<img src="https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/images/testfunctional_linux.png">       
-</p>
-
-   
-For Windows there is a Powershell script for Windows which can send orders from FIX files using Fix protocol.
-It internally uses C# to implement FIX protocol.
-
-1. Modify test_cases.txt which has the orders to send to the engine as FIX messages.
-
-2. For firing Windows test client(s), you can use fix_client_automation.bat.
-
-3. A GUI will appear. Simply specify the arguments.
-
-4. Press the start button.
-        
-<p align="center">  
-<img src="https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/images/testfunctional_gui_windows.png">       
+<img src="https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/images/fix_client_automation.png">       
 </p>
             
 ## <a name="UnitTesting">**9. Unit testing :** 
@@ -366,17 +360,6 @@ Inclusions : Using forward slash as it works for both Linux and Windows :
 ~~~C++
 		#include <core/concurrency/thread.h>
 ~~~
-    
-Warning level used for GCC : -Wall
-
-Warning level used for MSVC : /W3
-        
-Precompiled header file usage : On Windows , the project is using /FI ( Force include parameter, therefore no need to include the pch header everywhere ) and specified the pch header to be precompiled_header.h. Note that this breaks edit-and-continue in Visual Studio. Also precompiled header setting of all projects is "use" whereas precompiled_header.cpp is "create".
-For Linux , there is pch rule to enable it in the makefile ( build/linux/Makefile) , but currently that rule is not being used since it doesn`t appear as it is doing much improvement as on Windows.
-
-For GCC see https://gcc.gnu.org/onlinedocs/gcc/Precompiled-Headers.html
-
-For MSVC see https://msdn.microsoft.com/en-us/library/8c5ztk84(v=vs.140).aspx
 
 ## <a name="CodeMap">**12. Code map:**
 

@@ -84,6 +84,7 @@ class FixSession
         int m_encryptionMethod;
         core::TCPConnection* m_tcpConnection;
         core::SpinLock* m_sessionLock;
+        core::SpinLock* m_sessionSendLock;
         FixReceiveCache* m_receiveCache;
         std::string m_targetCompId;
         core::Subseconds  m_timePrecision;

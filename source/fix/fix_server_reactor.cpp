@@ -17,7 +17,6 @@ void FixServerReactor::addSession(FixSession* newSession)
 {
     auto currentSize = Sessions.size();
     int nonUserPeerIndex{ -1 };
-    int ret{ -1 };
 
     for (size_t i{ 0 }; i < currentSize; i++)
     {
@@ -39,7 +38,6 @@ void FixServerReactor::addSession(FixSession* newSession)
         // Use an existing peer slot
         Sessions[nonUserPeerIndex].reset(newSession);
         SessionFlags[nonUserPeerIndex] = true;
-        ret = nonUserPeerIndex;
     }
 }
 
@@ -83,6 +81,11 @@ void FixServerReactor::start()
 
 FixSession* FixServerReactor::getSession(size_t index)
 {
+    if (FixServerReactor::SessionFlags[index] == false)
+    {
+        return nullptr;
+    }
+
     return (FixServerReactor::Sessions)[index].get();
 }
 
@@ -152,7 +155,7 @@ void FixServerReactor::processMessage(FixMessage* incomingMessage, FixSession* s
     {
         if (!FixSession::validateTargetCompid(*incomingMessage))
         {
-            onFixError(core::format("Invalid target comp id , expected : %s , actual : %s", FixSession::getCompId(), incomingMessage->getTargetCompId().c_str()));
+            onFixError(core::format("Invalid target comp id , expected : %s , actual : %s", FixSession::getCompId(), incomingMessage->getTargetCompId().c_str()), session);
             session->close();
             onClientDisconnected(peerIndex);
             return;
@@ -169,7 +172,7 @@ void FixServerReactor::processMessage(FixMessage* incomingMessage, FixSession* s
         if (!session->validateSequenceNumber(actualIncomingSequenceNumber))
         {
             // Currently sequence number resetting / gap filling not supported
-            onFixError(core::format("Invalid sequence number received , expected : %d , actual : %d", session->getIncomingSequenceNumber()+1, actualIncomingSequenceNumber));
+            onFixError(core::format("Invalid sequence number received , expected : %d , actual : %d", session->getIncomingSequenceNumber()+1, actualIncomingSequenceNumber), session);
             session->close();
             onClientDisconnected(peerIndex);
             return;
@@ -210,7 +213,7 @@ void FixServerReactor::checkErrors(int recvSize, FixSession* session, size_t pee
     }
     else
     {
-        onUnhandledSocketError(error);
+        onUnhandledSocketError(error, recvSize);
     }
 }
 

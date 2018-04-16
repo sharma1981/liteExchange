@@ -110,11 +110,6 @@ void* CentralOrderBook::taskNewOrder(Order& order)
         // SEND FILLED OR PARTIALLY FILLED MESSAGE TO THE CLIENT
         OutgoingMessage message(order, order.isFilled() ? OrderStatus::FILLED : OrderStatus::PARTIALLY_FILLED);
 
-        if (message.getOrder().getOrderStatus() == OrderStatus::FILLED)
-        {
-            LOG_INFO("Central OrderBook", core::format("PUSHING FILLED ORDER TO OUTGOING MESSAGE PROCESSOR, SESSION ID : %d , CLIENT ORDER ID : %s", order.getSessionId(), order.getClientID()).c_str())
-        }
-
         m_outgoingMessages[queueID]->push(message);
     }
 

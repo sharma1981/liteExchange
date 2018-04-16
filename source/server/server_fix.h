@@ -22,8 +22,8 @@ class ServerFix : public ServerBase, public fix::FixServerReactor
         order_matcher::CentralOrderBook& getCentralOrderBook() { return m_centralOrderBook; }
         virtual void run() override;
 
-        virtual void onUnhandledSocketError(int errorCode) override;
-        virtual void onFixError(const std::string&) override;
+        virtual void onUnhandledSocketError(int errorCode, int eventResult) override;
+        virtual void onFixError(const std::string&, fix::FixSession*) override;
 
         virtual void onFixLogon(fix::FixSession*) override;
         virtual void onFixLogoff(fix::FixSession*) override;
