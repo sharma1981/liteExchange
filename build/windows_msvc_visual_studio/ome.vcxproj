@@ -33,11 +33,7 @@
     <ClInclude Include="..\..\source\core\compiler\thread_local.h" />
     <ClInclude Include="..\..\source\core\compiler\unused.h" />
     <ClInclude Include="..\..\source\core\concurrency\actor.h" />
-    <ClInclude Include="..\..\source\core\concurrency\base_lock.h" />
-    <ClInclude Include="..\..\source\core\concurrency\lock.hpp" />
-    <ClInclude Include="..\..\source\core\concurrency\queue_mpmc.hpp" />
     <ClInclude Include="..\..\source\core\concurrency\queue_mpsc.hpp" />
-    <ClInclude Include="..\..\source\core\concurrency\ring_buffer_mpmc.hpp" />
     <ClInclude Include="..\..\source\core\concurrency\ring_buffer_spsc_lockfree.hpp" />
     <ClInclude Include="..\..\source\core\concurrency\spinlock.hpp" />
     <ClInclude Include="..\..\source\core\concurrency\task.h" />

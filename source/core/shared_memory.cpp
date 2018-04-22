@@ -33,28 +33,26 @@ void SharedMemory::close()
 {
     if (m_buffer != nullptr)
     {
-        shrinkToWrittenSize();
 #ifdef __linux__
         munmap(m_buffer, m_size);
+
         if (!m_fileDescriptor)
         {
             ::close(m_fileDescriptor);
         }
 #elif _WIN32
-        UnmapViewOfFile(m_buffer);
-
         if (m_handle)
         {
+            UnmapViewOfFile(m_buffer);
             CloseHandle(m_handle);
+            m_handle = INVALID_HANDLE_VALUE;
         }
 
         if (m_fileHandle)
         {
             CloseHandle(m_fileHandle);
+            m_fileHandle = INVALID_HANDLE_VALUE;
         }
-
-        m_handle = INVALID_HANDLE_VALUE;
-        m_fileHandle = INVALID_HANDLE_VALUE;
 #endif
     }
     m_size = 0;
@@ -156,16 +154,6 @@ void SharedMemory::flushToDisc()
     msync(m_buffer, m_writtenSize, MS_SYNC);
 #elif _WIN32
     FlushViewOfFile(m_buffer, m_writtenSize);
-#endif
-}
-
-void SharedMemory::shrinkToWrittenSize()
-{
-#ifdef __linux__
-    ftruncate(m_fileDescriptor, m_writtenSize);
-    mremap(m_buffer, m_size, m_writtenSize, MREMAP_MAYMOVE);
-#elif _WIN32
-    // NOT IMPLEMENTED FOR WINDOWS
 #endif
 }
 

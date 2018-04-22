@@ -54,7 +54,6 @@ class SharedMemory
         HANDLE m_fileHandle;
 #endif
         void copyMemory(void* from, void* to, std::size_t size);
-        void shrinkToWrittenSize();
 };
 
 } // namespace

@@ -5,14 +5,17 @@
 #include <thread>
 #include <cstddef>
 #include <core/concurrency/thread.h>
-#include <core/concurrency/base_lock.h>
+#include <core/noncopyable.h>
 
 namespace core
 {
-class SpinLock : public BaseLock
+
+#define DEFAULT_SPIN_COUNT 0x00000400
+
+class SpinLock : public NonCopyable
 {
     public:
-        SpinLock() : m_yielding{ true }, m_spinCount{ BaseLock::DEFAULT_SPIN_COUNT }
+        SpinLock() : m_yielding{ true }, m_spinCount{ DEFAULT_SPIN_COUNT }
         {
             unlock();
         }
@@ -23,7 +26,7 @@ class SpinLock : public BaseLock
             m_spinCount = spinCount;
         }
 
-        void lock() override
+        void lock()
         {
             while (true)
             {
@@ -48,7 +51,7 @@ class SpinLock : public BaseLock
             }
         }
 
-        bool tryLock() override
+        bool tryLock()
         {
             if (m_flag.test_and_set(std::memory_order_acquire) == true)
             {
@@ -58,7 +61,7 @@ class SpinLock : public BaseLock
             return true;
         }
 
-        void unlock() override
+        void unlock()
         {
             m_flag.clear(std::memory_order_release);
         }

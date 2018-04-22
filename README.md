@@ -28,7 +28,7 @@ Currently supports only limit orders. For limit orders and matching , please see
 
 For FIX protocol , see https://en.wikipedia.org/wiki/Financial_Information_eXchange
 
-It does not use any 3rd party libraries and uses its own concurrency and network/FIX libraries. It also comes with own FIX client automation test harnesses writtten in stock Python and Powershell.
+It does not use any 3rd party libraries and uses its own concurrency and network/FIX libraries. It also comes with own FIX client automation test harness in stock Python.
 
 Its core libraries such as concurrency and networking is designed to be as configurable as possible for low latency tuning purposes. 
 
@@ -79,7 +79,7 @@ Its architecture overview is as below :
 The core of order matching layer is called the central order book, which keeps order books per security symbol.
 
 1. Main thread is a single-thread epoll FIX server which passes orders to the central order book`s SPSC lockfree queues per symbol
-2. Central order book uses a thread pool , processes messages and pushes results to SPSC queues of outgoing message processor per symbol.
+2. Central order book uses a thread pool in which there is a thread per symbol and ideally pinned to a CPU core. They process messages and push results to SPSC queues of outgoing message processor per symbol.
 3. Outgoing message procesor sends execution reports to the FIX clients.
 
 ## <a name="LowLatency">**3. Low latency features and how it can be improved:** 
@@ -221,7 +221,7 @@ The engine executable looks for "ome.ini" file. There is a few categories of con
 | LOGGER_WRITE_PERIOD_MILLISECONDS 					| Logging period in milliseconds								|
 | LOGGER_MEMORY_MAPPED_FILE							| Sets log file													|
 | LOGGER_ROTATION_SIZE_IN_BYTES      				| Log rotation size in bytes						 			|
-| LOGGER_LOG_LEVEL									| Log level, supported values : ERROR WARNING INFO				|
+| LOGGER_LOG_LEVEL									| Log level, supported values : FATAL ERROR WARNING INFO DEBUG	|
 | LOGGER_COPY_TO_STDOUT   							| If enabled all logs will be printed in console	            |
 
 

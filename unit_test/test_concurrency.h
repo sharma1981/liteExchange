@@ -4,9 +4,7 @@
 #include<core/concurrency/spinlock.hpp>
 #include<core/concurrency/thread_pool.h>
 #include<core/concurrency/ring_buffer_spsc_lockfree.hpp>
-#include<core/concurrency/queue_mpmc.hpp>
 #include<core/concurrency/queue_mpsc.hpp>
-#include<core/concurrency/ring_buffer_mpmc.hpp>
 
 #include <cstddef>
 #include <algorithm>
@@ -95,12 +93,12 @@ TEST(Concurrency, RingBufferSPSCLockFree)
 {
     core::RingBufferSPSCLockFree<int> queue(19);
     std::vector<std::thread> threads;
-    vector<int> testVector = {4,5,7,2};
+    vector<int> testVector = {4,5,7,2,6,7,8,9};
     int sum = 0;
 
     for (auto i : testVector)
     {
-        threads.push_back(std::thread([&](){ queue.push(i); }));
+        threads.push_back(std::thread([&](int n){ cout << "Pushing " << n << endl; queue.push(n); }, i));
         sum += i;
     }
 
@@ -116,7 +114,7 @@ TEST(Concurrency, RingBufferSPSCLockFree)
                                                         break;
                                                     }
                                                 }
-                                                cout << n << endl; testSum += n;
+                                                cout << "Pulled " << n << endl; testSum += n;
                                             }));
     }
 
@@ -129,44 +127,17 @@ TEST(Concurrency, RingBufferSPSCLockFree)
 }
 
 
-TEST(Concurrency, QueueMPMC)
-{
-    core::QueueMPMC<int> mqueue;
-    std::vector<std::thread> threads;
-    vector<int> testVector = { 4, 5, 7, 2 };
-    int sum = 0;
-    int testSum = 0;
-
-    for (auto i : testVector)
-    {
-        threads.push_back(std::thread([&](){ mqueue.enqueue(i); }));
-        sum += i;
-    }
-
-    for (auto i : testVector)
-    {
-        threads.push_back(std::thread([&](){ int i = 0; mqueue.dequeue(&i); testSum += i; }));
-    }
-
-    for (auto& elem : threads)
-    {
-        elem.join();
-    }
-
-    EXPECT_EQ(sum, testSum);
-}
-
 TEST(Concurrency, QueueMPSC)
 {
     core::QueueMPSC<int> mqueue;
     std::vector<std::thread> threads;
-    vector<int> testVector = { 4, 5, 7, 2 };
+    vector<int> testVector = { 4,5,7,2,6,7,8,9 };
     int sum = 0;
     int testSum = 0;
 
     for (auto i : testVector)
     {
-        threads.push_back(std::thread([&](){ mqueue.push(i); }));
+        threads.push_back(std::thread([&](int n){ mqueue.push(n); }, i));
         sum += i;
     }
 
@@ -188,33 +159,6 @@ TEST(Concurrency, QueueMPSC)
     }
 
     readThread.join();
-
-    EXPECT_EQ(sum, testSum);
-}
-
-TEST(Concurrency, RingBufferMPMC)
-{
-    core::RingBufferMPMC<int> ringBuffer(10);
-    std::vector<std::thread> threads;
-    vector<int> testVector = { 4, 5, 7, 2};
-    int sum = 0;
-    int testSum = 0;
-
-    for (auto i : testVector)
-    {
-        threads.push_back(std::thread([&](){ringBuffer.push(i); }));
-        sum += i;
-    }
-
-    for (auto i : testVector)
-    {
-        threads.push_back(std::thread([&](){ int n = ringBuffer.pop(); testSum += n; }));
-    }
-
-    for (auto& elem : threads)
-    {
-        elem.join();
-    }
 
     EXPECT_EQ(sum, testSum);
 }

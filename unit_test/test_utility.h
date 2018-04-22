@@ -22,14 +22,6 @@ TEST(Utility, ConfigFile)
     val = x.getStringValue("THREAD_STACK_SIZE");
 
     EXPECT_STREQ("0", val.c_str()); // string equal
-
-    auto symbols = x.getArray("SYMBOL");
-
-    auto first = symbols[0];
-    auto second = symbols[1];
-
-    EXPECT_STREQ("MSFT", first.c_str()); // string equal
-    EXPECT_STREQ("AAPL", second.c_str()); // string equal
 }
 
 TEST(Utility, ReplaceInString)

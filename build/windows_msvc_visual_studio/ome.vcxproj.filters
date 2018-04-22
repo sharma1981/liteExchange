@@ -72,19 +72,7 @@
     <ClInclude Include="..\..\source\core\concurrency\actor.h">
       <Filter>core\concurrency</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\core\concurrency\base_lock.h">
-      <Filter>core\concurrency</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\core\concurrency\lock.hpp">
-      <Filter>core\concurrency</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\core\concurrency\queue_mpmc.hpp">
-      <Filter>core\concurrency</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\source\core\concurrency\queue_mpsc.hpp">
-      <Filter>core\concurrency</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\core\concurrency\ring_buffer_mpmc.hpp">
       <Filter>core\concurrency</Filter>
     </ClInclude>
     <ClInclude Include="..\..\source\core\concurrency\ring_buffer_spsc_lockfree.hpp">

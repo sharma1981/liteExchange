@@ -21,9 +21,11 @@ namespace core
 #define STRINGIFY_DETAIL(x) #x
 #define STRINGIFY(x) STRINGIFY_DETAIL(x)
 
+#define LOG_DEBUG(SENDER, MESSAGE) (core::Logger::getInstance()->log(core::LogLevel::LEVEL_DEBUG,(SENDER),(MESSAGE)));
 #define LOG_INFO(SENDER, MESSAGE) (core::Logger::getInstance()->log(core::LogLevel::LEVEL_INFO,(SENDER),(MESSAGE)));
 #define LOG_WARNING(SENDER, MESSAGE) (core::Logger::getInstance()->log(core::LogLevel::LEVEL_WARNING,(SENDER),(MESSAGE)));
 #define LOG_ERROR(SENDER, MESSAGE) (core::Logger::getInstance()->log(core::LogLevel::LEVEL_ERROR,(SENDER),(MESSAGE)));
+#define LOG_FATAL(SENDER, MESSAGE) (core::Logger::getInstance()->log(core::LogLevel::LEVEL_FATAL,(SENDER),(MESSAGE)));
 
 using LogBuffer = std::unique_ptr< core::QueueMPSC<LogEntry> >;
 
