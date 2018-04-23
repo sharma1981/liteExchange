@@ -21,11 +21,11 @@ SOURCES =  test.cpp \
 	   $(SOURCE_DIR_ORDER_MATCHER)/security_manager.cpp \
 	   $(SOURCE_DIR_ORDER_MATCHER)/central_order_book.cpp 
 #GoogleTest static library file
-GTEST_LIB=google_test_linux/lib/gtest_main.a
+GTEST_LIB=google_test/lib/gtest_main.a
 #Include Directories
 INCLUDE_DIR = ./
 INCLUDE_DIR_PROJECT = ../source
-INCLUDE_DIR_GTEST = google_test_linux/include/
+INCLUDE_DIR_GTEST = google_test/include/
 
 #Objects
 OBJECTS = $(SOURCES:.cpp=.o)

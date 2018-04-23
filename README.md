@@ -308,8 +308,6 @@ The project uses GoogleTest 1.7. You can find a makefile and vcproj under "unit_
     
 Building and running unit test on Linux : You can use Makefile under "unit_test" directory.
 
-Building and running unit test on Windows : You can use VisualStudio solution in "unit_test" directory.
-
 ## <a name="UtilityScripts">**10. Utility scripts:**
 
 You can find them under "utility_scripts" directory :
