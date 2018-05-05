@@ -1,4 +1,4 @@
-# Concurrent Order Matching Engine
+# openMatchingEngine
 <td><img src="https://img.shields.io/badge/LICENCE-PUBLIC%20DOMAIN-green.svg" alt="Licence badge"></td>
 
 | Linux GCC | Windows MSVC |
