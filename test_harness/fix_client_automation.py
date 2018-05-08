@@ -1128,7 +1128,7 @@ def main():
         server = "127.0.0.1"
         serverPort = 5001
         clientCompIdBase = "TEST_CLIENT"
-        serverCompId = "OME"
+        serverCompId = "LITEEXCHANGE"
 
         reportFile = "report.txt"
 

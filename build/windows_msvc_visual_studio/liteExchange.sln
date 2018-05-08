@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2036
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ome", "ome.vcxproj", "{2816D29E-D699-4F21-87C2-EAD81773A5CF}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "liteExchange", "liteExchange.vcxproj", "{2816D29E-D699-4F21-87C2-EAD81773A5CF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,6 +26,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {7411D475-D250-4347-B6E7-A040E5722CFD}
+		SolutionGuid = {DFD85902-E88C-4BE4-B945-D7EF7F398D24}
 	EndGlobalSection
 EndGlobal

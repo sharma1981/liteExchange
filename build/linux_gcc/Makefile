@@ -41,7 +41,7 @@ INCLUDE_DIR = $(SOURCE_DIR)/
 #Objects
 OBJECTS = $(SOURCES:.cpp=.o)
 #Executable
-EXECUTABLE = ../../bin/ome
+EXECUTABLE = ../../bin/liteExchange
 #Compiler flags
 CFLAGS= -I$(INCLUDE_DIR) -std=c++11 -c 
 #Linker flags

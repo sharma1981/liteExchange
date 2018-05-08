@@ -1,9 +1,9 @@
-# openMatchingEngine
+# liteExchange
 <td><img src="https://img.shields.io/badge/LICENCE-PUBLIC%20DOMAIN-green.svg" alt="Licence badge"></td>
 
 | Linux GCC | Windows MSVC |
 |:------:|:------:|
-|[![Build Status](https://travis-ci.org/akhin/concurrent-order-matching-engine.svg?branch=master)](https://travis-ci.org/akhin/concurrent-order-matching-engine)|[![Build status](https://ci.appveyor.com/api/projects/status/hw8s5o46kcgr388l?svg=true)](https://ci.appveyor.com/project/akhin/cpp-multithreaded-order-matching-engine)|
+|[![Build Status](https://travis-ci.org/akhin/liteExchange.svg?branch=master)](https://travis-ci.org/akhin/liteExchange)|[![Build status](https://ci.appveyor.com/api/projects/status/hw8s5o46kcgr388l?svg=true)](https://ci.appveyor.com/project/akhin/cpp-multithreaded-order-matching-engine)|
 
 * Sections
 	* [1. Introduction and features](#Introduction)
@@ -73,7 +73,7 @@ Implementation details are as below :
 Its architecture overview is as below :
 
 <p align="center">  
-<img src="https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/images/ome_architecture.png">       
+<img src="https://github.com/akhin/cpp_multithreaded_order_matching_engine/blob/master/images/architecture.png">       
 </p>
 
 The core of order matching layer is called the central order book, which keeps order books per security symbol.
@@ -164,7 +164,7 @@ For MSVC see https://msdn.microsoft.com/en-us/library/8c5ztk84(v=vs.140).aspx
 
 ## <a name="Configuration">**6. Configuring and running the server :** 
 
-The engine executable looks for "ome.ini" file. There is a few categories of configuration parameters.
+The engine executable looks for "liteExchange.ini" file. There is a few categories of configuration parameters.
 
 
 | General and order entry mode						| Description                                                   |
@@ -233,7 +233,7 @@ For specifying symbols in ini file, you need to use brackets as  below :
         SYMBOL[]=INTC
         SYMBOL[]=GOOGL
         
-Once you start the ome executable , initially you will see a screen like this :
+Once you start the executable , initially you will see a screen like this :
 
         06-02-2016 16:22:00 : INFO , Main thread , starting
         06-02-2016 16:22:00 : INFO , Thread pool , Thread(0) MSFT starting
@@ -263,7 +263,7 @@ Once you start the ome executable , initially you will see a screen like this :
 
 ## <a name="OfflineOrderEntry">**7. Offline order entry mode:** 
 
-The default mode is FIX server mode. However, if you specify an order file in ome.ini as below :
+The default mode is FIX server mode. However, if you specify an order file in liteExchange.ini as below :
 
 					ORDER_ENTRY_MODE=OFFLINE
 					OFFLINE_ORDER_ENTRY_FILE=sample_offline_order_file.txt

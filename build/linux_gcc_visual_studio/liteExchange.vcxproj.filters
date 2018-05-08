@@ -320,19 +320,7 @@
     <ClInclude Include="..\..\source\core\concurrency\actor.h">
       <Filter>src\core\concurrency</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\core\concurrency\base_lock.h">
-      <Filter>src\core\concurrency</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\core\concurrency\lock.hpp">
-      <Filter>src\core\concurrency</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\core\concurrency\queue_mpmc.hpp">
-      <Filter>src\core\concurrency</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\source\core\concurrency\queue_mpsc.hpp">
-      <Filter>src\core\concurrency</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\core\concurrency\ring_buffer_mpmc.hpp">
       <Filter>src\core\concurrency</Filter>
     </ClInclude>
     <ClInclude Include="..\..\source\core\concurrency\ring_buffer_spsc_lockfree.hpp">
@@ -403,11 +391,9 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\bin\ome.ini">
-      <Filter>bin</Filter>
-    </None>
     <None Include="..\linux_gcc\Makefile">
       <Filter>build\linux_gcc</Filter>
     </None>
+    <None Include="..\..\bin\liteExchange.ini" />
   </ItemGroup>
 </Project>

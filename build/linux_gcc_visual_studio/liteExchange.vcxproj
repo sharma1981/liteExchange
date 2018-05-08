@@ -29,7 +29,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{846b538d-b890-45d8-aed8-2a61dfdca36e}</ProjectGuid>
     <Keyword>Linux</Keyword>
-    <RootNamespace>ome</RootNamespace>
+    <RootNamespace>liteExchange</RootNamespace>
     <MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>
     <ApplicationType>Linux</ApplicationType>
     <ApplicationTypeRevision>1.0</ApplicationTypeRevision>
@@ -56,12 +56,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <UseDebugLibraries>true</UseDebugLibraries>
     <ConfigurationType>Makefile</ConfigurationType>
-    <RemoteRootDir>~/ome</RemoteRootDir>
+    <RemoteRootDir>~/liteExchange</RemoteRootDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <UseDebugLibraries>false</UseDebugLibraries>
     <ConfigurationType>Makefile</ConfigurationType>
-    <RemoteRootDir>~/ome</RemoteRootDir>
+    <RemoteRootDir>~/liteExchange</RemoteRootDir>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings" />
@@ -79,14 +79,14 @@
     <BuildCommandLine>
     </BuildCommandLine>
     <IntDir>$(ProjectDir)obj\$(Platform)\$(Configuration)\</IntDir>
-    <RemoteProjectDir>~/ome</RemoteProjectDir>
+    <RemoteProjectDir>~/liteExchange</RemoteProjectDir>
     <NMakeIncludeSearchPath>..\..\source;d:\include;$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
     <NMakePreprocessorDefinitions>..\..\source;d:\include</NMakePreprocessorDefinitions>
     <RemoteReBuildCommandLine>cd build &amp;&amp; cd linux_gcc &amp;&amp; make clean &amp;&amp; make debug</RemoteReBuildCommandLine>
     <RemoteCleanCommandLine>cd build &amp;&amp; cd linux_gcc &amp;&amp; make clean</RemoteCleanCommandLine>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <RemoteProjectDir>~/ome</RemoteProjectDir>
+    <RemoteProjectDir>~/liteExchange</RemoteProjectDir>
     <NMakePreprocessorDefinitions>..\..\source;d:\include</NMakePreprocessorDefinitions>
     <NMakeIncludeSearchPath>..\..\source;d:\include;$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
     <RemoteBuildCommandLine>cd build &amp;&amp; cd linux_gcc &amp;&amp; make release</RemoteBuildCommandLine>
@@ -137,11 +137,7 @@
     <ClInclude Include="..\..\source\core\compiler\thread_local.h" />
     <ClInclude Include="..\..\source\core\compiler\unused.h" />
     <ClInclude Include="..\..\source\core\concurrency\actor.h" />
-    <ClInclude Include="..\..\source\core\concurrency\base_lock.h" />
-    <ClInclude Include="..\..\source\core\concurrency\lock.hpp" />
-    <ClInclude Include="..\..\source\core\concurrency\queue_mpmc.hpp" />
     <ClInclude Include="..\..\source\core\concurrency\queue_mpsc.hpp" />
-    <ClInclude Include="..\..\source\core\concurrency\ring_buffer_mpmc.hpp" />
     <ClInclude Include="..\..\source\core\concurrency\ring_buffer_spsc_lockfree.hpp" />
     <ClInclude Include="..\..\source\core\concurrency\spinlock.hpp" />
     <ClInclude Include="..\..\source\core\concurrency\task.h" />
@@ -216,7 +212,7 @@
     <ClInclude Include="..\..\source\server\server_outgoing_message_processor.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\bin\ome.ini" />
+    <None Include="..\..\bin\liteExchange.ini" />
     <None Include="..\linux_gcc\Makefile" />
   </ItemGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">

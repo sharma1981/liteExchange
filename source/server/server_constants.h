@@ -5,7 +5,7 @@
 namespace server_constants
 {
 // Configuration file
-static const char* CONFIGURATION_FILE = "ome.ini";
+static const char* CONFIGURATION_FILE = "liteExchange.ini";
 // Configuration - General process related
 static const char* CONFIGURATION_FILE_PROCESS_PRIORITY = "PROCESS_PRIORITY";
 // Configuration - Order entry mode
