@@ -8,7 +8,7 @@
 * Sections
 	* [1. Introduction and features](#Introduction)
     * [2. Overview of architecture and multithreading system](#Overview)
-	* [3. Low latency features and how it can be improved](#LowLatency)
+	* [3. Low latency features , benchmarks and how it can be improved](#LowLatency)
     * [4. Build and runtime dependencies](#Dependencies)
 	* [5. How to build](#HowToBuild)
 	* [6. Configuring and running the server](#Configuration)
@@ -20,17 +20,17 @@
 	* [12. Code map](#CodeMap)
           
 ## <a name="Introduction"></a>**1. Introduction and features:** 
-It is a cross platform (Linux/Windows) multithreaded order matching engine written in C++11 using FIX protocol for order entry.
 
-Matching engines are used in exchanges to automatedly match buy and sell orders. You can see a nice video explaining them and components of an exchange here : https://www.youtube.com/watch?v=b1e4t2k2KJY
+It is essentially a minimal traditional stock exchange. It uses FIX protocol for order entry and market data broadcasting ( highly likely mold udp 64/ ITCH ) is on the way.
+It is cross platform (Linux/Windows) , written in C++11 with no 3rd party libraries. It also comes with own FIX client automation test harness in stock Python.
 
-Currently supports only limit orders. For limit orders and matching , please see https://money.stackexchange.com/questions/15156/how-do-exchanges-match-limit-orders
+This is mainly my "core tech" programming lab / playground. Regading "core tech" , it implements its own detailed and highly configurable concurrency and network layers 
+and also implements its own FIX protocol.
 
+It is meant to run on a single server for simplicity, therefore designed vertically-scalable meaning that the more CPU cores you add , a better ( and CPU pinned ) performance you will get.
+
+A nice video explaining them and components of an exchange : https://www.youtube.com/watch?v=b1e4t2k2KJY
 For FIX protocol , see https://en.wikipedia.org/wiki/Financial_Information_eXchange
-
-It does not use any 3rd party libraries and uses its own concurrency and network/FIX libraries. It also comes with own FIX client automation test harness in stock Python.
-
-Its core libraries such as concurrency and networking is designed to be as configurable as possible for low latency tuning purposes. 
 
 Electronic trading features can be seen in the table below :
 
@@ -82,7 +82,9 @@ The core of order matching layer is called the central order book, which keeps o
 2. Central order book uses a thread pool in which there is a thread per symbol and ideally pinned to a CPU core. They process messages and push results to SPSC queues of outgoing message processor per symbol.
 3. Outgoing message procesor sends execution reports to the FIX clients.
 
-## <a name="LowLatency">**3. Low latency features and how it can be improved:** 
+## <a name="LowLatency">**3. Low latency features, benchmarks and how it can be improved:** 
+
+Some features are tunable through the configuration file ( liteExchange.ini ) and some are not.
 
 Non-tunable low latency features are as below : 
 
@@ -103,7 +105,7 @@ The tunable low latency features :
 | Threads & thread pool  | Pinning to CPU core, stack size, OS level priority, hyperV avoidance           |
 | Spinlocks              | You can set the spincount or enable yielding in code   			              |
 
-* However there are so many more that can be improved , some very obvious ones :
+* Planning to have benchmarks after completing some key performance killers / jitter sources below :
 
 	* Object pools : Currently no pooling for FIX message or order object instances
 	
