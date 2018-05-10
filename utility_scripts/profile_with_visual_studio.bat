@@ -18,7 +18,7 @@ echo Then open created vspx file with VisualStudio to analyze at the end
 echo.
 pause
 
-SET TARGET_EXECUTABLE=ome.exe
+SET TARGET_EXECUTABLE=liteExchange.exe
 REM Change your drive letter accordingly
 SET PROFILER=vsperf
 REM

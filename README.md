@@ -21,21 +21,23 @@
           
 ## <a name="Introduction"></a>**1. Introduction and features:** 
 
-It is essentially a minimal traditional stock exchange. It uses FIX protocol for order entry and also market data broadcasting ( highly likely mold udp 64/ ITCH ) is on the way.
-It is cross platform (Linux/Windows) , written in C++11 with no 3rd party libraries. It also comes with own FIX client automation test harness in stock Python.
+This project is my "core tech" programming lab / playground.
 
-This is mainly my "core tech" programming lab / playground. Regarding "core tech" , it implements its own detailed and highly configurable concurrency and network layers 
-and also implements its own FIX protocol.
+It is essentially a minimal traditional stock exchange. It uses FIX protocol for order entry and also market data broadcasting ( highly likely mold udp 64/ ITCH ) will be included in future.
 
 A nice video explaining them and components of an exchange : https://www.youtube.com/watch?v=b1e4t2k2KJY
+
 For FIX protocol , see https://en.wikipedia.org/wiki/Financial_Information_eXchange
 
-* For simplicity :
-	* It is meant to run on a single server , therefore designed to be only vertically-scalable meaning that the more CPU cores you add , a better ( but also CPU pinned ) performance you will get.
-	* Currently no serialization/deserialization, therefore loses data in case of a crash. Might fix/improve in future.
-	* Non-planned trading features : replace orders, market orders , TIF, drop copies
-	* Non-planned networking / FIX features : throttling, cancel-on-disconnect , many FIX protocol validations
+It is cross platform (Linux/Windows) , written in C++11. Its test harness is written in stock Python.
 
+* Named as "lite" because :
+	* Does not any 3rd party library. Only GoogleTest is used for unit testing.
+	* No runtime dependency except C++ runtime and socket access. 
+	* All configurations are mananaged in one single ini file.
+	* It is meant to run on a single server , therefore designed to be only vertically-scalable meaning that the more CPU cores you add , a better ( but also CPU pinned ) performance you will get.
+	* It does not support all order types and features , does not do many FIX validations. All existing features can be seen in the tables below.
+	
 Electronic trading features can be seen in the table below :
 
 | Feature                       | Details                                               |

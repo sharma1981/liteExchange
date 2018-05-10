@@ -1,5 +1,5 @@
 #/bin/bash
 DEBUGGEE_DIR=../bin/
-DEBUGGEE=./ome
+DEBUGGEE=./liteExchange
 cd $DEBUGGEE_DIR
 valgrind --tool=helgrind $DEBUGGEE
