@@ -25,22 +25,22 @@ This project is my "core tech" programming lab / playground.
 
 It is essentially a minimal traditional stock exchange. It uses FIX protocol for order entry and also market data broadcasting ( highly likely mold udp 64/ ITCH ) will be included in future.
 
-A nice video explaining them and components of an exchange : https://www.youtube.com/watch?v=b1e4t2k2KJY
+A nice video which explains components of an exchange : https://www.youtube.com/watch?v=b1e4t2k2KJY
 
 For FIX protocol , see https://en.wikipedia.org/wiki/Financial_Information_eXchange
 
 It is cross platform (Linux/Windows) , written in C++11. Its test harness is written in stock Python.
 
 * Named as "lite" because :
-	* Does not any 3rd party library. Only GoogleTest is used for unit testing.
-	* No runtime dependency except C++ runtime and socket access. 
-	* All configurations are mananaged in one single ini file.
-	* It is meant to run on a single server , therefore designed to be only vertically-scalable meaning that the more CPU cores you add , a better ( but also CPU pinned ) performance you will get.
-	* It does not support all order types and features , does not do many FIX validations. All existing features can be seen in the tables below.
-	
-Electronic trading features can be seen in the table below :
 
-| Feature                       | Details                                               |
+	* Does not use any 3rd party library. Only GoogleTest is used for unit testing.
+	* No runtime dependency except C++ runtime and socket access. 
+	* All configurations are mananaged in one ini file.
+	* It is meant to run on a single server , therefore designed to be only vertically-scalable meaning that the more CPU cores you add , a better ( but also CPU pinned ) performance you will get.
+	* It supports minimum electronic trading features and also does not do many FIX validations. All existing features can be seen in the tables below.
+	
+
+| Electronic trading features   | Details                                               |
 | ----------------------------- |:-----------------------------------------------------:|
 | FIX order entry				| Using version agnostic custom FIX library			    |
 | Order entry from FIX files	| Providing that mode for debug/dev purposes			|
@@ -50,9 +50,8 @@ Electronic trading features can be seen in the table below :
 | TIF                           | Not supported       			                        |
 | Securities                    | Supported symbols defined in configuration file	    |
 
-Fix session details can be seen as below :
 
-| Property                      | Details                                                  |
+| Fix session properties        | Details                                                  |
 | ----------------------------- |:--------------------------------------------------------:|
 | Versions						| Agnostic , accepts all non-binary ones				   |
 | Supported FIX Admin messages	| Heartbeats, test requests, trader logons (no validation) |
@@ -61,9 +60,8 @@ Fix session details can be seen as below :
 | Sequence management			| Saves and restores sequence numbers from files		   |
 | Symbology						| Uses tag 55, no validations, examples use RIC codes	   |
 
-Implementation details are as below : 
 
-| Property              | Details                                                       |
+| Implementation details| Details                                                       |
 | ----------------------|:-------------------------------------------------------------:|
 | OS                    | Linux ( tested on Ubuntu and CentOS ),Windows ( tested on 10 )|
 | Architectures			| 64 bit and 32 bit												|
