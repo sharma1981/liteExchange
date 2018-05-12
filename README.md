@@ -36,19 +36,20 @@ It is cross platform (Linux/Windows) , written in C++11. Its test harness is wri
 	* Does not use any 3rd party library. Only GoogleTest is used for unit testing.
 	* No runtime dependency except C++ runtime and socket access. 
 	* All configurations are mananaged in one ini file.
-	* It is meant to run on a single server , therefore designed to be only vertically-scalable meaning that the more CPU cores you add , a better ( but also CPU pinned ) performance you will get.
+	* It is meant to run on a single server , therefore designed to be only vertically-scalable meaning that the more CPU cores you add , a better performance you might get.
 	* It supports minimum electronic trading features and also does not do many FIX validations. All existing features can be seen in the tables below.
 	
 
-| Electronic trading features   | Details                                               |
-| ----------------------------- |:-----------------------------------------------------:|
-| FIX order entry				| Using version agnostic custom FIX library			    |
-| Order entry from FIX files	| Providing that mode for debug/dev purposes			|
-| Order types                   | Limit                                                 |
-| Order message types           | NewOrder, Cancel                                      |
-| Exec report types			    | Accepted, Filled, PartiallyFilled, Rejected, Canceled |
-| TIF                           | Not supported       			                        |
-| Securities                    | Supported symbols defined in configuration file	    |
+| Electronic trading features   | Details                                                               |
+| ----------------------------- |:---------------------------------------------------------------------:|
+| FIX order entry				| Using version agnostic custom FIX library			    				|
+| Order entry from FIX files	| Providing that mode for debug/dev purposes							|
+| Order types                   | Limit                                                 				|
+| Order message types           | NewOrder, Cancel                                      				|
+| Exec report types			    | Accepted, Filled, PartiallyFilled, Rejected, Canceled 				|
+| TIF                           | Not supported       			                        				|
+| Matching algorithm			| Price-time priority , assumes 2 orders never arrive at the same time	|
+| Securities                    | Supported symbols defined in configuration file	    				|
 
 
 | Fix session properties        | Details                                                  |
