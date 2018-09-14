@@ -73,7 +73,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(ProjectDir)bin\$(Platform)\$(Configuration)\</OutDir>
-    <RemoteBuildCommandLine>cd build &amp;&amp; cd linux_gcc &amp;&amp; make debug</RemoteBuildCommandLine>
+    <RemoteBuildCommandLine>cd liteExchange/build &amp;&amp; cd linux_gcc &amp;&amp; make debug</RemoteBuildCommandLine>
     <AdditionalSourcesToCopyMapping>
     </AdditionalSourcesToCopyMapping>
     <BuildCommandLine>
@@ -82,16 +82,16 @@
     <RemoteProjectDir>~/liteExchange</RemoteProjectDir>
     <NMakeIncludeSearchPath>..\..\source;d:\include;$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
     <NMakePreprocessorDefinitions>..\..\source;d:\include</NMakePreprocessorDefinitions>
-    <RemoteReBuildCommandLine>cd build &amp;&amp; cd linux_gcc &amp;&amp; make clean &amp;&amp; make debug</RemoteReBuildCommandLine>
-    <RemoteCleanCommandLine>cd build &amp;&amp; cd linux_gcc &amp;&amp; make clean</RemoteCleanCommandLine>
+    <RemoteReBuildCommandLine>cd liteExchange/build &amp;&amp; cd linux_gcc &amp;&amp; make clean &amp;&amp; make debug</RemoteReBuildCommandLine>
+    <RemoteCleanCommandLine>cd liteExchange/build &amp;&amp; cd linux_gcc &amp;&amp; make clean</RemoteCleanCommandLine>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <RemoteProjectDir>~/liteExchange</RemoteProjectDir>
     <NMakePreprocessorDefinitions>..\..\source;d:\include</NMakePreprocessorDefinitions>
     <NMakeIncludeSearchPath>..\..\source;d:\include;$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
-    <RemoteBuildCommandLine>cd build &amp;&amp; cd linux_gcc &amp;&amp; make release</RemoteBuildCommandLine>
-    <RemoteReBuildCommandLine>cd build &amp;&amp; cd linux_gcc &amp;&amp; make clean &amp;&amp; make release</RemoteReBuildCommandLine>
-    <RemoteCleanCommandLine>cd build &amp;&amp; cd linux_gcc &amp;&amp; make clean</RemoteCleanCommandLine>
+    <RemoteBuildCommandLine>cd liteExchange/build &amp;&amp; cd linux_gcc &amp;&amp; make release</RemoteBuildCommandLine>
+    <RemoteReBuildCommandLine>cd liteExchange/build &amp;&amp; cd linux_gcc &amp;&amp; make clean &amp;&amp; make release</RemoteReBuildCommandLine>
+    <RemoteCleanCommandLine>cd liteExchange/build &amp;&amp; cd linux_gcc &amp;&amp; make clean</RemoteCleanCommandLine>
   </PropertyGroup>
   <ItemGroup>
     <ClCompile Include="..\..\source\core\concurrency\thread.cpp" />

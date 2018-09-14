@@ -23,7 +23,7 @@
 
 This project is my "core tech" programming lab / playground.
 
-It is essentially a minimal traditional stock exchange. It uses FIX protocol for order entry and also market data broadcasting ( highly likely mold udp 64/ ITCH ) will be included in future.
+It is essentially a minimal traditional stock exchange. It uses FIX protocol for order entry and also market data ( highly likely mold udp 64/ ITCH ) and dropcopies will be included in future.
 
 A nice video which explains components of an exchange : https://www.youtube.com/watch?v=b1e4t2k2KJY
 
@@ -51,8 +51,12 @@ It is cross platform (Linux/Windows) , written in C++11. Its test harness is wri
 | Matching algorithm			| Price-time priority , assumes 2 orders never arrive at the same time	|
 | Securities                    | Supported symbols defined in configuration file	    				|
 
+| Session properties        	| Details                                                  |
+| ----------------------------- |:--------------------------------------------------------:|
+| Cancel on disconnect			| Always off 				   							   |
+| Throttling					| None applied											   |
 
-| Fix session properties        | Details                                                  |
+| Fix order entry session       | Details                                                  |
 | ----------------------------- |:--------------------------------------------------------:|
 | Versions						| Agnostic , accepts all non-binary ones				   |
 | Supported FIX Admin messages	| Heartbeats, test requests, trader logons (no validation) |
@@ -154,7 +158,7 @@ For running on Windows , you need to install MSVC141 ( VS2017 ) C++ runtime :
 
 **How to debug the project on Linux using VisualStudio code :** Build the project for debug mode and open the source directory and VisualStudioCode. Source directory provides a launch.json supporting GCC on Linux and MSVC on Windows. Therefore choose GDB in VSCode debug options before starting debugging and then press F5.
 
-**How to build the project on Linux from Windows with Visual Studio 2017 :** You will need to install Linux C++ feature during VS2017 installation. Then after making sure that your Linux has SSH, you will need your Linux machine SSH details to your Visual Studio. After that you will be able to build and debug on remote Linux. For details please see https://nativecoding.wordpress.com/2018/02/24/visual-studio-for-existing-remote-linux-c-projects/
+**How to build the project on Linux from Windows with Visual Studio 2017 :** You will need to install Linux C++ feature during VS2017 installation. Then after making sure that your Linux has SSH, you will need your Linux machine SSH details to your Visual Studio. You will also need to copy lieExchange directory to your home directory ( ~/ ). After that you will be able to build and debug on remote Linux. For details please see https://nativecoding.wordpress.com/2018/02/24/visual-studio-for-existing-remote-linux-c-projects/
 
 **How to build the project on Windows with Visual Studio 2017 :** Go to "build/windows_msvc_visual_studio" directory and use SLN file to launch VS with the project
     
