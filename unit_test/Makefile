@@ -21,7 +21,7 @@ SOURCES =  test.cpp \
 	   $(SOURCE_DIR_ORDER_MATCHER)/security_manager.cpp \
 	   $(SOURCE_DIR_ORDER_MATCHER)/central_order_book.cpp 
 #GoogleTest static library file
-GTEST_LIB=google_test/lib/gtest_main.a
+GTEST_LIB = google_test/lib/gtest_main.a
 #Include Directories
 INCLUDE_DIR = ./
 INCLUDE_DIR_PROJECT = ../source
@@ -30,9 +30,9 @@ INCLUDE_DIR_GTEST = google_test/include/
 #Objects
 OBJECTS = $(SOURCES:.cpp=.o)
 #Executable
-EXECUTABLE = ./ome_unit_test
+EXECUTABLE = ./liteExchangeUnitTest
 #Compiler flags
-CFLAGS= -I$(INCLUDE_DIR) -I$(INCLUDE_DIR_GTEST)	 -I$(INCLUDE_DIR_PROJECT) -std=c++11 -c -DDEBUG -g -Wall -fexceptions -frtti
+CFLAGS= -I$(INCLUDE_DIR) -I$(INCLUDE_DIR_GTEST)	 -I$(INCLUDE_DIR_PROJECT) -std=c++11 -c -DDEBUG -g -Wall  -fexceptions -frtti
 #Linker flags
 LFLAGS= -lstdc++ -pthread $(GTEST_LIB)
 
